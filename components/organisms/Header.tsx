@@ -8,7 +8,6 @@ import { ICON } from "@/lib/icon";
 import { AppLink } from "../atoms/AppLink";
 import { Button } from "../atoms/Button";
 import { Logo } from "../atoms/Logo";
-import { ThemeToggle, type Theme } from "../atoms/ThemeToggle";
 
 type Link = { label: string; href: string };
 
@@ -16,12 +15,10 @@ export interface HeaderProps {
   links?: Link[];
   current?: string;
   cta?: Link;
-  theme?: Theme;
-  onThemeChange?: (next: Theme) => void;
   sticky?: boolean;
 }
 
-export function Header({ links = [], current, cta, theme, onThemeChange, sticky = true }: HeaderProps) {
+export function Header({ links = [], current, cta, sticky = true }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -49,7 +46,6 @@ export function Header({ links = [], current, cta, theme, onThemeChange, sticky 
           ))}
         </nav>
         <div className="ap-header-actions">
-          {onThemeChange && <ThemeToggle theme={theme} onChange={onThemeChange} />}
           {cta && (
             <Button size="sm" href={cta.href} className="ap-header-cta">
               {cta.label}

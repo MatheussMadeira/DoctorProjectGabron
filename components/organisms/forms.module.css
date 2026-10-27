@@ -30,3 +30,6 @@
   .card { padding: var(--space-6) var(--space-4); }
   .heading { font-size: 26px; line-height: 34px; }
 }
+
+/* Armadilha de robô: fora da tela (não use display:none, que alguns robôs ignoram). */
+.armadilha { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }

@@ -26,12 +26,16 @@ export const situacaoEnum = pgEnum("situacao_inscricao", [
   "CANCELADA",
 ]);
 export const papelEnum = pgEnum("papel_usuario", ["ADMIN", "EQUIPE"]);
+export const tipoEmailEnum = pgEnum("tipo_email", ["INSCRICAO_CONFIRMACAO", "INSCRICAO_AVISO", "CONTATO_AVISO"]);
+export const statusEmailEnum = pgEnum("status_email", ["PENDENTE", "ENVIADO", "FALHOU"]);
 
 export type Modalidade = (typeof modalidadeEnum.enumValues)[number];
 export type Publicacao = (typeof publicacaoEnum.enumValues)[number];
 export type Conselho = (typeof conselhoEnum.enumValues)[number];
 export type Situacao = (typeof situacaoEnum.enumValues)[number];
 export type Papel = (typeof papelEnum.enumValues)[number];
+export type TipoEmail = (typeof tipoEmailEnum.enumValues)[number];
+export type StatusEmail = (typeof statusEmailEnum.enumValues)[number];
 
 /** Situações que ocupam uma vaga. LISTA_ESPERA e CANCELADA não ocupam. */
 export const SITUACOES_QUE_OCUPAM: Situacao[] = ["AGUARDANDO_PAGAMENTO", "REGISTRO_A_CONFERIR", "CONFIRMADA"];
@@ -152,4 +156,38 @@ export const loginTentativas = pgTable("login_tentativas", {
   /** Depois de 5 erros seguidos, o e-mail fica bloqueado por 15 minutos. */
   bloqueadoAte: timestamp("bloqueado_ate", { withTimezone: true }),
   atualizadoEm: timestamp("atualizado_em", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** Registro de cada e-mail: nasce PENDENTE antes do envio e vira ENVIADO ou FALHOU. O botão "Reenviar" refaz o envio
+    deste mesmo registro, remontando o e-mail a partir dos dados atuais da inscrição ou da mensagem. */
+export const emailsEnvios = pgTable(
+  "emails_envios",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tipo: tipoEmailEnum("tipo").notNull(),
+    status: statusEmailEnum("status").notNull().default("PENDENTE"),
+    destinatario: text("destinatario").notNull(),
+    assunto: text("assunto").notNull(),
+    inscricaoId: uuid("inscricao_id").references(() => inscricoes.id, { onDelete: "cascade" }),
+    mensagemId: uuid("mensagem_id").references(() => mensagensContato.id, { onDelete: "cascade" }),
+    tentativas: integer("tentativas").notNull().default(0),
+    /** Motivo da última falha, sem credenciais. */
+    erro: text("erro"),
+    /** Qual provedor enviou (smtp, resend, console). */
+    provedor: text("provedor"),
+    enviadoEm: timestamp("enviado_em", { withTimezone: true }),
+    ...timestamps,
+  },
+  (t) => [
+    check("emails_envios_uma_origem", sql`(${t.inscricaoId} is not null) <> (${t.mensagemId} is not null)`),
+    index("emails_envios_status_idx").on(t.status),
+    index("emails_envios_inscricao_idx").on(t.inscricaoId),
+  ],
+);
+
+/** Limite de envios por visitante (janela fixa). A chave é um hash do IP + a rota; o IP nunca é guardado. */
+export const limitesTaxa = pgTable("limites_taxa", {
+  chave: text("chave").primaryKey(),
+  contagem: integer("contagem").notNull().default(0),
+  janelaFim: timestamp("janela_fim", { withTimezone: true }).notNull(),
 });

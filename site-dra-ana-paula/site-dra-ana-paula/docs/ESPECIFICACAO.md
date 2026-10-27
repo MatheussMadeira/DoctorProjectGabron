@@ -28,12 +28,10 @@
 ### Elementos comuns
 
 - **Header e Footer:** iguais em todas as páginas públicas.
-  - O Header tem o logo, o menu (Início, Sobre a Dra., Clínica, Agenda de cursos, Contato), o botão de tema claro/escuro e a chamada "Próximas turmas".
+  - O Header tem o logo, o menu (Início, Sobre a Dra., Clínica, Agenda de cursos, Contato) e a chamada "Próximas turmas".
 - **WhatsAppButton flutuante:** em todas as páginas públicas, menos em `/contato`, onde ele aparece dentro da página.
   - Na página da turma, no celular, ele sobe para não cobrir a barra de inscrição. A regra `.ap-com-barra` está em `ap-tokens.css`.
-- **Tema:** o `ThemeToggle` troca `data-theme` no `<html>` entre `claro` e `escuro`.
-  - A escolha fica guardada num cookie, e na primeira visita vale `prefers-color-scheme`.
-  - Aplique o tema no servidor para não piscar.
+- **Tema:** só o claro. Não há botão de troca de tema nem tema escuro para a pessoa escolher (decisão do cliente, fora do que o design system previa com o `ThemeToggle`). As seções escuras da marca (Hero, faixas de chamada e Footer) seguem escuras, forçadas por `data-theme="escuro"` no próprio elemento.
 - **Transição de página:** o `EventCard` e o `Hero` da página da turma compartilham o mesmo `transitionName`, que é o slug da turma, para usar View Transitions.
 
 ## 3. Modelo de dados (sugestão)
@@ -193,14 +191,24 @@ O projeto usa `cacheComponents`. A contagem de vagas nunca pode ficar desatualiz
 - O envio de foto precisa do `BLOB_READ_WRITE_TOKEN` (Blob store no projeto da Vercel). Sem ele, o painel avisa e a biblioteca da marca continua funcionando.
 - A tela de inscrições do admin é da Fase 6.
 
-## 8. Fases de trabalho
+## 8. E-mail e formulários públicos
+
+- **Camada:** `lib/email/`. Provedor por configuração: `smtp` (Gmail do site com Nodemailer, o padrão), `resend` (pela API HTTP, ainda não testado com uma chave real) e `console` (desenvolvimento e testes). Sem domínio, o remetente é a própria conta do Gmail (`EMAIL_TESTE`), com o nome "Dra. Ana Paula Fonseca". Limite do Gmail: cerca de 500 envios por dia.
+- **Três e-mails:** confirmação para a pessoa inscrita (com variante de lista de espera), aviso à clínica a cada inscrição e aviso à clínica a cada mensagem de contato. O aviso responde direto para a pessoa.
+- **Ordem:** grava no banco → invalida o cache → envia (`after()`, sem atrasar a resposta). Cada tentativa fica em `emails_envios` (PENDENTE, ENVIADO ou FALHOU, com o motivo sem credenciais e o número de tentativas).
+- **Reenviar:** na tela de inscrições, cada e-mail mostra seu status e um botão "Reenviar" que refaz o envio no mesmo registro, com o e-mail remontado a partir dos dados atuais. As mensagens de contato aparecem na mesma tela, com o mesmo botão.
+- **Proteção:** campo escondido contra robôs (responde como sucesso e não grava), limite por visitante (inscrição: 5 em 10 minutos; contato: 3 em 10 minutos) guardado no banco com hash do IP, validação com zod no servidor e uma inscrição ativa por e-mail em cada turma.
+- **Inscrições do admin:** filtro por turma (`?turma=`), situação editável na linha (passar para uma situação que ocupa vaga exige vaga livre), exportação em CSV (separador `;`, BOM, com proteção contra fórmulas de planilha) e lembrete de conferir o registro no conselho.
+- **Pendências:** o logo ainda não aparece nos e-mails (precisa de domínio para hospedar a imagem; SVG não funciona no Gmail), o texto de pagamento é um placeholder explícito e o CRM/RQE do rodapé também.
+
+## 9. Fases de trabalho
 
 1. **Base:** criar o projeto Next.js com TypeScript e ESLint; configurar fontes, CSS de tokens e `bundle.css`; criar `public/`. *(feita)*
 2. **Design system:** portar todos os componentes de `index.jsx` para `components/` em Atomic Design (átomos, moléculas, organismos e templates) e criar `/dev/componentes` para conferir com o design. *(feita)*
 3. **Páginas públicas com dados fixos:** montar Início, Sobre, Clínica, Agenda, Turma e Contato a partir das telas, com os dados de exemplo dos arquivos `.dc.html` em `lib/dados-exemplo.ts`. Conferir em 1440px e em 390px. Os formulários só têm a interface; ainda não gravam nada.
 4. **Banco e agenda real:** Neon + Drizzle: schema, migrations (`db/migrations`), seed (`db/seed.ts`), Início, Agenda e Turma ligados ao banco, cálculo de status, tags de cache (seção 6), transação de inscrição com `FOR UPDATE` e 404 de verdade pelo proxy. *(feita)*
 5. **Admin:** *(feita, exceto o que está listado em "Pendências da Fase 5")* login, proxy (só confere a sessão e redireciona; cada Server Action confere a permissão de novo), painel, agenda (criar, editar, excluir e publicar turmas) e foto. Cada gravação invalida as tags da turma.
-6. **Inscrição e contato pelo site:** a inscrição é feita no site e gravada no banco (com lista de espera e corrida pela última vaga), mais o formulário de contato, e-mails, validação e proteção contra spam. Junto, a tela de **inscrições do admin** (filtro por turma, situação editável, CSV). Cada inscrição criada ou alterada invalida as tags da turma.
+6. **Inscrição e contato pelo site:** *(feita; ver seção 8)* a inscrição é feita no site e gravada no banco (com lista de espera e corrida pela última vaga), mais o formulário de contato, e-mails, validação e proteção contra spam. Junto, a tela de **inscrições do admin** (filtro por turma, situação editável, CSV). Cada inscrição criada ou alterada invalida as tags da turma.
 7. **Acabamento:**
    - SEO: metadata, Open Graph com o logo, `sitemap.xml` e `robots.txt` (o admin com noindex);
    - dados estruturados `Event` nas turmas e `Physician` na clínica;
@@ -208,7 +216,7 @@ O projeto usa `cacheComponents`. A contagem de vagas nunca pode ficar desatualiz
    - Lighthouse;
    - deploy na Vercel.
 
-## 9. Imagens
+## 10. Imagens
 
 | Arquivo em `public/images/` | Uso |
 |---|---|

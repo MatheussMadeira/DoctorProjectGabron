@@ -13,6 +13,8 @@ export default defineConfig({
     command: "node --env-file=.env.local node_modules/next/dist/bin/next start -p 3107",
     url: "http://localhost:3107",
     reuseExistingServer: false,
+    // Os e-mails dos testes não saem de verdade: o provedor "console" só registra e imprime.
+    env: { EMAIL_PROVIDER: "console" },
     timeout: 60_000,
   },
 });

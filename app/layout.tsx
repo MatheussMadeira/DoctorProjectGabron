@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Marcellus, Source_Sans_3 } from "next/font/google";
-import { THEME_INIT_SCRIPT } from "@/lib/theme-script";
 import "./styles/ap-tokens.css";
 import "./styles/bundle.css";
 import "./styles/ajustes.css";
@@ -33,11 +32,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    // data-theme é fixado pelo script abaixo antes da pintura; por isso o suppressHydrationWarning.
-    <html lang="pt-BR" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-      </head>
+    // O site tem só o tema claro. As seções escuras da marca (Hero, faixas de chamada, rodapé) forçam `data-theme="escuro"` sozinhas.
+    <html lang="pt-BR" data-theme="claro" className={`${display.variable} ${sans.variable}`}>
       <body>{children}</body>
     </html>
   );

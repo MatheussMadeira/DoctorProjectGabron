@@ -17,7 +17,7 @@ import { ASSUNTOS_CONTATO, CONSELHOS, PROFISSOES } from "@/lib/dados-exemplo";
 import { FOOTER, HEADER_CTA, NAV_LINKS } from "@/lib/site";
 import { KpiCard } from "@/components/molecules";
 import { AdminTable } from "@/components/organisms";
-import { DataTableDemo, ExcluirDialogDemo, LoginDemo, PlusIcon, TabsDemo, ThemeToggleDemo } from "./Demos";
+import { DataTableDemo, ExcluirDialogDemo, LoginDemo, PlusIcon, TabsDemo } from "./Demos";
 
 export const metadata: Metadata = { title: "Componentes", robots: { index: false, follow: false } };
 
@@ -52,7 +52,7 @@ export default function ComponentesPage() {
       <SiteHeader sticky={false} />
       <main>
         <Section>
-          <SectionHeading as="h1" eyebrow="Atomic Design" title="Componentes" lead="Átomos, moléculas, organismos e templates, para comparar com o design system. Use o botão de tema para conferir claro e escuro." />
+          <SectionHeading as="h1" eyebrow="Atomic Design" title="Componentes" lead="Átomos, moléculas, organismos e templates, para comparar com o design system." />
         </Section>
 
         {/* ATOMS */}
@@ -83,9 +83,6 @@ export default function ComponentesPage() {
           <Badge tone="danger">Esgotado</Badge>
           <Badge tone="neutral">Em breve</Badge>
           <Badge tone="accent">Online</Badge>
-        </Bloco>
-        <Bloco titulo="ThemeToggle">
-          <ThemeToggleDemo />
         </Bloco>
         <Bloco titulo="DateBlock">
           <DateBlock start="2026-03-14" end="2026-03-15" size="lg" />
@@ -205,7 +202,7 @@ export default function ComponentesPage() {
         <Section>
           <p className="ap-eyebrow">Header (estático)</p>
           <div style={{ marginTop: "var(--space-4)" }}>
-            <Header sticky={false} links={NAV_LINKS} cta={HEADER_CTA} current="/agenda" theme="claro" />
+            <Header sticky={false} links={NAV_LINKS} cta={HEADER_CTA} current="/agenda" />
           </div>
         </Section>
         <Section background="sunken">
@@ -248,15 +245,15 @@ export default function ComponentesPage() {
         </Section>
         <Section narrow>
           <p className="ap-eyebrow">InscricaoForm · erro</p>
-          <InscricaoForm estado="erro" eyebrow="21 e 22 de novembro · Belo Horizonte" profissoes={PROFISSOES} conselhos={CONSELHOS} />
+          <InscricaoForm estadoInicial={{ erroGeral: "Revise 2 campos antes de enviar", erros: { email: "Digite um e-mail válido, como nome@dominio.com.br.", privacidade: "Marque esta opção para enviar a inscrição." }, valores: { nome: "Nome Sobrenome", email: "nome@dominio", telefone: "(31) 00000-0000" } }} eyebrow="21 e 22 de novembro · Belo Horizonte" profissoes={PROFISSOES} conselhos={CONSELHOS} />
         </Section>
         <Section background="sunken" narrow>
           <p className="ap-eyebrow">InscricaoForm · esgotada</p>
-          <InscricaoForm estado="esgotada" eyebrow="" profissoes={PROFISSOES} conselhos={CONSELHOS} />
+          <InscricaoForm esgotada eyebrow="" profissoes={PROFISSOES} conselhos={CONSELHOS} />
         </Section>
         <Section narrow>
           <p className="ap-eyebrow">InscricaoForm · enviada</p>
-          <InscricaoForm estado="enviada" eyebrow="" profissoes={PROFISSOES} conselhos={CONSELHOS} />
+          <InscricaoForm estadoInicial={{ ok: true }} eyebrow="" profissoes={PROFISSOES} conselhos={CONSELHOS} />
         </Section>
         <Section background="sunken" narrow>
           <p className="ap-eyebrow">ContatoForm</p>

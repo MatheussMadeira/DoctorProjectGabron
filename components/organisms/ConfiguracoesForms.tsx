@@ -16,7 +16,10 @@ export interface EstadoUsuarioForm {
   email?: string;
   mensagem?: string;
 }
-type Acao = (anterior: EstadoUsuarioForm, formData: FormData) => Promise<EstadoUsuarioForm>;
+type Acao = (
+  anterior: EstadoUsuarioForm,
+  formData: FormData,
+) => Promise<EstadoUsuarioForm>;
 
 export interface UsuarioLinha {
   id: string;
@@ -32,7 +35,8 @@ function SenhaTemporaria({ estado }: { estado: EstadoUsuarioForm }) {
   if (!estado.senhaTemporaria) return null;
   return (
     <Alert tone="success" title={estado.mensagem}>
-      Entregue esta senha a {estado.email}. Ela não será mostrada de novo; quem recebe deve trocá-la em Configurações.
+      Entregue esta senha a {estado.email}. Ela não será mostrada de novo; quem
+      recebe deve trocá-la em Configurações.
       <code className={styles.senhaNova}>{estado.senhaTemporaria}</code>
     </Alert>
   );
@@ -53,10 +57,29 @@ export function TrocarSenhaForm({ acao }: { acao: Acao }) {
             Use a nova senha no próximo acesso.
           </Alert>
         )}
-        <TextField label="Senha atual" type="password" name="atual" autoComplete="current-password" required />
+        <TextField
+          label="Senha atual"
+          type="password"
+          name="atual"
+          autoComplete="current-password"
+          required
+        />
         <div className={styles.linha}>
-          <TextField label="Nova senha" type="password" name="nova" autoComplete="new-password" required hint="Pelo menos 12 caracteres." />
-          <TextField label="Repita a nova senha" type="password" name="repetida" autoComplete="new-password" required />
+          <TextField
+            label="Nova senha"
+            type="password"
+            name="nova"
+            autoComplete="new-password"
+            required
+            hint="Pelo menos 12 caracteres."
+          />
+          <TextField
+            label="Repita a nova senha"
+            type="password"
+            name="repetida"
+            autoComplete="new-password"
+            required
+          />
         </div>
         <div>
           <Button type="submit" disabled={pendente}>
@@ -68,7 +91,17 @@ export function TrocarSenhaForm({ acao }: { acao: Acao }) {
   );
 }
 
-function BotaoAcao({ acao, id, rotulo, variante = "ghost" }: { acao: Acao; id: string; rotulo: string; variante?: "ghost" | "secondary" }) {
+function BotaoAcao({
+  acao,
+  id,
+  rotulo,
+  variante = "ghost",
+}: {
+  acao: Acao;
+  id: string;
+  rotulo: string;
+  variante?: "ghost" | "secondary";
+}) {
   const [estado, enviar, pendente] = useActionState(acao, {});
   return (
     <form action={enviar} className={styles.pilhaCurta}>
@@ -87,7 +120,15 @@ function PapelUsuario({ u, acao }: { u: UsuarioLinha; acao: Acao }) {
   return (
     <form action={enviar} className={styles.usuarioAcoes}>
       <input type="hidden" name="id" value={u.id} />
-      <Select label="Papel" name="papel" defaultValue={u.papel} options={[{ value: "ADMIN", label: "ADMIN (a Dra.)" }, { value: "EQUIPE", label: "EQUIPE" }]} />
+      <Select
+        label="Papel"
+        name="papel"
+        defaultValue={u.papel}
+        options={[
+          { value: "ADMIN", label: "ADMIN" },
+          { value: "EQUIPE", label: "EQUIPE" },
+        ]}
+      />
       <Button type="submit" size="sm" variant="ghost" disabled={pendente}>
         Salvar papel
       </Button>
@@ -105,12 +146,21 @@ export interface UsuariosAdminProps {
 }
 
 /** Só o ADMIN vê esta área (a página confere a permissão e cada Server Action confere de novo). */
-export function UsuariosAdmin({ usuarios, criar, redefinirSenha, alternarAtivo, alterarPapel }: UsuariosAdminProps) {
+export function UsuariosAdmin({
+  usuarios,
+  criar,
+  redefinirSenha,
+  alternarAtivo,
+  alterarPapel,
+}: UsuariosAdminProps) {
   const [estadoNovo, enviarNovo, criando] = useActionState(criar, {});
   return (
     <>
       <AdminCard titulo="Usuários">
-        <p className={styles.muted}>Não há cadastro público: só você cria as contas da equipe. Se alguém esquecer a senha, redefina aqui.</p>
+        <p className={styles.muted}>
+          Não há cadastro público: só você cria as contas da equipe. Se alguém
+          esquecer a senha, redefina aqui.
+        </p>
         <div>
           {usuarios.map((u) => (
             <div key={u.id} className={styles.usuarioLinha}>
@@ -120,11 +170,24 @@ export function UsuariosAdmin({ usuarios, criar, redefinirSenha, alternarAtivo, 
                 </strong>
                 <span>{u.email}</span>
               </div>
-              <Badge tone={u.ativo ? "success" : "neutral"}>{u.ativo ? "Ativo" : "Desativado"}</Badge>
+              <Badge tone={u.ativo ? "success" : "neutral"}>
+                {u.ativo ? "Ativo" : "Desativado"}
+              </Badge>
               <PapelUsuario u={u} acao={alterarPapel} />
               <div className={styles.usuarioAcoes}>
-                <BotaoAcao acao={redefinirSenha} id={u.id} rotulo="Redefinir senha" variante="secondary" />
-                {!u.souEu && <BotaoAcao acao={alternarAtivo} id={u.id} rotulo={u.ativo ? "Desativar" : "Reativar"} />}
+                <BotaoAcao
+                  acao={redefinirSenha}
+                  id={u.id}
+                  rotulo="Redefinir senha"
+                  variante="secondary"
+                />
+                {!u.souEu && (
+                  <BotaoAcao
+                    acao={alternarAtivo}
+                    id={u.id}
+                    rotulo={u.ativo ? "Desativar" : "Reativar"}
+                  />
+                )}
               </div>
             </div>
           ))}
@@ -142,7 +205,21 @@ export function UsuariosAdmin({ usuarios, criar, redefinirSenha, alternarAtivo, 
           <div className={styles.linha}>
             <TextField label="Nome" name="nome" required />
             <TextField label="E-mail" type="email" name="email" required />
-            <Select label="Papel" name="papel" defaultValue="EQUIPE" options={[{ value: "EQUIPE", label: "EQUIPE (cria e edita turmas, cuida das inscrições)" }, { value: "ADMIN", label: "ADMIN (tudo, inclusive excluir e gerenciar usuários)" }]} />
+            <Select
+              label="Papel"
+              name="papel"
+              defaultValue="EQUIPE"
+              options={[
+                {
+                  value: "EQUIPE",
+                  label: "EQUIPE (cria e edita turmas, cuida das inscrições)",
+                },
+                {
+                  value: "ADMIN",
+                  label: "ADMIN (tudo, inclusive excluir e gerenciar usuários)",
+                },
+              ]}
+            />
           </div>
           <div>
             <Button type="submit" disabled={criando}>

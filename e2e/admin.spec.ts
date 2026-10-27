@@ -45,7 +45,7 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(async () => {
-  await db.delete(turmas).where(like(turmas.slug, "teste-e2e-%"));
+  await db.delete(turmas).where(like(turmas.slug, "teste-admin-%"));
   await db.delete(loginTentativas).where(like(loginTentativas.email, `e2e-%-${marca}@exemplo.invalid`));
   await db.delete(usuarios).where(inArray(usuarios.id, Object.values(ids)));
 });
@@ -120,7 +120,7 @@ test("criar, editar e excluir uma data: o site público acompanha na hora (tags 
 
   const titulo = `Teste e2e ${marca}`;
   await digitar(page, 'input[name="titulo"]', titulo);
-  await digitar(page, 'input[name="tituloCurto"]', `teste-e2e-${marca}`);
+  await digitar(page, 'input[name="tituloCurto"]', `teste-admin-${marca}`);
   await digitar(page, 'textarea[name="resumo"]', "Resumo do teste.");
   await digitar(page, 'textarea[name="descricao"]', "Descrição do teste.");
   await digitar(page, 'input[name="inicio"]', "2099-03-14");
@@ -130,7 +130,7 @@ test("criar, editar e excluir uma data: o site público acompanha na hora (tags 
   await expect(page.getByText("Data salva e publicada.")).toBeVisible();
 
   // Site público: a turma já aparece.
-  const slug = `teste-e2e-${marca}-mar-2099`;
+  const slug = `teste-admin-${marca}-mar-2099`;
   await page.goto(`/agenda/${slug}`);
   await expect(page.getByRole("heading", { level: 1, name: titulo })).toBeVisible();
   await expect(page.getByText("12 de 12 disponíveis")).toBeVisible();

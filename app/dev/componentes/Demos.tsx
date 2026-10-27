@@ -3,19 +3,12 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge";
-import { ThemeToggle } from "@/components/atoms/ThemeToggle";
 import { Tabs } from "@/components/molecules/Tabs";
 import { DataTable } from "@/components/organisms/DataTable";
 import { ExcluirTurmaDialog } from "@/components/organisms/ExcluirTurmaDialog";
 import { LoginForm } from "@/components/organisms/LoginForm";
-import { useTheme } from "@/lib/theme";
 
 /* Demonstrações que precisam de estado ou de funções, só para a página de conferência. */
-
-export function ThemeToggleDemo() {
-  const { theme, setTheme } = useTheme();
-  return <ThemeToggle theme={theme} onChange={setTheme} />;
-}
 
 export function TabsDemo() {
   const [v, setV] = useState("proximas");

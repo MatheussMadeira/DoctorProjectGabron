@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useActionState, useState } from "react";
+import { CAMPO_ARMADILHA, type EstadoFormulario } from "@/lib/formularios-tipos";
 import { Alert } from "../molecules/Alert";
 import { Select } from "../molecules/Select";
 import { TextField } from "../molecules/TextField";
@@ -10,38 +11,64 @@ import styles from "./forms.module.css";
 
 export interface ContatoFormProps {
   assuntos: string[];
-  /** Mostra a mensagem de sucesso desde o início (conferência do estado). */
-  enviada?: boolean;
+  /** Server Action: (estado, formData) → novo estado. */
+  acao?: (anterior: EstadoFormulario, formData: FormData) => Promise<EstadoFormulario>;
+  /** Para mostrar estados específicos em /dev/componentes e nas capturas. */
+  estadoInicial?: EstadoFormulario;
 }
 
-/* Fase 3: só a interface. O envio ainda não grava nem manda e-mail; isso entra na fase 6. */
-export function ContatoForm({ assuntos, enviada: inicial = false }: ContatoFormProps) {
-  const [enviada, setEnviada] = useState(inicial);
+const semAcao = async (anterior: EstadoFormulario) => anterior;
 
-  function enviar(e: FormEvent) {
-    e.preventDefault();
-    setEnviada(true);
-  }
+export function ContatoForm({ assuntos, acao = semAcao, estadoInicial = {} }: ContatoFormProps) {
+  const [estado, enviar, pendente] = useActionState(acao, estadoInicial);
+  // "Enviar outra mensagem" esconde a tela de sucesso daquele resultado; o próximo envio gera um estado novo.
+  const [descartado, setDescartado] = useState<EstadoFormulario | null>(null);
+  const erros = estado.erros ?? {};
+  const v = estado.valores ?? {};
+  const enviada = estado.ok && estado !== descartado;
 
   return (
     <div className={styles.card}>
       {!enviada ? (
-        <form onSubmit={enviar} className={styles.form}>
+        <form action={enviar} className={styles.form} noValidate>
           <div className={styles.head}>
             <h2 className={styles.heading}>Envie uma mensagem</h2>
             <p className={styles.muted}>Campos com * são obrigatórios.</p>
           </div>
-          <TextField floating label="Nome completo" name="nome" autoComplete="name" required />
-          <div className={styles.pair}>
-            <TextField floating label="E-mail" type="email" name="email" autoComplete="email" required />
-            <TextField floating label="Telefone ou WhatsApp" type="tel" name="telefone" autoComplete="tel" />
+          {estado.erroGeral && (
+            <Alert tone="danger" title={estado.erroGeral}>
+              {Object.keys(erros).length ? "Confira os campos marcados abaixo." : "Se o problema continuar, fale com a equipe pelo WhatsApp."}
+            </Alert>
+          )}
+          <div className={styles.armadilha} aria-hidden="true">
+            <label>
+              Não preencha este campo
+              <input type="text" name={CAMPO_ARMADILHA} tabIndex={-1} autoComplete="off" />
+            </label>
           </div>
-          <Select label="Assunto" name="assunto" required options={assuntos} />
-          <TextField floating multiline rows={5} label="Mensagem" name="mensagem" hint="Não envie informações de saúde por aqui. Elas são tratadas na consulta." />
-          <Checkbox name="privacidade" required label="Li e aceito a Política de Privacidade." hint="Seus dados são usados só para responder a este contato." />
+          <TextField floating label="Nome completo" name="nome" autoComplete="name" required defaultValue={v.nome} error={erros.nome} />
+          <div className={styles.pair}>
+            <TextField floating label="E-mail" type="email" name="email" autoComplete="email" required defaultValue={v.email} error={erros.email} />
+            <TextField floating label="Telefone ou WhatsApp" type="tel" name="telefone" autoComplete="tel" defaultValue={v.telefone} error={erros.telefone} />
+          </div>
+          <Select label="Assunto" name="assunto" required options={assuntos} defaultValue={v.assunto ?? ""} error={erros.assunto} />
+          <TextField
+            floating
+            multiline
+            rows={5}
+            label="Mensagem"
+            name="mensagem"
+            defaultValue={v.mensagem}
+            error={erros.mensagem}
+            hint="Não envie informações de saúde por aqui. Elas são tratadas na consulta."
+          />
           <div>
-            <Button type="submit" size="lg" arrow>
-              Enviar mensagem
+            <Checkbox name="privacidade" required label="Li e aceito a Política de Privacidade." hint="Seus dados são usados só para responder a este contato." defaultChecked={v.privacidade === "on"} />
+            {erros.privacidade && <p className={`ap-hint ap-hint-error ${styles.checkError}`}>{erros.privacidade}</p>}
+          </div>
+          <div>
+            <Button type="submit" size="lg" arrow disabled={pendente}>
+              {pendente ? "Enviando…" : "Enviar mensagem"}
             </Button>
           </div>
         </form>
@@ -50,7 +77,7 @@ export function ContatoForm({ assuntos, enviada: inicial = false }: ContatoFormP
           <Alert tone="success" title="Mensagem enviada">
             Obrigado pelo contato. A equipe da clínica vai responder pelo e-mail ou telefone que você informou.
           </Alert>
-          <Button variant="ghost" onClick={() => setEnviada(false)}>
+          <Button variant="ghost" onClick={() => setDescartado(estado)}>
             Enviar outra mensagem
           </Button>
         </div>

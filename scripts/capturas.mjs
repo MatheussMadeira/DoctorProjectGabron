@@ -23,7 +23,7 @@ const viewports = [
   ["1440", { width: 1440, height: 900 }],
   ["390", { width: 390, height: 844 }],
 ];
-const temas = ["claro", "escuro"];
+const temas = ["claro"]; // o site tem só o tema claro
 
 mkdirSync(saida, { recursive: true });
 const browser = await chromium.launch();

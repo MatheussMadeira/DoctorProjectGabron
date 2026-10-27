@@ -29,7 +29,12 @@ A pasta `site-dra-ana-paula/` é só material de referência (specs, telas, desi
   - O primeiro ADMIN é criado por `yarn admin:criar` (pergunta nome, e-mail e senha; a senha não aparece). Os demais, em Configurações.
   - Variáveis: `AUTH_SECRET` (gere um por ambiente), `AUTH_TRUST_HOST=true` só em `next start` local (na Vercel é automático) e `BLOB_READ_WRITE_TOKEN` (fotos).
   - Foto da turma: Vercel Blob, com envio direto do navegador (`/api/admin/foto` só gera o token e confere a permissão). Regras: JPG ou WebP, 16:10, a partir de 1600 px, até 5 MB.
-- **Testes**: `yarn test` (unidade e banco; `TESTES_BANCO=1` liga os que gravam no banco) e `yarn test:e2e` (Playwright contra o build e o banco de desenvolvimento; rode `yarn build` antes). Testes e2e de formulário esperam a hidratação antes de digitar. `scripts/capturas.mjs` tira capturas de todas as rotas em 1440px e 390px, nos dois temas.
+- **E-mail**: `lib/email/` é uma camada isolada: o resto do código só chama `enviarEmail` (nunca Nodemailer, Gmail ou Resend). O provedor vem de `EMAIL_PROVIDER` (`smtp` com o Gmail do site é o padrão; `resend` e `console` também existem); trocar de provedor é só configuração.
+  - Variáveis: `EMAIL_TESTE` (Gmail do site: remetente e caixa que recebe os avisos) e `SENHA_TESTE` (senha de app do Google). Remetente: "Dra. Ana Paula Fonseca".
+  - Modelos em React Email (`lib/email/modelos/`) com a identidade do design system. `yarn`: `node --import tsx scripts/previa-emails.tsx` gera uma prévia em `capturas/emails`.
+  - O e-mail sai **depois** de gravar no banco (`after()` na Server Action). Cada envio vira uma linha em `emails_envios` (PENDENTE → ENVIADO ou FALHOU, com o motivo sem credenciais). Falha de e-mail nunca derruba a inscrição. Em Inscrições, o botão **Reenviar** refaz o envio remontando o e-mail com os dados atuais.
+- **Formulários públicos**: validação com zod no servidor, campo escondido contra robô e limite por visitante no banco (inscrição: 5 em 10 minutos; contato: 3 em 10 minutos; a chave é um hash do IP). A inscrição trava a turma (`FOR UPDATE`), recusa duplicidade por e-mail e invalida as tags da turma com `updateTag`.
+- **Testes**: `yarn test` (unidade e banco; `TESTES_BANCO=1` liga os que gravam no banco) e `yarn test:e2e` (Playwright contra o build e o banco de desenvolvimento; rode `yarn build` antes). Testes e2e de formulário esperam a hidratação antes de digitar. O e2e roda com `EMAIL_PROVIDER=console`. `scripts/capturas.mjs` tira capturas de todas as rotas em 1440px e 390px, nos dois temas.
 - **CSS**: sem Tailwind e sem CSS-in-JS.
   - `app/styles/bundle.css` traz as classes `ap-*` do design system e `app/styles/ap-tokens.css` traz as variáveis CSS (geradas de `design-system/tokens.json`). Os dois são importados em `app/layout.tsx`.
   - Estilos novos vão em CSS Modules, ao lado do componente, sempre com os tokens (`var(--space-5)`, `var(--ink)`…). Nada de valor solto.
@@ -45,7 +50,7 @@ A pasta `site-dra-ana-paula/` é só material de referência (specs, telas, desi
 - **Utilitários**: `lib/` (`cx`, `icon`, `motion`, `agenda`, `theme`, `site`). Os dados de exemplo da fase 3 ficam em `lib/dados-exemplo.ts`.
 - **Ícones**: `lucide-react`, com traço 1,5. Os ícones de marca (WhatsApp, Instagram) vêm de `simple-icons`, porque o `lucide-react` 1.x não os tem.
 - **Fontes**: `next/font/google` em `app/layout.tsx`, com Marcellus 400 e Source Sans 3 (300, 400, 600, 700 e 400 itálico). Elas entram pelas variáveis `--nf-display` e `--nf-sans`, que o `ap-tokens.css` usa dentro de `--font-display` e `--font-sans`.
-- **Tema**: `data-theme` (`claro` ou `escuro`) no `<html>`, fixado antes da pintura por um script inline (`lib/theme-script.ts`) que lê o cookie `ap-theme` ou `prefers-color-scheme`. Não leia cookies no layout: isso tornaria o site inteiro dinâmico.
+- **Tema**: o site tem **só o tema claro** (`<html data-theme="claro">` fixo em `app/layout.tsx`), sem botão de troca, sem cookie e sem `prefers-color-scheme`. As seções escuras da marca (Hero, CTABand, Footer, `Section theme="escuro"`) continuam existindo: elas forçam `data-theme="escuro"` no próprio elemento. Os tokens escuros ficam em `ap-tokens.css` por causa dessas seções.
 - **Imagens**: ficam em `public/images/`, `public/logos/` e `public/favicon.svg`. Use `next/image`.
 - **Links**: links internos usam `next/link`; só links externos, `mailto:`, `tel:` e âncoras (`#`) usam `<a>`.
 

@@ -1,4 +1,4 @@
-import { and, count, eq, inArray } from "drizzle-orm";
+import { and, count, eq, inArray, ne, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { inscricoes, SITUACOES_QUE_OCUPAM, turmas, type Conselho, type Situacao } from "@/db/schema";
 import { hojeISO } from "./datas";
@@ -17,6 +17,13 @@ export interface NovaInscricao {
 export class TurmaIndisponivelError extends Error {
   constructor(public motivo: "inexistente" | "em-breve" | "encerrada") {
     super(`Turma indisponível para inscrição: ${motivo}`);
+  }
+}
+
+/** A mesma pessoa (mesmo e-mail) já tem inscrição ativa nesta turma. */
+export class InscricaoDuplicadaError extends Error {
+  constructor() {
+    super("Já existe uma inscrição com este e-mail nesta turma.");
   }
 }
 
@@ -44,6 +51,12 @@ export async function criarInscricao(dados: NovaInscricao): Promise<InscricaoCri
     if (!turma || turma.excluidaEm || turma.publicacao === "RASCUNHO") throw new TurmaIndisponivelError("inexistente");
     if ((turma.fim ?? turma.inicio) < hojeISO()) throw new TurmaIndisponivelError("encerrada");
     if (turma.publicacao === "EM_BREVE") throw new TurmaIndisponivelError("em-breve");
+
+    const [duplicada] = await tx
+      .select({ id: inscricoes.id })
+      .from(inscricoes)
+      .where(and(eq(inscricoes.turmaId, turma.id), sql`lower(${inscricoes.email}) = ${dados.email.toLowerCase()}`, ne(inscricoes.situacao, "CANCELADA")));
+    if (duplicada) throw new InscricaoDuplicadaError();
 
     const [{ ocupadas }] = await tx
       .select({ ocupadas: count() })

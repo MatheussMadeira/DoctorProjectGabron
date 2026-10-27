@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useActionState } from "react";
+import { CAMPO_ARMADILHA, type EstadoFormulario } from "@/lib/formularios-tipos";
 import { Alert } from "../molecules/Alert";
 import { Select } from "../molecules/Select";
 import { TextField } from "../molecules/TextField";
@@ -12,95 +13,101 @@ import { Reveal } from "../atoms/Reveal";
 import { Stack } from "../atoms/Stack";
 import styles from "./forms.module.css";
 
-export type InscricaoEstado = "normal" | "erro" | "enviada" | "esgotada";
-
 export interface InscricaoFormProps {
-  /** `esgotada` troca o texto para lista de espera. `erro` e `enviada` mostram esses estados da tela. */
-  estado?: InscricaoEstado;
+  /** Server Action já ligada ao slug da turma: (estado, formData) → novo estado. */
+  acao?: (anterior: EstadoFormulario, formData: FormData) => Promise<EstadoFormulario>;
+  /** Turma esgotada: o texto passa a ser de lista de espera. */
+  esgotada?: boolean;
   /** Linha acima do título, por exemplo "21 e 22 de novembro · Belo Horizonte". */
   eyebrow: string;
   profissoes: string[];
   conselhos: string[];
+  /** Para mostrar estados específicos em /dev/componentes e nas capturas. */
+  estadoInicial?: EstadoFormulario;
 }
 
-/* Fase 3: só a interface. O envio ainda não grava nada; a Server Action entra na fase 6
-   (validação no servidor, transação de vagas, e-mails e invalidação das tags da turma). */
-export function InscricaoForm({ estado: inicial = "normal", eyebrow, profissoes, conselhos }: InscricaoFormProps) {
-  const [estado, setEstado] = useState<InscricaoEstado>(inicial);
-  const espera = estado === "esgotada";
-  const erro = estado === "erro";
+const semAcao = async (anterior: EstadoFormulario) => anterior;
 
-  function enviar(e: FormEvent) {
-    e.preventDefault();
-    setEstado("enviada");
+export function InscricaoForm({ acao = semAcao, esgotada = false, eyebrow, profissoes, conselhos, estadoInicial = {} }: InscricaoFormProps) {
+  const [estado, enviar, pendente] = useActionState(acao, estadoInicial);
+  const erros = estado.erros ?? {};
+  const v = estado.valores ?? {};
+  const temErros = Object.keys(erros).length > 0;
+
+  if (estado.ok) {
+    return (
+      <div className={`${styles.card} ${styles.sent}`}>
+        <Logo variant="vertical" animated width={200} />
+        <Alert tone="success" title={estado.listaEspera ? "Você entrou na lista de espera" : "Inscrição recebida"}>
+          {estado.listaEspera
+            ? "As vagas acabaram enquanto você enviava. Avisamos por e-mail se abrir uma vaga ou uma nova data."
+            : "Enviamos os próximos passos para o seu e-mail. Se não encontrar a mensagem, confira a caixa de spam."}
+        </Alert>
+        <Button variant="secondary" href="/agenda">
+          Ver outras turmas
+        </Button>
+      </div>
+    );
   }
 
   return (
     <Stack gap={7}>
-      {estado !== "enviada" && (
-        <Reveal>
-          {espera ? (
-            <SectionHeading number="07" eyebrow="Turma esgotada" title="Lista de espera" lead="As vagas desta turma foram preenchidas. Deixe seus dados e avisamos se abrir uma vaga ou uma nova data." />
-          ) : (
-            <SectionHeading number="07" eyebrow={eyebrow} title="Inscrição" lead="Preencha seus dados para garantir a vaga. Você recebe os próximos passos e as formas de pagamento por e-mail." />
+      <Reveal>
+        {esgotada ? (
+          <SectionHeading number="07" eyebrow="Turma esgotada" title="Lista de espera" lead="As vagas desta turma foram preenchidas. Deixe seus dados e avisamos se abrir uma vaga ou uma nova data." />
+        ) : (
+          <SectionHeading number="07" eyebrow={eyebrow} title="Inscrição" lead="Preencha seus dados para garantir a vaga. Você recebe os próximos passos e as formas de pagamento por e-mail." />
+        )}
+      </Reveal>
+
+      <Reveal delay={120}>
+        <form action={enviar} className={`${styles.card} ${styles.form}`} noValidate>
+          {estado.erroGeral && (
+            <Alert tone="danger" title={estado.erroGeral}>
+              {temErros ? "Confira os campos marcados abaixo." : "Se o problema continuar, fale com a equipe pelo WhatsApp."}
+            </Alert>
           )}
-        </Reveal>
-      )}
 
-      {estado !== "enviada" && (
-        <Reveal delay={120}>
-          <form onSubmit={enviar} className={`${styles.card} ${styles.form}`} noValidate={erro}>
-            {erro && (
-              <Alert tone="danger" title="Revise 2 campos antes de enviar">
-                O e-mail está incompleto e falta aceitar a política de privacidade.
-              </Alert>
-            )}
-            <TextField floating label="Nome completo" name="nome" autoComplete="name" required defaultValue={erro ? "Nome Sobrenome" : undefined} />
-            <div className={styles.pair}>
-              <TextField
-                floating
-                label="E-mail"
-                type="email"
-                name="email"
-                autoComplete="email"
-                required
-                defaultValue={erro ? "nome@dominio" : undefined}
-                error={erro ? "Digite um e-mail válido, como nome@dominio.com.br." : undefined}
-              />
-              <TextField floating label="Telefone ou WhatsApp" type="tel" name="telefone" autoComplete="tel" required defaultValue={erro ? "(31) 00000-0000" : undefined} />
-            </div>
-            <Select label="Profissão" name="profissao" required options={profissoes} />
-            <div className={styles.conselho}>
-              <Select label="Conselho" name="conselho" required options={conselhos} />
-              <TextField floating label="Número do registro e UF" name="registro" required hint="Ex.: 00000 / MG. Conferimos o registro antes de confirmar a vaga." />
-            </div>
-            <div className={styles.checks}>
-              <div>
-                <Checkbox name="privacidade" required label="Li e aceito a Política de Privacidade. *" />
-                {erro && <p className={`ap-hint ap-hint-error ${styles.checkError}`}>Marque esta opção para enviar a inscrição.</p>}
-              </div>
-              <Checkbox name="avisos" label="Quero receber avisos de novas turmas por e-mail." hint="Opcional. Você pode cancelar quando quiser." />
-            </div>
+          {/* Armadilha para robôs: fora da tela, sem foco e sem leitura por leitor de tela. Pessoas não preenchem. */}
+          <div className={styles.armadilha} aria-hidden="true">
+            <label>
+              Não preencha este campo
+              <input type="text" name={CAMPO_ARMADILHA} tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
+
+          <TextField floating label="Nome completo" name="nome" autoComplete="name" required defaultValue={v.nome} error={erros.nome} />
+          <div className={styles.pair}>
+            <TextField floating label="E-mail" type="email" name="email" autoComplete="email" required defaultValue={v.email} error={erros.email} />
+            <TextField floating label="Telefone ou WhatsApp" type="tel" name="telefone" autoComplete="tel" required defaultValue={v.telefone} error={erros.telefone} />
+          </div>
+          <Select label="Profissão" name="profissao" required options={profissoes} defaultValue={v.profissao ?? ""} error={erros.profissao} />
+          <div className={styles.conselho}>
+            <Select label="Conselho" name="conselho" required options={conselhos} defaultValue={v.conselho ?? ""} error={erros.conselho} />
+            <TextField
+              floating
+              label="Número do registro e UF"
+              name="registro"
+              required
+              defaultValue={v.registro}
+              error={erros.registro}
+              hint="Ex.: 00000 / MG. Conferimos o registro antes de confirmar a vaga."
+            />
+          </div>
+          <div className={styles.checks}>
             <div>
-              <Button type="submit" size="lg" arrow>
-                {espera ? "Entrar na lista de espera" : "Enviar inscrição"}
-              </Button>
+              <Checkbox name="privacidade" required label="Li e aceito a Política de Privacidade. *" defaultChecked={v.privacidade === "on"} />
+              {erros.privacidade && <p className={`ap-hint ap-hint-error ${styles.checkError}`}>{erros.privacidade}</p>}
             </div>
-          </form>
-        </Reveal>
-      )}
-
-      {estado === "enviada" && (
-        <div className={`${styles.card} ${styles.sent}`}>
-          <Logo variant="vertical" animated width={200} />
-          <Alert tone="success" title="Inscrição recebida">
-            Enviamos os próximos passos para o seu e-mail. Se não encontrar a mensagem, confira a caixa de spam.
-          </Alert>
-          <Button variant="secondary" href="/agenda">
-            Ver outras turmas
-          </Button>
-        </div>
-      )}
+            <Checkbox name="avisos" label="Quero receber avisos de novas turmas por e-mail." hint="Opcional. Você pode cancelar quando quiser." defaultChecked={v.avisos === "on"} />
+          </div>
+          <div>
+            <Button type="submit" size="lg" arrow disabled={pendente}>
+              {pendente ? "Enviando…" : esgotada ? "Entrar na lista de espera" : "Enviar inscrição"}
+            </Button>
+          </div>
+        </form>
+      </Reveal>
     </Stack>
   );
 }

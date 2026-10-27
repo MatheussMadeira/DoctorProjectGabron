@@ -20,3 +20,4 @@ export * from "./TurmaForm";
 export * from "./FotoDialog";
 export * from "./ExcluirTurmaDialog";
 export * from "./ConfiguracoesForms";
+export * from "./InscricoesAdmin";

@@ -9,6 +9,7 @@ import { duracaoPorExtenso, formatPeriodo } from "@/lib/datas";
 import { SITE } from "@/lib/site";
 import { listarSlugs, obterTurma, type Turma } from "@/lib/turmas";
 import { cidadeSemUF } from "@/lib/turmas-view";
+import { inscrever } from "./acoes";
 import styles from "../../paginas.module.css";
 
 /** Slug que nunca existe. Com cacheComponents o Next exige ao menos um parâmetro no build; num banco ainda vazio
@@ -211,7 +212,8 @@ function Inscricao({ turma, periodo }: { turma: Turma; periodo: string }) {
   }
   return (
     <InscricaoForm
-      estado={turma.status === "esgotado" ? "esgotada" : "normal"}
+      acao={inscrever.bind(null, turma.slug)}
+      esgotada={turma.status === "esgotado"}
       eyebrow={`${periodo} · ${cidadeSemUF(turma.cidade)}`}
       profissoes={PROFISSOES}
       conselhos={CONSELHOS}

@@ -1,39 +1,88 @@
 /* Cria o primeiro usuário ADMIN (a Dra.). Não existe cadastro público: este script é o único jeito de criar o primeiro.
    Uso: yarn admin:criar          (pergunta nome, e-mail e senha; a senha não aparece na tela)
-   Sem terminal interativo, use as variáveis ADMIN_NOME, ADMIN_EMAIL e ADMIN_SENHA. */
-import { Writable } from "node:stream";
-import { createInterface } from "node:readline/promises";
+   Sem terminal interativo, use as variáveis ADMIN_NOME, ADMIN_EMAIL e ADMIN_SENHA,
+   ou entregue as linhas pela entrada padrão (nome, e-mail, senha, repetição). */
+import { createInterface } from "node:readline";
+import { createInterface as createInterfacePromises } from "node:readline/promises";
 import { eq } from "drizzle-orm";
 import { db, pool } from "../db";
 import { usuarios } from "../db/schema";
 import { normalizarEmail } from "../lib/login";
 import { gerarHash, validarSenha } from "../lib/senha";
 
-let escondido = false;
-const saida = new Writable({
-  write(chunk, _enc, cb) {
-    if (!escondido) process.stdout.write(chunk);
-    cb();
-  },
-});
-const rl = createInterface({ input: process.stdin, output: saida, terminal: !!process.stdin.isTTY });
+const comTerminal = !!process.stdin.isTTY && !!process.stdout.isTTY;
 
-async function perguntar(texto: string, esconder = false) {
-  process.stdout.write(texto);
-  escondido = esconder;
-  const resposta = await rl.question("");
-  escondido = false;
-  if (esconder) process.stdout.write("\n");
+/** Sem terminal (entrada redirecionada): um único leitor de linhas, para não perder linhas já recebidas. */
+let linhas: AsyncIterator<string> | undefined;
+async function proximaLinha(): Promise<string> {
+  linhas ??= createInterface({ input: process.stdin })[Symbol.asyncIterator]();
+  const { value } = await linhas.next();
+  return String(value ?? "").trim();
+}
+
+async function perguntar(texto: string): Promise<string> {
+  if (!comTerminal) {
+    process.stdout.write(texto);
+    return proximaLinha();
+  }
+  // O texto vai dentro de question(): no terminal o readline redesenha a linha ao começar, e um texto escrito
+  // antes por process.stdout.write seria apagado (a pergunta sumia e o script parecia travado).
+  const rl = createInterfacePromises({ input: process.stdin, output: process.stdout });
+  const resposta = await rl.question(texto);
+  rl.close();
   return resposta.trim();
 }
 
+/** Lê a senha sem mostrar nada na tela (modo "raw" do terminal). Backspace apaga; Ctrl+C cancela. */
+async function perguntarSenha(texto: string): Promise<string> {
+  process.stdout.write(texto);
+  if (!comTerminal) return proximaLinha();
+  return new Promise((resolve) => {
+    const entrada = process.stdin;
+    let digitado = "";
+    const terminar = (valor: string) => {
+      entrada.off("data", aoReceber);
+      entrada.setRawMode(false);
+      entrada.pause();
+      process.stdout.write("\n");
+      resolve(valor);
+    };
+    const aoReceber = (dados: string) => {
+      for (const c of dados) {
+        if (c === "\r" || c === "\n" || c === "\u0004") return terminar(digitado);
+        if (c === "\u0003") {
+          process.stdout.write("\n");
+          process.exit(130);
+        }
+        if (c === "\u007f" || c === "\b") digitado = digitado.slice(0, -1);
+        else if (c >= " ") digitado += c;
+      }
+    };
+    entrada.setEncoding("utf8");
+    entrada.setRawMode(true);
+    entrada.resume();
+    entrada.on("data", aoReceber);
+  });
+}
+
+/** Mostra em qual banco o ADMIN vai ser criado (só o host, nunca usuário ou senha). */
+function bancoDeDestino() {
+  try {
+    const u = new URL(process.env.DATABASE_URL ?? "");
+    return `${u.hostname}${u.pathname}`;
+  } catch {
+    return "(DATABASE_URL inválida)";
+  }
+}
+
 async function main() {
-  const interativo = !!process.stdin.isTTY && !process.env.ADMIN_SENHA;
+  console.log(`Banco de destino: ${bancoDeDestino()}`);
   const nome = process.env.ADMIN_NOME ?? (await perguntar("Nome: "));
   const email = normalizarEmail(process.env.ADMIN_EMAIL ?? (await perguntar("E-mail: ")));
-  const senha = process.env.ADMIN_SENHA ?? (await perguntar("Senha (mínimo 12 caracteres): ", true));
-  if (interativo) {
-    const repetida = await perguntar("Repita a senha: ", true);
+  const deAmbiente = process.env.ADMIN_SENHA !== undefined;
+  const senha = process.env.ADMIN_SENHA ?? (await perguntarSenha("Senha (mínimo 12 caracteres): "));
+  if (!deAmbiente) {
+    const repetida = await perguntarSenha("Repita a senha: ");
     if (repetida !== senha) throw new Error("As senhas não conferem.");
   }
 
@@ -55,6 +104,6 @@ main()
     process.exitCode = 1;
   })
   .finally(async () => {
-    rl.close();
+    process.stdin.pause();
     await pool.end();
   });

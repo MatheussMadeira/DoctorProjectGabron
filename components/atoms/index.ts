@@ -6,7 +6,6 @@ export * from "./Photo";
 export * from "./Logo";
 export * from "./PedrasFundo";
 export * from "./Button";
-export * from "./ThemeToggle";
 export * from "./WhatsAppButton";
 export * from "./Badge";
 export * from "./DateBlock";

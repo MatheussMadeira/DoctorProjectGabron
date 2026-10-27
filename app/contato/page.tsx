@@ -7,6 +7,7 @@ import { ContatoForm, Hero } from "@/components/organisms";
 import { MainAside, PublicTemplate, Section } from "@/components/templates";
 import { ASSUNTOS_CONTATO } from "@/lib/dados-exemplo";
 import { SITE } from "@/lib/site";
+import { enviarContato } from "./acoes";
 import styles from "../paginas.module.css";
 
 export const metadata: Metadata = {
@@ -33,7 +34,7 @@ export default function ContatoPage() {
           asideBasis={320}
           main={
             <Reveal>
-              <ContatoForm assuntos={ASSUNTOS_CONTATO} />
+              <ContatoForm assuntos={ASSUNTOS_CONTATO} acao={enviarContato} />
             </Reveal>
           }
           aside={
