@@ -11,8 +11,13 @@ import { listarSlugs, obterTurma, type Turma } from "@/lib/turmas";
 import { cidadeSemUF } from "@/lib/turmas-view";
 import styles from "../../paginas.module.css";
 
+/** Slug que nunca existe. Com cacheComponents o Next exige ao menos um parâmetro no build; num banco ainda vazio
+    (produção antes da primeira turma) a lista de slugs é vazia, e este valor evita a falha. A página responde 404. */
+const SLUG_DE_RESERVA = "__reserva__";
+
 export async function generateStaticParams() {
-  return (await listarSlugs()).map((slug) => ({ slug }));
+  const slugs = await listarSlugs();
+  return (slugs.length ? slugs : [SLUG_DE_RESERVA]).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/agenda/[slug]">): Promise<Metadata> {
