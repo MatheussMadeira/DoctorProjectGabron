@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Material de referência (specs, telas e design system em JSX), não faz parte do app.
+    "site-dra-ana-paula/**",
   ]),
 ]);
 

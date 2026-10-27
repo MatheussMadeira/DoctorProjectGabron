@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Agenda de cursos (sem datas) — Dra. Ana Paula Fonseca</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ap-tokens.css">
+<link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
+<script src="ds/apfonseca/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface)}
+a{color:var(--ink)}a:hover{color:var(--ink-muted)}
+</style>
+</helmet>
+<div data-theme="{{theme}}" style="min-height: 100vh; background: var(--surface); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 26px;">
+
+<x-import component-from-global-scope="ApFonseca.Header" links="{{navLinks}}" current="/agenda" cta="{{headerCta}}" theme="{{theme}}" on-theme-change="{{setTheme}}"></x-import>
+
+<main>
+<x-import component-from-global-scope="ApFonseca.Section" id="agenda" background="surface">
+<div style="max-width: 960px; display: flex; flex-direction: column; gap: var(--space-7);">
+<x-import component-from-global-scope="ApFonseca.Reveal">
+<x-import component-from-global-scope="ApFonseca.SectionHeading" as="h1" eyebrow="Toxina botulínica" title="Agenda de cursos" lead="Turmas para médicos, dentistas, biomédicos e outros profissionais da saúde. Escolha uma data para ver a programação e fazer sua inscrição."></x-import>
+</x-import>
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="120">
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-5); padding: var(--space-7) var(--space-6); background: var(--surface-raised); box-shadow: var(--shadow-sm);">
+<x-import component-from-global-scope="ApFonseca.Logo" variant="simbolo" width="{{symbolWidth}}"></x-import>
+<x-import component-from-global-scope="ApFonseca.AgendaList" events="{{events}}" filter-by="modality" all-label="Todas" empty-text="Nenhuma turma com data aberta no momento. Novas turmas aparecem aqui assim que forem cadastradas."></x-import>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-3);">
+<x-import component-from-global-scope="ApFonseca.Button" href="/contato" arrow="{{yes}}">Quero ser avisado</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" variant="secondary" href="/">Voltar ao início</x-import>
+</div>
+</div>
+</x-import>
+</div>
+</x-import>
+</main>
+
+<x-import component-from-global-scope="ApFonseca.Footer" phone="+55 31 0000-0000" email="contato@dominio.com.br" instagram="@perfil" address="Endereço da clínica, Belo Horizonte — MG" links="{{footerLinks}}" legal="© 2026 Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG 00000 · RQE 00000"></x-import>
+
+<x-import component-from-global-scope="ApFonseca.WhatsAppButton" phone="5531000000000" message="Olá! Gostaria de saber mais sobre as próximas turmas." label="Fale conosco no WhatsApp"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["claro","escuro"],"default":"claro"},"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = (this.state && this.state.theme) || this.props.theme || 'claro';
+    const nav = [
+      { label: 'Início', href: '/' },
+      { label: 'Sobre a Dra.', href: '/sobre' },
+      { label: 'Clínica', href: '/clinica' },
+      { label: 'Agenda de cursos', href: '/agenda' },
+      { label: 'Contato', href: '/contato' }
+    ];
+    return {
+      yes: true,
+      symbolWidth: 48,
+      theme: theme,
+      setTheme: (t) => this.setState({ theme: t }),
+      navLinks: nav,
+      footerLinks: nav.slice(1),
+      headerCta: { label: 'Próximas turmas', href: '#agenda' },
+      events: []
+    };
+  }
+}
+</script>
+</body>
+</html>

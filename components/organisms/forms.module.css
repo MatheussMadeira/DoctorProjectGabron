@@ -1,0 +1,32 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-7) var(--space-6);
+}
+.form { display: flex; flex-direction: column; gap: var(--space-5); }
+
+.pair { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+.pair > * { flex: 1 1 240px; min-width: 0; }
+
+.conselho { display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: flex-end; }
+.conselho > :first-child { flex: 1 1 180px; min-width: 0; }
+.conselho > :last-child { flex: 2 1 280px; min-width: 0; }
+
+.checks { display: flex; flex-direction: column; gap: var(--space-3); padding-top: var(--space-2); }
+.checkError { margin: 0 0 0 32px; }
+
+.head { display: flex; flex-direction: column; gap: var(--space-2); }
+.heading { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 42px; letter-spacing: 0.05em; text-transform: uppercase; }
+.muted { margin: 0; color: var(--ink-muted); }
+
+.sent { display: flex; flex-direction: column; align-items: center; gap: var(--space-6); padding: var(--space-8) var(--space-6); }
+.sent > :global(.ap-alert) { align-self: stretch; }
+.replied { display: flex; flex-direction: column; gap: var(--space-5); align-items: flex-start; }
+
+@media (max-width: 767px) {
+  .card { padding: var(--space-6) var(--space-4); }
+  .heading { font-size: 26px; line-height: 34px; }
+}

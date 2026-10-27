@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Início (celular) — Dra. Ana Paula Fonseca</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ap-tokens.css">
+<link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
+<script src="ds/apfonseca/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface)}
+a{color:var(--ink)}a:hover{color:var(--ink-muted)}
+</style>
+</helmet>
+<div data-theme="{{theme}}" style="min-height: 100vh; background: var(--surface); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 26px;">
+
+<x-import component-from-global-scope="ApFonseca.Header" links="{{navLinks}}" current="/" cta="{{headerCta}}" theme="{{theme}}" on-theme-change="{{setTheme}}"></x-import>
+
+<main>
+
+<x-import component-from-global-scope="ApFonseca.Hero" eyebrow="Médica Fisiatra" title="Movimento com equilíbrio" lead="Medicina física e reabilitação em Belo Horizonte, e turmas de toxina botulínica para médicos, dentistas, biomédicos e outros profissionais da saúde." primary="{{heroPrimary}}" secondary="{{heroSecondary}}" image="/images/retrato-dra-ana-paula.webp" image-alt="Retrato da Dra. Ana Paula Fonseca"></x-import>
+
+<x-import component-from-global-scope="ApFonseca.Section" id="clinica" background="surface">
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-7); align-items: center;">
+<div style="flex: 1 1 440px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-6);">
+<x-import component-from-global-scope="ApFonseca.Reveal">
+<x-import component-from-global-scope="ApFonseca.SectionHeading" number="01" eyebrow="A clínica" title="Fisiatria" lead="A fisiatria é a especialidade médica que cuida da função e do movimento: dor, limitações e reabilitação, com tratamento conservador e um plano feito para cada pessoa."></x-import>
+</x-import>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;">
+<x-import component-from-global-scope="ApFonseca.Reveal" as="li" delay="0">
+<div style="display: flex; gap: var(--space-4); padding: var(--space-5) 0; border-top: 1px solid var(--line);">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 4px; color: var(--accent-ink);"><rect x="8" y="2" width="8" height="4" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg>
+<div style="display: flex; flex-direction: column; gap: var(--space-1);">
+<h3 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em; color: var(--ink);">Avaliação completa</h3>
+<p style="margin: 0; color: var(--ink-muted);">Consulta sem pressa, com exame físico e revisão dos exames que você já tem, para entender a dor e o que ela limita no seu dia.</p>
+</div>
+</div>
+</x-import>
+<x-import component-from-global-scope="ApFonseca.Reveal" as="li" delay="120">
+<div style="display: flex; gap: var(--space-4); padding: var(--space-5) 0; border-top: 1px solid var(--line);">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 4px; color: var(--accent-ink);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+<div style="display: flex; flex-direction: column; gap: var(--space-1);">
+<h3 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em; color: var(--ink);">Plano individual</h3>
+<p style="margin: 0; color: var(--ink-muted);">Tratamento conservador que pode combinar medicação, procedimentos e orientação de exercícios, conforme a indicação de cada caso.</p>
+</div>
+</div>
+</x-import>
+<x-import component-from-global-scope="ApFonseca.Reveal" as="li" delay="240">
+<div style="display: flex; gap: var(--space-4); padding: var(--space-5) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 4px; color: var(--accent-ink);"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+<div style="display: flex; flex-direction: column; gap: var(--space-1);">
+<h3 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em; color: var(--ink);">Acompanhamento próximo</h3>
+<p style="margin: 0; color: var(--ink-muted);">Retornos para ajustar o plano e conversa com fisioterapeutas e outros profissionais que cuidam de você.</p>
+</div>
+</div>
+</x-import>
+</ul>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.Button" variant="secondary" href="/contato" arrow="{{yes}}" full="{{yes}}">Agendar consulta</x-import>
+<span style="font-size: 14px; line-height: 22px; color: var(--ink-muted);">Endereço da clínica, Belo Horizonte — MG</span>
+</div>
+</div>
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="120" style="flex: 1 1 400px; min-width: 0;">
+<figure style="margin: 0; aspect-ratio: 4 / 5; overflow: hidden; box-shadow: var(--shadow-md);">
+<img src="/images/boneco-articulado.webp" alt="Boneco articulado de madeira em pose de movimento" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+</figure>
+</x-import>
+</div>
+</x-import>
+
+<x-import component-from-global-scope="ApFonseca.Section" id="turmas" background="sunken">
+<div style="display: flex; flex-direction: column; gap: var(--space-6);">
+<x-import component-from-global-scope="ApFonseca.Reveal">
+<x-import component-from-global-scope="ApFonseca.SectionHeading" number="02" eyebrow="Agenda de cursos" title="Próximas turmas" lead="Formação em toxina botulínica para profissionais da saúde. Veja datas, local e programação, e faça sua inscrição."></x-import>
+</x-import>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="0">
+<x-import component-from-global-scope="ApFonseca.EventCard" title="Toxina botulínica — módulo essencial" href="/agenda/modulo-essencial-nov-2026" start="2026-11-21" end="2026-11-22" time="8h às 18h" city="Belo Horizonte, MG" seats="12 vagas" price="R$ 0.000" status="aberto" summary="Fundamentos, anatomia aplicada e prática supervisionada." image="/images/maos.webp" image-alt="Mãos em luvas preparando uma aplicação"></x-import>
+</x-import>
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="120">
+<x-import component-from-global-scope="ApFonseca.EventCard" title="Aplicação avançada e intercorrências" href="/agenda/avancado-dez-2026" start="2026-12-05" time="8h às 17h" city="Belo Horizonte, MG" seats="3 vagas restantes" price="R$ 0.000" status="ultimas" summary="Para quem já aplica e quer aprofundar a conduta em intercorrências." image="/images/luvas.webp" image-alt="Luvas cirúrgicas sobre bancada"></x-import>
+</x-import>
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="240">
+<x-import component-from-global-scope="ApFonseca.EventCard" title="Toxina botulínica — módulo essencial" href="/agenda/modulo-essencial-dez-2026" start="2026-12-12" end="2026-12-13" time="Horário a definir" city="Belo Horizonte, MG" seats="Vagas a definir" price="R$ 0.000" status="em-breve" summary="Nova turma do módulo essencial. Inscrições abrem em breve." image="/images/anatomia-quadril.webp" image-alt="Modelo anatômico do quadril"></x-import>
+</x-import>
+</div>
+<div style="display: flex; justify-content: flex-start;">
+<x-import component-from-global-scope="ApFonseca.Button" variant="link" href="/agenda" arrow="{{yes}}">Ver agenda completa</x-import>
+</div>
+</div>
+</x-import>
+
+<x-import component-from-global-scope="ApFonseca.Section" id="sobre" background="surface">
+<x-import component-from-global-scope="ApFonseca.Reveal">
+<x-import component-from-global-scope="ApFonseca.AboutDoctor" photo="/images/retrato-dra-ana-paula.webp" photo-alt="Dra. Ana Paula Fonseca" name="Dra. Ana Paula Fonseca" role="Médica Fisiatra" registry="CRM-MG 00000 · RQE 00000" bio="Texto de apresentação da Dra. Ana Paula Fonseca: formação, trajetória em fisiatria e como chegou ao ensino da toxina botulínica." credentials="{{credentials}}" action="{{aboutAction}}"></x-import>
+</x-import>
+</x-import>
+
+<x-import component-from-global-scope="ApFonseca.Section" theme="escuro" background="surface">
+<div style="display: flex; flex-direction: column; gap: var(--space-6);">
+<x-import component-from-global-scope="ApFonseca.Reveal">
+<x-import component-from-global-scope="ApFonseca.SectionHeading" align="center" eyebrow="Trajetória" title="Em números"></x-import>
+</x-import>
+<x-import component-from-global-scope="ApFonseca.Stats" items="{{stats}}"></x-import>
+</div>
+</x-import>
+
+<x-import component-from-global-scope="ApFonseca.Section" id="depoimentos" background="sunken">
+<div style="display: flex; flex-direction: column; gap: var(--space-6);">
+<x-import component-from-global-scope="ApFonseca.Reveal">
+<x-import component-from-global-scope="ApFonseca.SectionHeading" number="03" eyebrow="Depoimentos" title="Quem já fez a formação"></x-import>
+</x-import>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="0">
+<x-import component-from-global-scope="ApFonseca.Testimonial" quote="Texto do depoimento, autorizado por escrito. Fala da formação, da didática e do acompanhamento durante a prática." name="Nome da aluna" role="Profissão · Cidade"></x-import>
+</x-import>
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="120">
+<x-import component-from-global-scope="ApFonseca.Testimonial" quote="Texto do depoimento, autorizado por escrito. Conta como foi a turma e o que mudou na rotina de trabalho." name="Nome do aluno" role="Profissão · Cidade"></x-import>
+</x-import>
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="240">
+<x-import component-from-global-scope="ApFonseca.Testimonial" quote="Texto do depoimento, autorizado por escrito. Comenta a organização do curso e o suporte depois das aulas." name="Nome da aluna" role="Profissão · Cidade"></x-import>
+</x-import>
+</div>
+</div>
+</x-import>
+
+<x-import component-from-global-scope="ApFonseca.Section" background="surface">
+<x-import component-from-global-scope="ApFonseca.Reveal">
+<x-import component-from-global-scope="ApFonseca.CTABand" eyebrow="Próxima turma · Inscrições abertas" title="Módulo essencial · 21 e 22 de novembro" text="Dois dias de formação em Belo Horizonte, MG. Veja a programação completa e garanta sua vaga." action="{{ctaAction}}"></x-import>
+</x-import>
+</x-import>
+
+</main>
+
+<x-import component-from-global-scope="ApFonseca.Footer" phone="+55 31 0000-0000" email="contato@dominio.com.br" instagram="@perfil" address="Endereço da clínica, Belo Horizonte — MG" links="{{footerLinks}}" legal="© 2026 Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG 00000 · RQE 00000"></x-import>
+
+<x-import component-from-global-scope="ApFonseca.WhatsAppButton" phone="5531000000000" message="Olá! Gostaria de saber mais sobre as próximas turmas." label="Fale conosco no WhatsApp"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["claro","escuro"],"default":"claro"},"$preview":{"width":390,"height":9900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = (this.state && this.state.theme) || this.props.theme || 'claro';
+    const nav = [
+      { label: 'Início', href: '/' },
+      { label: 'Sobre a Dra.', href: '/sobre' },
+      { label: 'Clínica', href: '/clinica' },
+      { label: 'Agenda de cursos', href: '/agenda' },
+      { label: 'Contato', href: '/contato' }
+    ];
+    return {
+      yes: true,
+      theme: theme,
+      setTheme: (t) => this.setState({ theme: t }),
+      navLinks: nav,
+      footerLinks: nav.slice(1),
+      headerCta: { label: 'Próximas turmas', href: '#turmas' },
+      heroPrimary: { label: 'Ver agenda de cursos', href: '/agenda' },
+      heroSecondary: { label: 'Conheça a Dra.', href: '#sobre' },
+      credentials: [
+        'Especialista em Medicina Física e Reabilitação — instituição a confirmar',
+        'Título ou formação complementar',
+        'Sociedade ou associação de que faz parte'
+      ],
+      aboutAction: { label: 'Conheça a Dra.', href: '/sobre' },
+      stats: [
+        { value: '00', label: 'Anos de experiência' },
+        { value: '00', label: 'Turmas realizadas' },
+        { value: '00', label: 'Profissionais formados' },
+        { value: '00', label: 'Horas de prática por turma' }
+      ],
+      ctaAction: { label: 'Garantir minha vaga', href: '/agenda/modulo-essencial-nov-2026' }
+    };
+  }
+}
+</script>
+</body>
+</html>

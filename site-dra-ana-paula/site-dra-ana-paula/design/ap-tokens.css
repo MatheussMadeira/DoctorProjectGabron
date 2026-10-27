@@ -1,0 +1,55 @@
+/* Variáveis CSS geradas a partir de ds/apfonseca/tokens.json (Dra. Ana Paula Fonseca). Tema claro no :root; [data-theme] força o tema num trecho. */
+:root {
+  --font-display: "Marcellus", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Source Sans 3", "Source Sans Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --brand-creme: #f5ebdf; --brand-azul-claro: #9bacbe; --brand-azul-escuro: #28334f; --brand-azul-pedra: #4a5872;
+  --brand-azul-noite: #1f2840; --brand-creme-claro: #fbf6ef; --brand-areia: #ede1d1;
+
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+  --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px; --space-10: 128px;
+
+  --radius-none: 0; --radius-control: 2px; --radius-app-icon: 22%; --radius-full: 9999px;
+
+  --duration-fast: 160ms; --duration-base: 280ms; --duration-slow: 700ms;
+  --duration-intro: 1400ms; --duration-count: 1600ms; --duration-float: 9s;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); --ease-settle: cubic-bezier(0.2, 0.9, 0.25, 1);
+
+  --container: 1200px; --container-narrow: 760px; --header-height: 84px; --control-height: 48px; --logo-min-width: 120px;
+  --z-header: 50; --z-float: 60; --z-overlay: 80;
+}
+
+:root, [data-theme="claro"] {
+  --surface: #f5ebdf; --surface-raised: #fbf6ef; --surface-sunken: #ede1d1; --surface-inverse: #28334f;
+  --ink: #28334f; --ink-muted: #4a5872; --ink-inverse: #f5ebdf;
+  --accent: #9bacbe; --accent-ink: #4a5872;
+  --line: #ddd0bf; --line-strong: #737e94;
+  --action: #28334f; --action-hover: #1f2840; --on-action: #f5ebdf; --link: #28334f;
+  --logo-ink: #28334f; --logo-stone: #9bacbe;
+  --success: #2f6b4f; --success-soft: #dcebe1; --warning: #8a5a14; --warning-soft: #f3e3c4; --danger: #a33a3a; --danger-soft: #f4dcd8;
+  --pedra: #ede1d1; --overlay: #1f2840b3;
+  --shadow-sm: 0 1px 2px #28334f0f, 0 2px 6px #28334f0f;
+  --shadow-md: 0 4px 12px #28334f14, 0 12px 32px -8px #28334f24;
+  --shadow-lg: 0 12px 24px -6px #28334f1f, 0 32px 64px -16px #28334f33;
+  --focus-ring: 0 0 0 2px #f5ebdf, 0 0 0 4px #28334f;
+}
+
+[data-theme="escuro"] {
+  --surface: #28334f; --surface-raised: #313d5b; --surface-sunken: #1f2840; --surface-inverse: #f5ebdf;
+  --ink: #f5ebdf; --ink-muted: #b4c1d0; --ink-inverse: #28334f;
+  --accent: #9bacbe; --accent-ink: #9bacbe;
+  --line: #3d4a69; --line-strong: #8792a8;
+  --action: #f5ebdf; --action-hover: #fbf6ef; --on-action: #28334f; --link: #f5ebdf;
+  --logo-ink: #f5ebdf; --logo-stone: #9bacbe;
+  --success: #8fc7a8; --success-soft: #23423a; --warning: #e8c37a; --warning-soft: #4a3d22; --danger: #f0a5a0; --danger-soft: #4a2a33;
+  --pedra: #4a5872; --overlay: #0f1424cc;
+  --shadow-sm: 0 1px 2px #00000066, 0 2px 6px #00000040;
+  --shadow-md: 0 4px 12px #00000059, 0 12px 32px -8px #00000080;
+  --shadow-lg: 0 12px 24px -6px #00000080, 0 32px 64px -16px #000000a6;
+  --focus-ring: 0 0 0 2px #28334f, 0 0 0 4px #f5ebdf;
+}
+
+/* Página da turma: no celular a barra fixa de inscrição ocupa o rodapé da tela; o WhatsApp sobe para não ficar por cima dela. */
+@media (max-width: 1023px) {
+  .ap-com-barra .ap-wa-float { bottom: 96px; }
+}

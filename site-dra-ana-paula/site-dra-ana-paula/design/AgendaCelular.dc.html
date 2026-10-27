@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Agenda de cursos (celular) — Dra. Ana Paula Fonseca</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ap-tokens.css">
+<link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
+<script src="ds/apfonseca/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface)}
+a{color:var(--ink)}a:hover{color:var(--ink-muted)}
+</style>
+</helmet>
+<div data-theme="{{theme}}" style="min-height: 100vh; background: var(--surface); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 26px;">
+
+<x-import component-from-global-scope="ApFonseca.Header" links="{{navLinks}}" current="/agenda" cta="{{headerCta}}" theme="{{theme}}" on-theme-change="{{setTheme}}"></x-import>
+
+<main>
+<x-import component-from-global-scope="ApFonseca.Section" id="agenda" background="surface">
+<div style="max-width: 960px; display: flex; flex-direction: column; gap: var(--space-6);">
+<x-import component-from-global-scope="ApFonseca.Reveal">
+<x-import component-from-global-scope="ApFonseca.SectionHeading" as="h1" eyebrow="Toxina botulínica" title="Agenda de cursos" lead="Turmas para médicos, dentistas, biomédicos e outros profissionais da saúde. Escolha uma data para ver a programação e fazer sua inscrição."></x-import>
+</x-import>
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="120">
+<div style="overflow-x: auto;">
+<x-import component-from-global-scope="ApFonseca.AgendaList" events="{{events}}" filter-by="modality" all-label="Todas" empty-text="Nenhuma data com este filtro. Novas turmas aparecem aqui assim que forem abertas."></x-import>
+</div>
+</x-import>
+<div style="display: flex; flex-direction: column; gap: var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--line);">
+<div style="display: flex; flex-direction: column; gap: var(--space-1);">
+<h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em; color: var(--ink);">Não encontrou uma data?</h2>
+<p style="margin: 0; color: var(--ink-muted);">Fale com a equipe para saber das próximas turmas ou organizar uma turma para o seu grupo.</p>
+</div>
+<x-import component-from-global-scope="ApFonseca.Button" variant="secondary" href="/contato" arrow="{{yes}}" full="{{yes}}">Entrar em contato</x-import>
+</div>
+</div>
+</x-import>
+</main>
+
+<x-import component-from-global-scope="ApFonseca.Footer" phone="+55 31 0000-0000" email="contato@dominio.com.br" instagram="@perfil" address="Endereço da clínica, Belo Horizonte — MG" links="{{footerLinks}}" legal="© 2026 Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG 00000 · RQE 00000"></x-import>
+
+<x-import component-from-global-scope="ApFonseca.WhatsAppButton" phone="5531000000000" message="Olá! Gostaria de saber mais sobre as próximas turmas." label="Fale conosco no WhatsApp"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["claro","escuro"],"default":"claro"},"$preview":{"width":390,"height":3200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = (this.state && this.state.theme) || this.props.theme || 'claro';
+    const nav = [
+      { label: 'Início', href: '/' },
+      { label: 'Sobre a Dra.', href: '/sobre' },
+      { label: 'Clínica', href: '/clinica' },
+      { label: 'Agenda de cursos', href: '/agenda' },
+      { label: 'Contato', href: '/contato' }
+    ];
+    return {
+      yes: true,
+      theme: theme,
+      setTheme: (t) => this.setState({ theme: t }),
+      navLinks: nav,
+      footerLinks: nav.slice(1),
+      headerCta: { label: 'Próximas turmas', href: '#agenda' },
+      events: [
+        { id: 1, title: 'Anatomia aplicada à toxina', start: '2026-10-08', time: '19h às 22h', city: 'Ao vivo', modality: 'Online', status: 'encerrado', href: '/agenda/anatomia-out-2026' },
+        { id: 2, title: 'Planejamento e marcação de pontos', start: '2026-10-30', time: '19h às 22h', city: 'Ao vivo', modality: 'Online', status: 'aberto', href: '/agenda/planejamento-out-2026' },
+        { id: 3, title: 'Toxina botulínica — módulo essencial', start: '2026-11-21', end: '2026-11-22', time: '8h às 18h', venue: 'Local a definir', city: 'Belo Horizonte, MG', modality: 'Presencial', status: 'aberto', href: '/agenda/modulo-essencial-nov-2026' },
+        { id: 4, title: 'Anatomia aplicada à toxina', start: '2026-11-28', time: '19h às 22h', city: 'Ao vivo', modality: 'Online', status: 'esgotado', href: '/agenda/anatomia-nov-2026' },
+        { id: 5, title: 'Aplicação avançada e intercorrências', start: '2026-12-05', time: '8h às 17h', venue: 'Local a definir', city: 'Belo Horizonte, MG', modality: 'Presencial', status: 'ultimas', href: '/agenda/avancado-dez-2026' },
+        { id: 6, title: 'Toxina botulínica — módulo essencial', start: '2026-12-12', end: '2026-12-13', time: 'Horário a definir', city: 'Belo Horizonte, MG', modality: 'Presencial', status: 'em-breve', href: '/agenda/modulo-essencial-dez-2026' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+/* Ajustes sobre o bundle.css do design system. */
+
+/* O next/image grava width/height no <img>; sem altura no CSS, o `height` do atributo vence o `aspect-ratio`. */
+.ap-about-media img { height: auto; }
+
+/* `overflow: hidden` na seção cria um contêiner de rolagem e impede o `position: sticky` do resumo da turma.
+   `clip` corta do mesmo jeito (as pedras de fundo continuam contidas) sem criar esse contêiner. */
+.ap-section { overflow: clip; }
+
+/* "21–22" no resumo da turma não pode quebrar depois do traço. */
+.ap-date-day { white-space: nowrap; }
+
+/* O painel ocupa a altura toda da janela mesmo com pouco conteúdo (a barra lateral não pode terminar no meio da tela). */
+.ap-admin { min-height: 100vh; }
+
+/* `1fr` não deixa a coluna encolher abaixo do conteúdo: uma tabela larga empurrava o painel para fora da tela no celular. */
+.ap-admin { grid-template-columns: 248px minmax(0, 1fr); }
+@media (max-width: 1023px) { .ap-admin { grid-template-columns: minmax(0, 1fr); } }

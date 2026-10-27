@@ -1,0 +1,12 @@
+/* SplitLayout */
+.split { display: flex; flex-wrap: wrap; gap: var(--space-8); align-items: center; }
+.start { align-items: flex-start; }
+.reverse { flex-wrap: wrap-reverse; }
+.col { flex: 1 1 var(--basis); min-width: 0; }
+
+/* MainAside */
+.mainAside { display: flex; flex-wrap: wrap; gap: var(--space-8); align-items: flex-start; }
+.main { flex: var(--main-grow, 1) 1 var(--main-basis); min-width: 0; }
+.aside { flex: var(--aside-grow, 1) 1 var(--aside-basis); min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+/* A lateral que acompanha a rolagem não cresce. O header fixo tem --header-height; deixa 24px de respiro. */
+.sticky { --aside-grow: 0; position: sticky; top: calc(var(--header-height, 84px) + var(--space-5)); }

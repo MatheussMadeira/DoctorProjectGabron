@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Inscrição na turma — Dra. Ana Paula Fonseca</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ap-tokens.css">
+<link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
+<script src="ds/apfonseca/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="font-family: var(--font-sans); color: var(--ink); background: var(--surface-sunken); font-size: 16px; line-height: 26px;">
+<x-import component-from-global-scope="ApFonseca.Section" id="inscricao" background="sunken" narrow="{{yes}}">
+<div style="display: flex; flex-direction: column; gap: var(--space-7);">
+
+<sc-if value="{{isWaitlist}}" hint-placeholder-val="{{no}}">
+<x-import component-from-global-scope="ApFonseca.Reveal">
+<x-import component-from-global-scope="ApFonseca.SectionHeading" number="07" eyebrow="Turma esgotada" title="Lista de espera" lead="As vagas desta turma foram preenchidas. Deixe seus dados e avisamos se abrir uma vaga ou uma nova data."></x-import>
+</x-import>
+</sc-if>
+<sc-if value="{{isRegular}}" hint-placeholder-val="{{yes}}">
+<x-import component-from-global-scope="ApFonseca.Reveal">
+<x-import component-from-global-scope="ApFonseca.SectionHeading" number="07" eyebrow="14 e 15 de março · Belo Horizonte" title="Inscrição" lead="Preencha seus dados para garantir a vaga. Você recebe os próximos passos e as formas de pagamento por e-mail."></x-import>
+</x-import>
+</sc-if>
+
+<sc-if value="{{showForm}}" hint-placeholder-val="{{yes}}">
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="120">
+<form onSubmit="{{submit}}" style="display: flex; flex-direction: column; gap: var(--space-5); background: var(--surface-raised); box-shadow: var(--shadow-md); padding: var(--space-7) var(--space-6);">
+<sc-if value="{{isError}}" hint-placeholder-val="{{no}}">
+<x-import component-from-global-scope="ApFonseca.Alert" tone="danger" title="Revise 2 campos antes de enviar">O e-mail está incompleto e falta aceitar a política de privacidade.</x-import>
+</sc-if>
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="Nome completo" name="nome" auto-complete="name" required="{{yes}}" default-value="{{nomeValor}}"></x-import>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="E-mail" type="email" name="email" auto-complete="email" required="{{yes}}" default-value="{{emailValor}}" error="{{emailErro}}" style="flex: 1 1 240px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="Telefone ou WhatsApp" type="tel" name="telefone" auto-complete="tel" required="{{yes}}" default-value="{{telValor}}" style="flex: 1 1 240px; min-width: 0;"></x-import>
+</div>
+<x-import component-from-global-scope="ApFonseca.Select" label="Profissão" name="profissao" required="{{yes}}" options="{{profissoes}}"></x-import>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: flex-end;">
+<x-import component-from-global-scope="ApFonseca.Select" label="Conselho" name="conselho" required="{{yes}}" options="{{conselhos}}" style="flex: 1 1 180px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="Número do registro e UF" name="registro" required="{{yes}}" hint="Ex.: 00000 / MG. Conferimos o registro antes de confirmar a vaga." style="flex: 2 1 280px; min-width: 0;"></x-import>
+</div>
+<div style="display: flex; flex-direction: column; gap: var(--space-3); padding-top: var(--space-2);">
+<div style="display: flex; flex-direction: column; gap: var(--space-1);">
+<x-import component-from-global-scope="ApFonseca.Checkbox" name="privacidade" required="{{yes}}" label="Li e aceito a Política de Privacidade. *"></x-import>
+<sc-if value="{{isError}}" hint-placeholder-val="{{no}}">
+<p class="ap-hint ap-hint-error" style="margin: 0 0 0 32px;">Marque esta opção para enviar a inscrição.</p>
+</sc-if>
+</div>
+<x-import component-from-global-scope="ApFonseca.Checkbox" name="avisos" label="Quero receber avisos de novas turmas por e-mail." hint="Opcional. Você pode cancelar quando quiser."></x-import>
+</div>
+<div>
+<x-import component-from-global-scope="ApFonseca.Button" type="submit" size="lg" arrow="{{yes}}">{{submitLabel}}</x-import>
+</div>
+</form>
+</x-import>
+</sc-if>
+
+<sc-if value="{{isSent}}" hint-placeholder-val="{{no}}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-6); text-align: left; background: var(--surface-raised); box-shadow: var(--shadow-md); padding: var(--space-8) var(--space-6);">
+<x-import component-from-global-scope="ApFonseca.Logo" variant="vertical" animated="{{yes}}" width="{{logoWidth}}"></x-import>
+<x-import component-from-global-scope="ApFonseca.Alert" tone="success" title="Inscrição recebida" style="align-self: stretch;">Enviamos os próximos passos para o seu e-mail. Se não encontrar a mensagem, confira a caixa de spam.</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" variant="secondary" href="/agenda">Ver outras turmas</x-import>
+</div>
+</sc-if>
+
+</div>
+</x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"estado":{"editor":"enum","options":["normal","erro","enviada","esgotada"],"default":"normal"},"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const estado = (this.state && this.state.estado) || this.props.estado || 'normal';
+    const err = estado === 'erro';
+    return {
+      yes: true,
+      no: false,
+      logoWidth: 200,
+      isWaitlist: estado === 'esgotada',
+      isRegular: estado !== 'esgotada',
+      showForm: estado !== 'enviada',
+      isSent: estado === 'enviada',
+      isError: err,
+      nomeValor: err ? 'Nome Sobrenome' : undefined,
+      emailValor: err ? 'nome@dominio' : undefined,
+      telValor: err ? '(31) 00000-0000' : undefined,
+      emailErro: err ? 'Digite um e-mail válido, como nome@dominio.com.br.' : undefined,
+      submitLabel: estado === 'esgotada' ? 'Entrar na lista de espera' : 'Enviar inscrição',
+      submit: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ estado: 'enviada' }); },
+      profissoes: ['Médico(a)', 'Cirurgião(ã)-dentista', 'Biomédico(a)', 'Farmacêutico(a)', 'Outra profissão habilitada'],
+      conselhos: ['CRM', 'CRO', 'CRBM', 'CRF', 'Outro']
+    };
+  }
+}
+</script>
+</body>
+</html>

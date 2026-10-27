@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Admin — Dra. Ana Paula Fonseca</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ap-tokens.css">
+<link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
+<script src="ds/apfonseca/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--surface-sunken); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 26px;">
+<x-import component-from-global-scope="ApFonseca.AdminShell" active="{{navActive}}" title="{{pageTitle}}" actions="{{actions}}" style="flex: 1 0 auto;">
+
+<!-- ========== PAINEL ========== -->
+<sc-if value="{{isPainel}}" hint-placeholder-val="{{no}}">
+<div style="display: flex; flex-direction: column; gap: var(--space-6);">
+<p style="margin: 0; color: var(--ink-muted);">Resumo das próximas turmas. Os números vêm das datas e inscrições cadastradas.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: var(--space-5);">
+<sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+<div style="background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2);">
+<span style="font-size: 12px; line-height: 18px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted);">{{k.label}}</span>
+<span style="font-size: 52px; line-height: 56px; font-weight: 300; color: var(--ink);">{{k.value}}</span>
+<span style="font-size: 14px; line-height: 22px; color: var(--ink-muted);">{{k.note}}</span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start;">
+<div style="flex: 3 1 520px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-3);">
+<h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em;">Próximas turmas</h2>
+<x-import component-from-global-scope="ApFonseca.DataTable" columns="{{turmaCols}}" rows="{{proximas}}" on-view="{{goInscricoes}}" on-edit="{{goEditar}}"></x-import>
+</div>
+<div style="flex: 2 1 360px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-3);">
+<h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em;">Inscrições recentes</h2>
+<x-import component-from-global-scope="ApFonseca.DataTable" columns="{{recentCols}}" rows="{{recentes}}"></x-import>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ========== AGENDA ========== -->
+<sc-if value="{{isAgenda}}" hint-placeholder-val="{{yes}}">
+<div style="display: flex; flex-direction: column; gap: var(--space-5);">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-4);">
+<x-import component-from-global-scope="ApFonseca.Tabs" items="{{agendaTabs}}" value="{{agendaFiltro}}" on-change="{{setFiltro}}" label="Filtrar datas"></x-import>
+<p style="margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-muted);">"Últimas vagas" e "Esgotado" são calculados pelos inscritos.</p>
+</div>
+<x-import component-from-global-scope="ApFonseca.DataTable" columns="{{turmaCols}}" rows="{{agendaRows}}" on-view="{{goInscricoes}}" on-edit="{{goEditar}}" on-delete="{{openExcluir}}" empty="Nenhuma data neste filtro."></x-import>
+</div>
+</sc-if>
+
+<!-- ========== EDITAR DATA ========== -->
+<sc-if value="{{isEditar}}" hint-placeholder-val="{{no}}">
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start;">
+
+<form onSubmit="{{noopSubmit}}" style="flex: 1 1 600px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-5);">
+
+<div style="background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5);">
+<h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em;">Turma</h2>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Título" name="titulo" required="{{yes}}" default-value="Toxina botulínica — módulo essencial"></x-import>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.Select" label="Modalidade" name="modalidade" required="{{yes}}" options="{{modalidades}}" default-value="Presencial" style="flex: 1 1 220px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.Select" label="Publicação" name="publicacao" required="{{yes}}" options="{{publicacoes}}" default-value="publicado" hint="Rascunho não aparece no site." style="flex: 1 1 220px; min-width: 0;"></x-import>
+</div>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Resumo" name="resumo" multiline="{{yes}}" rows="{{two}}" default-value="Fundamentos, anatomia aplicada e prática supervisionada." hint="Uma frase. Aparece no cartão da home ao passar o mouse."></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Descrição" name="descricao" multiline="{{yes}}" rows="{{four}}" default-value="Texto da seção “Sobre a turma” da página da turma." hint="Vai para a seção 01 da página da turma."></x-import>
+</div>
+
+<div style="background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5);">
+<h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em;">Data, local e vagas</h2>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.TextField" label="Início" type="date" name="inicio" required="{{yes}}" default-value="2026-11-21" style="flex: 1 1 180px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Fim" type="date" name="fim" default-value="2026-11-22" hint="Deixe vazio se for um dia só." style="flex: 1 1 180px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Horário" name="horario" default-value="Sáb. e dom., 8h às 18h" style="flex: 2 1 240px; min-width: 0;"></x-import>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.TextField" label="Cidade" name="cidade" required="{{yes}}" default-value="Belo Horizonte, MG" style="flex: 1 1 240px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Local" name="local" default-value="Local a definir" style="flex: 1 1 240px; min-width: 0;"></x-import>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.TextField" label="Vagas" type="number" name="vagas" required="{{yes}}" default-value="12" hint="4 inscritos até agora." style="flex: 1 1 140px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Preço" name="preco" required="{{yes}}" default-value="R$ 0.000" style="flex: 1 1 160px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Parcelamento" name="parcelamento" default-value="ou 10x de R$ 000" style="flex: 2 1 220px; min-width: 0;"></x-import>
+</div>
+<x-import component-from-global-scope="ApFonseca.Alert" tone="info" title="O status de vagas é automático">Com 3 vagas ou menos, a turma mostra "Últimas vagas". Sem vagas, vira "Esgotado" e o formulário passa a ser lista de espera.</x-import>
+</div>
+
+<div style="background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5);">
+<h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em;">Foto</h2>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: center;">
+<img src="{{foto.src}}" alt="{{foto.alt}}" style="width: 240px; max-width: 100%; aspect-ratio: 16 / 10; object-fit: cover; box-shadow: var(--shadow-sm);">
+<div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start;">
+<x-import component-from-global-scope="ApFonseca.Button" variant="secondary" size="sm" onClick="{{openFoto}}">Trocar foto</x-import>
+<p style="margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-muted);">16:10, a partir de 1600 px de largura. Sem fotos de pacientes ou de antes e depois.</p>
+</div>
+</div>
+</div>
+
+<div style="background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5);">
+<h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em;">Programação</h2>
+<p style="margin: 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink);">Dia 1 · Sábado, 21 de novembro</p>
+<sc-for list="{{progDia1}}" as="p" hint-placeholder-count="3">
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-4); padding-bottom: var(--space-4); border-bottom: 1px solid var(--line);">
+<x-import component-from-global-scope="ApFonseca.TextField" label="Horário" default-value="{{p.time}}" style="flex: 0 1 120px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Atividade" default-value="{{p.title}}" style="flex: 1 1 220px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Descrição" default-value="{{p.description}}" style="flex: 2 1 260px; min-width: 0;"></x-import>
+</div>
+</sc-for>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-3);">
+<x-import component-from-global-scope="ApFonseca.Button" variant="ghost" size="sm" icon="{{plusIcon}}">Adicionar atividade</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" variant="ghost" size="sm" icon="{{plusIcon}}">Adicionar dia</x-import>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-3);">
+<x-import component-from-global-scope="ApFonseca.Button" variant="ghost" onClick="{{goAgenda}}">Cancelar</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" variant="secondary" onClick="{{goAgenda}}">Salvar rascunho</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" type="submit" arrow="{{yes}}">Salvar e publicar</x-import>
+</div>
+</form>
+
+<div style="flex: 0 1 380px; min-width: 0; position: sticky; top: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4);">
+<p style="margin: 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink);">Como aparece no site</p>
+<x-import component-from-global-scope="ApFonseca.EventCard" title="Toxina botulínica — módulo essencial" href="#" start="2026-11-21" end="2026-11-22" time="Sáb. e dom., 8h às 18h" city="Belo Horizonte, MG" seats="8 vagas" price="R$ 0.000" status="aberto" summary="Fundamentos, anatomia aplicada e prática supervisionada." image="{{foto.src}}" image-alt="{{foto.alt}}"></x-import>
+<x-import component-from-global-scope="ApFonseca.EventSummary" start="2026-11-21" end="2026-11-22" time="Sáb. e dom., 8h às 18h" venue="Local a definir" city="Belo Horizonte, MG" modality="Presencial" seats-total="{{twelve}}" seats-taken="{{four}}" price="R$ 0.000" installment="ou 10x de R$ 000" status="aberto" bar="{{no}}"></x-import>
+</div>
+
+</div>
+</sc-if>
+
+<!-- ========== INSCRIÇÕES ========== -->
+<sc-if value="{{isInscricoes}}" hint-placeholder-val="{{no}}">
+<div style="display: flex; flex-direction: column; gap: var(--space-5);">
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.Select" label="Turma" options="{{turmaOptions}}" default-value="6" style="flex: 0 1 460px; min-width: 0;"></x-import>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-4);">
+<x-import component-from-global-scope="ApFonseca.Badge" tone="warning">Últimas vagas</x-import>
+<span style="color: var(--ink-muted);"><strong style="color: var(--ink); font-weight: 600;">9</strong> de 12 vagas preenchidas · 2 na lista de espera</span>
+</div>
+</div>
+<x-import component-from-global-scope="ApFonseca.DataTable" columns="{{inscCols}}" rows="{{inscritos}}" on-view="{{noop}}" empty="Nenhuma inscrição nesta turma ainda. Elas aparecem aqui assim que chegarem."></x-import>
+<p style="margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-muted);">Confira o registro no conselho antes de confirmar cada vaga.</p>
+</div>
+</sc-if>
+
+</x-import>
+
+<!-- ========== DIÁLOGO: EXCLUIR DATA ========== -->
+<sc-if value="{{isExcluir}}" hint-placeholder-val="{{no}}">
+<div style="position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: var(--space-5); background: var(--overlay);">
+<div role="dialog" aria-modal="true" aria-labelledby="dlg-excluir-titulo" style="width: 100%; max-width: 520px; background: var(--surface-raised); color: var(--ink); box-shadow: var(--shadow-lg); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5);">
+<div style="display: flex; flex-direction: column; gap: var(--space-2);">
+<p style="margin: 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--danger);">Excluir data</p>
+<h2 id="dlg-excluir-titulo" style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 26px; line-height: 34px; letter-spacing: 0.04em;">Excluir esta data da agenda?</h2>
+</div>
+<div style="padding: var(--space-4); background: var(--surface-sunken); display: flex; flex-direction: column; gap: 2px;">
+<strong style="font-weight: 600;">{{alvo.curso}}</strong>
+<span style="color: var(--ink-muted);">{{alvo.data}} · {{alvo.local}}</span>
+</div>
+<sc-if value="{{alvoTemInscritos}}" hint-placeholder-val="{{yes}}">
+<x-import component-from-global-scope="ApFonseca.Alert" tone="warning" title="{{alvoAvisoTitulo}}">Elas não são avisadas automaticamente. Prefira mudar a data para Rascunho e falar com cada pessoa antes de excluir.</x-import>
+</sc-if>
+<p style="margin: 0; color: var(--ink-muted);">A página da turma sai do site e as inscrições ficam arquivadas. Esta ação não pode ser desfeita.</p>
+<div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-3);">
+<x-import component-from-global-scope="ApFonseca.Button" variant="ghost" onClick="{{closeDialog}}">Cancelar</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" variant="secondary" onClick="{{closeDialog}}">Mudar para rascunho</x-import>
+<button type="button" onClick="{{closeDialog}}" style="height: 48px; padding: 0 var(--space-5); border: 0; border-radius: var(--radius-control); background: var(--danger); color: var(--surface-raised); font-family: var(--font-sans); font-size: 15px; line-height: 20px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;">Excluir data</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ========== DIÁLOGO: TROCAR FOTO ========== -->
+<sc-if value="{{isFoto}}" hint-placeholder-val="{{no}}">
+<div style="position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: var(--space-5); background: var(--overlay);">
+<div role="dialog" aria-modal="true" aria-labelledby="dlg-foto-titulo" style="width: 100%; max-width: 760px; max-height: 100%; overflow-y: auto; background: var(--surface-raised); color: var(--ink); box-shadow: var(--shadow-lg); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5);">
+<div style="display: flex; flex-direction: column; gap: var(--space-2);">
+<p style="margin: 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink);">Foto da turma</p>
+<h2 id="dlg-foto-titulo" style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 26px; line-height: 34px; letter-spacing: 0.04em;">Trocar foto</h2>
+</div>
+<label style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3); padding: var(--space-7) var(--space-5); border: 1px dashed var(--line-strong); background: var(--surface-sunken); text-align: center; cursor: pointer;">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--accent-ink);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+<span style="font-weight: 600;">Arraste uma foto até aqui ou clique para escolher</span>
+<span style="font-size: 14px; line-height: 22px; color: var(--ink-muted);">JPG ou WebP, formato 16:10, a partir de 1600 px de largura, até 5 MB.</span>
+<input type="file" accept="image/jpeg,image/webp" style="position: absolute; width: 1px; height: 1px; opacity: 0;">
+</label>
+<div style="display: flex; flex-direction: column; gap: var(--space-3);">
+<p style="margin: 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink);">Ou escolha da biblioteca da marca</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: var(--space-3);">
+<sc-for list="{{biblioteca}}" as="b" hint-placeholder-count="6">
+<button type="button" onClick="{{b.pick}}" aria-pressed="{{b.selected}}" aria-label="{{b.alt}}" style="{{b.style}}">
+<img src="{{b.src}}" alt="" style="width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block;">
+</button>
+</sc-for>
+</div>
+</div>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Texto alternativo" required="{{yes}}" default-value="{{foto.alt}}" hint="Descreva a foto para quem usa leitor de tela."></x-import>
+<x-import component-from-global-scope="ApFonseca.Alert" tone="info" title="Regras de publicidade médica">Sem fotos de pacientes, de antes e depois ou de resultados de procedimentos.</x-import>
+<div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-3);">
+<x-import component-from-global-scope="ApFonseca.Button" variant="ghost" onClick="{{closeDialog}}">Cancelar</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" onClick="{{closeDialog}}">Usar esta foto</x-import>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"tela":{"editor":"enum","options":["painel","agenda","editar","inscricoes"],"default":"agenda"},"dialogo":{"editor":"enum","options":["nenhum","excluir","foto"],"default":"nenhum"},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const tela = (this.state && this.state.tela) || this.props.tela || 'agenda';
+    const filtro = (this.state && this.state.filtro) || 'proximas';
+    const A = window.ApFonseca || {};
+    const R = window.React;
+    const h = (R && R.createElement) ? R.createElement : null;
+    const go = (t) => () => this.setState({ tela: t });
+
+    const STATUS = {
+      rascunho: ['neutral', 'Rascunho'], 'em-breve': ['neutral', 'Em breve'], aberto: ['success', 'Inscrições abertas'],
+      ultimas: ['warning', 'Últimas vagas'], esgotado: ['danger', 'Esgotado'], realizado: ['neutral', 'Realizado']
+    };
+    const statusOf = (t) => {
+      if (t.pub === 'rascunho') return 'rascunho';
+      if (t.passada) return 'realizado';
+      if (t.pub === 'em-breve') return 'em-breve';
+      if (t.inscritos >= t.vagas) return 'esgotado';
+      if (t.vagas - t.inscritos <= 3) return 'ultimas';
+      return 'aberto';
+    };
+    const badge = (key) => { const s = STATUS[key]; return h && A.Badge ? h(A.Badge, { tone: s[0] }, s[1]) : s[1]; };
+
+    const turmas = [
+      { id: 1, curso: 'Anatomia aplicada à toxina', data: '08/10/2026', local: 'Online · ao vivo', inscritos: 20, vagas: 20, pub: 'publicado', passada: true },
+      { id: 2, curso: 'Planejamento e marcação de pontos', data: '30/10/2026', local: 'Online · ao vivo', inscritos: 14, vagas: 30, pub: 'publicado' },
+      { id: 3, curso: 'Toxina botulínica — módulo essencial', data: '21–22/11/2026', local: 'Belo Horizonte, MG', inscritos: 4, vagas: 12, pub: 'publicado' },
+      { id: 4, curso: 'Anatomia aplicada à toxina', data: '28/11/2026', local: 'Online · ao vivo', inscritos: 30, vagas: 30, pub: 'publicado' },
+      { id: 6, curso: 'Aplicação avançada e intercorrências', data: '05/12/2026', local: 'Belo Horizonte, MG', inscritos: 9, vagas: 12, pub: 'publicado' },
+      { id: 7, curso: 'Toxina botulínica — módulo essencial', data: '12–13/12/2026', local: 'Belo Horizonte, MG', inscritos: 0, vagas: 12, pub: 'em-breve' },
+      { id: 8, curso: 'Toxina botulínica — módulo essencial', data: '00/00/2027', local: 'Cidade a definir', inscritos: 0, vagas: 12, pub: 'rascunho' }
+    ].map((t) => Object.assign({}, t, { st: statusOf(t), insc: t.inscritos + ' / ' + t.vagas }));
+
+    const proximas = turmas.filter((t) => !t.passada && t.pub !== 'rascunho');
+    const rascunhos = turmas.filter((t) => t.pub === 'rascunho');
+    const realizadas = turmas.filter((t) => t.passada);
+    const agendaRows = filtro === 'rascunhos' ? rascunhos : filtro === 'realizadas' ? realizadas : filtro === 'todas' ? turmas : proximas;
+
+    const turmaCols = [
+      { key: 'curso', label: 'Turma' },
+      { key: 'data', label: 'Data' },
+      { key: 'local', label: 'Local' },
+      { key: 'insc', label: 'Inscritos', align: 'right' },
+      { key: 'st', label: 'Status', render: (r) => badge(r.st) }
+    ];
+
+    const SIT = { confirmada: ['success', 'Confirmada'], pagamento: ['warning', 'Aguardando pagamento'], conferir: ['neutral', 'Registro a conferir'], espera: ['neutral', 'Lista de espera'] };
+    const sit = (k) => { const s = SIT[k]; return h && A.Badge ? h(A.Badge, { tone: s[0], icon: false }, s[1]) : s[1]; };
+    const sits = ['confirmada', 'confirmada', 'pagamento', 'confirmada', 'conferir', 'confirmada', 'pagamento', 'confirmada', 'conferir', 'espera', 'espera'];
+    const profs = ['Médica', 'Cirurgiã-dentista', 'Biomédico', 'Médico', 'Biomédica', 'Cirurgião-dentista', 'Médica', 'Farmacêutica', 'Biomédica', 'Médico', 'Cirurgiã-dentista'];
+    const cons = ['CRM-MG 00000', 'CRO-MG 00000', 'CRBM-MG 00000', 'CRM-SP 00000', 'CRBM-MG 00000', 'CRO-MG 00000', 'CRM-MG 00000', 'CRF-MG 00000', 'CRBM-RJ 00000', 'CRM-MG 00000', 'CRO-MG 00000'];
+    const inscritos = sits.map((s, i) => ({
+      id: i + 1,
+      nome: 'Nome da pessoa inscrita ' + String(i + 1).padStart(2, '0'),
+      prof: profs[i], reg: cons[i], contato: 'email@dominio.com.br',
+      data: String(10 + i).padStart(2, '0') + '/10/2026', sitKey: s
+    }));
+    const inscCols = [
+      { key: 'nome', label: 'Nome' },
+      { key: 'prof', label: 'Profissão' },
+      { key: 'reg', label: 'Registro' },
+      { key: 'contato', label: 'Contato' },
+      { key: 'data', label: 'Inscrição' },
+      { key: 'sitKey', label: 'Situação', render: (r) => sit(r.sitKey) }
+    ];
+    const recentCols = [
+      { key: 'nome', label: 'Nome' },
+      { key: 'turma', label: 'Turma' },
+      { key: 'data', label: 'Data' }
+    ];
+    const recentes = [
+      { id: 1, nome: 'Nome da pessoa inscrita 11', turma: 'Avançada · 05/12', data: '27/10' },
+      { id: 2, nome: 'Nome da pessoa inscrita 10', turma: 'Avançada · 05/12', data: '26/10' },
+      { id: 3, nome: 'Nome da pessoa inscrita 04', turma: 'Essencial · 21/11', data: '25/10' },
+      { id: 4, nome: 'Nome da pessoa inscrita 14', turma: 'Planejamento · 30/10', data: '24/10' }
+    ];
+
+    const sum = (arr, f) => arr.reduce((a, t) => a + f(t), 0);
+    const kpis = [
+      { label: 'Próximas turmas', value: String(proximas.length), note: 'Publicadas, de outubro a dezembro' },
+      { label: 'Inscritos', value: String(sum(proximas, (t) => t.inscritos)), note: 'Nas próximas turmas' },
+      { label: 'Vagas livres', value: String(sum(proximas, (t) => Math.max(0, t.vagas - t.inscritos))), note: 'Somando todas as próximas' },
+      { label: 'A conferir', value: '2', note: 'Registros no conselho' }
+    ];
+
+    const titles = { painel: 'Painel', agenda: 'Agenda', editar: 'Editar data', inscricoes: 'Inscrições' };
+    const navActive = tela === 'editar' ? 'agenda' : tela;
+    const plusIcon = h && A.Icons ? h(A.Icons.Plus, { size: 18, strokeWidth: 1.5, 'aria-hidden': true }) : null;
+    let actions = null;
+    if (h && A.Button) {
+      if (tela === 'agenda' || tela === 'painel') actions = h(A.Button, { size: 'sm', icon: plusIcon, onClick: go('editar') }, 'Nova data');
+      if (tela === 'editar') actions = h(A.Button, { size: 'sm', variant: 'ghost', onClick: go('agenda') }, 'Voltar para a agenda');
+      if (tela === 'inscricoes') actions = h(R.Fragment, null,
+        h(A.Button, { size: 'sm', variant: 'ghost', onClick: go('agenda') }, 'Voltar para a agenda'),
+        h(A.Button, { size: 'sm', variant: 'secondary' }, 'Exportar planilha'));
+    }
+
+    const st = this.state || {};
+    const dialog = st.dialog !== undefined ? st.dialog : (this.props.dialogo && this.props.dialogo !== 'nenhum' ? this.props.dialogo : null);
+    const alvo = st.alvo || turmas.find((t) => t.id === 6);
+    const fotos = [
+      { id: 'maos', src: '/images/maos.webp', alt: 'Mãos em luvas preparando uma aplicação' },
+      { id: 'luvas', src: '/images/luvas.webp', alt: 'Luvas cirúrgicas sobre bancada' },
+      { id: 'anatomia', src: '/images/anatomia-quadril.webp', alt: 'Modelo anatômico do quadril' },
+      { id: 'boneco', src: '/images/boneco-articulado.webp', alt: 'Boneco articulado de madeira em pose de movimento' },
+      { id: 'pedras', src: '/images/pedras-empilhadas.webp', alt: 'Pedras empilhadas em equilíbrio' },
+      { id: 'mar', src: '/images/pedras-mar.webp', alt: 'Pedras à beira-mar' }
+    ];
+    const fotoId = st.foto || 'maos';
+    const foto = fotos.find((f) => f.id === fotoId) || fotos[0];
+    const thumbBase = 'padding: 0; border: 0; background: none; cursor: pointer; border-radius: 0; transition: box-shadow 160ms;';
+    const biblioteca = fotos.map((f) => ({
+      src: f.src, alt: f.alt, selected: f.id === fotoId ? 'true' : 'false',
+      style: thumbBase + (f.id === fotoId ? ' box-shadow: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--ink);' : ' box-shadow: var(--shadow-sm);'),
+      pick: () => this.setState({ foto: f.id })
+    }));
+
+    return {
+      yes: true, no: false, two: 2, four: 4, twelve: 12,
+      isExcluir: dialog === 'excluir', isFoto: dialog === 'foto',
+      alvo: alvo, alvoTemInscritos: alvo.inscritos > 0,
+      alvoAvisoTitulo: alvo.inscritos === 1 ? 'Esta data tem 1 pessoa inscrita' : 'Esta data tem ' + alvo.inscritos + ' pessoas inscritas',
+      openExcluir: (r) => this.setState({ dialog: 'excluir', alvo: r && r.curso ? r : alvo }),
+      openFoto: () => this.setState({ dialog: 'foto' }),
+      closeDialog: () => this.setState({ dialog: null }),
+      foto: foto, biblioteca: biblioteca,
+      isPainel: tela === 'painel', isAgenda: tela === 'agenda', isEditar: tela === 'editar', isInscricoes: tela === 'inscricoes',
+      pageTitle: titles[tela], navActive: navActive, actions: actions, plusIcon: plusIcon,
+      goAgenda: go('agenda'), goEditar: go('editar'), goInscricoes: go('inscricoes'),
+      noop: () => {}, noopSubmit: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ tela: 'agenda' }); },
+      kpis: kpis, turmaCols: turmaCols, proximas: proximas.slice(0, 4), recentCols: recentCols, recentes: recentes,
+      agendaFiltro: filtro, setFiltro: (v) => this.setState({ filtro: v }), agendaRows: agendaRows,
+      agendaTabs: [
+        { value: 'proximas', label: 'Próximas', count: proximas.length },
+        { value: 'rascunhos', label: 'Rascunhos', count: rascunhos.length },
+        { value: 'realizadas', label: 'Realizadas', count: realizadas.length },
+        { value: 'todas', label: 'Todas', count: turmas.length }
+      ],
+      modalidades: ['Presencial', 'Online'],
+      publicacoes: [{ value: 'rascunho', label: 'Rascunho' }, { value: 'em-breve', label: 'Em breve (sem inscrições)' }, { value: 'publicado', label: 'Publicado' }],
+      progDia1: [
+        { time: '08:00', title: 'Recepção e credenciamento', description: '' },
+        { time: '08:30', title: 'Anatomia aplicada', description: 'Musculatura, pontos de referência e planejamento.' },
+        { time: '10:45', title: 'Avaliação e indicação', description: 'Indicações, contraindicações e consentimento.' }
+      ],
+      turmaOptions: turmas.filter((t) => t.pub !== 'rascunho').map((t) => ({ value: String(t.id), label: t.curso + ' · ' + t.data })),
+      inscCols: inscCols, inscritos: inscritos
+    };
+  }
+}
+</script>
+</body>
+</html>

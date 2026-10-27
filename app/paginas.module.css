@@ -1,0 +1,63 @@
+/* Pequenos estilos de conteúdo compartilhados pelas páginas públicas. */
+
+/* Parágrafo de leitura (18/30). Junto com .ap-body-l do design system. */
+.corpo { margin: 0; }
+
+/* Bloco de texto sobre as pedras de fundo: fica acima delas e com largura de leitura. */
+.leitura { position: relative; z-index: 1; max-width: 760px; }
+
+.nota { font-size: 14px; line-height: 22px; color: var(--ink-muted); }
+
+/* Bloco de chamada no fim da agenda ("Não encontrou uma data?") */
+.agendaFim {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-5);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+.agendaFim > div { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; flex: 1 1 320px; }
+.titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 28px;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+.muted { margin: 0; color: var(--ink-muted); }
+
+/* Agenda: largura de leitura e cartão da agenda vazia */
+.agenda { max-width: 960px; }
+.vazia {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+  padding: var(--space-7) var(--space-6);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Turma: seções da coluna principal e aviso de inscrição */
+.secao { display: flex; flex-direction: column; gap: var(--space-6); }
+.colunaTurma { display: flex; flex-direction: column; gap: var(--space-9); }
+.aviso {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+  padding: var(--space-7) var(--space-6);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+}
+
+/* Contato: coluna de canais */
+.canais { display: flex; flex-direction: column; gap: var(--space-5); }
+
+@media (max-width: 767px) {
+  .vazia, .aviso { padding: var(--space-6) var(--space-4); }
+}

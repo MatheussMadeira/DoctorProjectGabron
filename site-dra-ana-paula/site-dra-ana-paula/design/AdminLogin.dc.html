@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Entrar no painel — Dra. Ana Paula Fonseca</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ap-tokens.css">
+<link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
+<script src="ds/apfonseca/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: var(--surface); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 26px;">
+
+<div data-theme="escuro" style="flex: 1 1 480px; min-height: 280px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-7); padding: var(--space-8) var(--space-7); background: var(--surface); color: var(--ink);">
+<x-import component-from-global-scope="ApFonseca.PedrasFundo" side="right"></x-import>
+<div style="position: relative; z-index: 1;">
+<x-import component-from-global-scope="ApFonseca.Logo" variant="vertical" width="{{logoWidth}}"></x-import>
+</div>
+<p style="position: relative; z-index: 1; margin: 0; max-width: 36ch; font-size: 20px; line-height: 32px; font-weight: 300; color: var(--ink-muted);">Painel para cadastrar as datas das turmas e acompanhar as inscrições.</p>
+</div>
+
+<div style="flex: 1 1 480px; display: flex; align-items: center; justify-content: center; padding: var(--space-8) var(--space-5);">
+<form onSubmit="{{submit}}" style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: var(--space-5);">
+<div style="display: flex; flex-direction: column; gap: var(--space-2);">
+<p style="margin: 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink);">Área restrita</p>
+<h1 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 42px; letter-spacing: 0.05em; text-transform: uppercase;">Entrar no painel</h1>
+</div>
+<sc-if value="{{isErro}}" hint-placeholder-val="{{no}}">
+<x-import component-from-global-scope="ApFonseca.Alert" tone="danger" title="E-mail ou senha incorretos">Confira os dados e tente de novo. Depois de 5 tentativas, o acesso fica bloqueado por 15 minutos.</x-import>
+</sc-if>
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="E-mail" type="email" name="email" auto-complete="username" required="{{yes}}" default-value="{{emailValor}}"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="Senha" type="password" name="senha" auto-complete="current-password" required="{{yes}}" error="{{senhaErro}}"></x-import>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-3);">
+<x-import component-from-global-scope="ApFonseca.Checkbox" name="lembrar" label="Manter conectada neste aparelho"></x-import>
+<x-import component-from-global-scope="ApFonseca.Button" variant="link" href="#recuperar">Esqueci minha senha</x-import>
+</div>
+<x-import component-from-global-scope="ApFonseca.Button" href="AdminPainel.dc.html" size="lg" full="{{yes}}" arrow="{{yes}}">Entrar</x-import>
+<p style="margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-muted);">Acesso só para a Dra. e a equipe autorizada.</p>
+</form>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"estado":{"editor":"enum","options":["normal","erro"],"default":"normal"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const erro = (this.props.estado || 'normal') === 'erro';
+    return {
+      yes: true, no: false, logoWidth: 200,
+      isErro: erro,
+      emailValor: erro ? 'nome@dominio.com.br' : undefined,
+      senhaErro: erro ? 'Digite a senha de novo.' : undefined,
+      submit: (e) => { if (e && e.preventDefault) e.preventDefault(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

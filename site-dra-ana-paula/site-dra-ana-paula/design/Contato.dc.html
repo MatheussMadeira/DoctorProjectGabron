@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Contato — Dra. Ana Paula Fonseca</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ap-tokens.css">
+<link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
+<script src="ds/apfonseca/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface)}
+a{color:var(--ink)}a:hover{color:var(--ink-muted)}
+</style>
+</helmet>
+<div data-theme="{{theme}}" style="min-height: 100vh; background: var(--surface); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 26px;">
+
+<x-import component-from-global-scope="ApFonseca.Header" links="{{navLinks}}" current="/contato" cta="{{headerCta}}" theme="{{theme}}" on-theme-change="{{setTheme}}"></x-import>
+
+<main>
+
+<x-import component-from-global-scope="ApFonseca.Hero" eyebrow="Contato" title="Fale com a clínica" lead="Agende uma consulta ou tire suas dúvidas sobre as turmas de toxina botulínica. A equipe responde pelo canal que você preferir."></x-import>
+
+<x-import component-from-global-scope="ApFonseca.Section" id="formulario" background="surface">
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-8); align-items: flex-start;">
+
+<x-import component-from-global-scope="ApFonseca.Reveal" style="flex: 999 1 560px; min-width: 0;">
+<div style="background: var(--surface-raised); box-shadow: var(--shadow-md); padding: var(--space-7) var(--space-6); display: flex; flex-direction: column; gap: var(--space-6);">
+<sc-if value="{{notSent}}" hint-placeholder-val="{{yes}}">
+<form onSubmit="{{submit}}" style="display: flex; flex-direction: column; gap: var(--space-5);">
+<div style="display: flex; flex-direction: column; gap: var(--space-2);">
+<h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 42px; letter-spacing: 0.05em; text-transform: uppercase;">Envie uma mensagem</h2>
+<p style="margin: 0; color: var(--ink-muted);">Campos com * são obrigatórios.</p>
+</div>
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="Nome completo" name="nome" auto-complete="name" required="{{yes}}"></x-import>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="E-mail" type="email" name="email" auto-complete="email" required="{{yes}}" style="flex: 1 1 240px; min-width: 0;"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="Telefone ou WhatsApp" type="tel" name="telefone" auto-complete="tel" style="flex: 1 1 240px; min-width: 0;"></x-import>
+</div>
+<x-import component-from-global-scope="ApFonseca.Select" label="Assunto" name="assunto" required="{{yes}}" options="{{assuntos}}"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" multiline="{{yes}}" rows="{{five}}" label="Mensagem" name="mensagem" hint="Não envie informações de saúde por aqui. Elas são tratadas na consulta."></x-import>
+<x-import component-from-global-scope="ApFonseca.Checkbox" name="privacidade" required="{{yes}}" label="Li e aceito a Política de Privacidade." hint="Seus dados são usados só para responder a este contato."></x-import>
+<div>
+<x-import component-from-global-scope="ApFonseca.Button" type="submit" size="lg" arrow="{{yes}}">Enviar mensagem</x-import>
+</div>
+</form>
+</sc-if>
+<sc-if value="{{sent}}" hint-placeholder-val="{{no}}">
+<div style="display: flex; flex-direction: column; gap: var(--space-5); align-items: flex-start;">
+<x-import component-from-global-scope="ApFonseca.Alert" tone="success" title="Mensagem enviada">Obrigado pelo contato. A equipe da clínica vai responder pelo e-mail ou telefone que você informou.</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" variant="ghost" onClick="{{reset}}">Enviar outra mensagem</x-import>
+</div>
+</sc-if>
+</div>
+</x-import>
+
+<aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-6);">
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="120">
+<div style="display: flex; flex-direction: column; gap: var(--space-5);">
+<p style="margin: 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink);">Outros canais</p>
+<x-import component-from-global-scope="ApFonseca.WhatsAppButton" floating="{{no}}" phone="5531000000000" message="Olá! Gostaria de mais informações." label="Conversar no WhatsApp"></x-import>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;">
+<li style="display: flex; gap: var(--space-3); padding: var(--space-4) 0; border-top: 1px solid var(--line);">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px; color: var(--accent-ink);"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+<a href="tel:553100000000">+55 31 0000-0000</a>
+</li>
+<li style="display: flex; gap: var(--space-3); padding: var(--space-4) 0; border-top: 1px solid var(--line);">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px; color: var(--accent-ink);"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg>
+<a href="mailto:contato@dominio.com.br">contato@dominio.com.br</a>
+</li>
+<li style="display: flex; gap: var(--space-3); padding: var(--space-4) 0; border-top: 1px solid var(--line);">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px; color: var(--accent-ink);"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+<a href="https://instagram.com/perfil">@perfil</a>
+</li>
+<li style="display: flex; gap: var(--space-3); padding: var(--space-4) 0; border-top: 1px solid var(--line);">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px; color: var(--accent-ink);"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+<span>Rua, número, sala · Bairro<br>Belo Horizonte — MG · CEP 00000-000</span>
+</li>
+<li style="display: flex; gap: var(--space-3); padding: var(--space-4) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px; color: var(--accent-ink);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+<span>Segunda a sexta, 00h às 00h</span>
+</li>
+</ul>
+<div role="img" aria-label="Espaço reservado para o mapa da clínica" style="aspect-ratio: 4 / 3; background: var(--surface-sunken); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2); color: var(--ink-muted);">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="21"></line></svg>
+<span style="font-size: 14px; line-height: 22px;">Mapa da clínica</span>
+</div>
+</div>
+</x-import>
+</aside>
+
+</div>
+</x-import>
+
+</main>
+
+<x-import component-from-global-scope="ApFonseca.Footer" phone="+55 31 0000-0000" email="contato@dominio.com.br" instagram="@perfil" address="Endereço da clínica, Belo Horizonte — MG" links="{{footerLinks}}" legal="© 2026 Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG 00000 · RQE 00000"></x-import>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["claro","escuro"],"default":"claro"},"sent":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":2300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const theme = (this.state && this.state.theme) || this.props.theme || 'claro';
+    const sent = (this.state && this.state.sent != null) ? this.state.sent : !!this.props.sent;
+    const nav = [
+      { label: 'Início', href: '/' },
+      { label: 'Sobre a Dra.', href: '/sobre' },
+      { label: 'Clínica', href: '/clinica' },
+      { label: 'Agenda de cursos', href: '/agenda' },
+      { label: 'Contato', href: '/contato' }
+    ];
+    return {
+      yes: true,
+      no: false,
+      five: 5,
+      theme: theme,
+      setTheme: (t) => this.setState({ theme: t }),
+      sent: sent,
+      notSent: !sent,
+      submit: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ sent: true }); },
+      reset: () => this.setState({ sent: false }),
+      navLinks: nav,
+      footerLinks: nav.slice(1),
+      headerCta: { label: 'Próximas turmas', href: '/agenda' },
+      assuntos: ['Consulta na clínica', 'Turmas de toxina botulínica', 'Outro assunto']
+    };
+  }
+}
+</script>
+</body>
+</html>
