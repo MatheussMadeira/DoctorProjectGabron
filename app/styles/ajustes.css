@@ -69,3 +69,11 @@ main:focus { outline: none; }
 
 /* Sobre o curso: cartões de professor um pouco mais largos (design Sobre.dc.html: minmax 300px). */
 .ap-prof-grade-larga { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+
+/* Rodapé: logo vertical com 210 px no desktop e 180 px no celular (a linha de apoio só entra quando a letra dela tem 11 px; ver Logo.tsx). */
+.ap-footer-brand .ap-logo { width: 210px; }
+@media (max-width: 767px) { .ap-footer-brand .ap-logo { width: 180px; } }
+
+/* Hero sem imagem (pedras só à direita): no celular o texto ocupa a largura toda, então as pedras vão para o canto de baixo, à direita,
+   fora do caminho do título. */
+@media (max-width: 767px) { .ap-pedras-right .ap-pedras-svg { height: 95%; top: auto; bottom: -30%; left: 60%; } }

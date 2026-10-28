@@ -334,8 +334,8 @@ textarea.ap-input { resize: vertical; line-height: 26px; }
 .ap-header-row { display: flex; align-items: center; gap: var(--space-6); height: var(--header-height, 84px); transition: height var(--duration-base, 280ms) var(--ease-out, ease-out); }
 .ap-header.is-scrolled .ap-header-row { height: 68px; }
 .ap-header-logo { transition: width var(--duration-base, 280ms) var(--ease-out, ease-out); }
-.ap-header.is-scrolled .ap-header-logo { width: 148px; }
-.ap-header-logo { display: block; width: 168px; flex: none; }
+.ap-header.is-scrolled .ap-header-logo { width: 158px; }
+.ap-header-logo { display: block; width: 180px; flex: none; }
 .ap-nav { display: flex; gap: var(--space-6); margin-left: auto; }
 .ap-nav a { position: relative; padding: 6px 0; text-decoration: none; font-size: 15px; letter-spacing: 0.04em; color: var(--ink); }
 .ap-nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform var(--duration-base, 280ms) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)); }

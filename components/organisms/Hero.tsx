@@ -26,7 +26,8 @@ export function Hero({ eyebrow = "Médica Fisiatra", title, lead, primary, secon
   const paisagem = imageRatio === "paisagem";
   return (
     <section className={cx("ap-hero", intro && "ap-hero-intro")} data-theme={theme}>
-      <PedrasFundo side="full" intro={intro} />
+      {/* Sem imagem, as pedras ficam só do lado direito: não passam por trás do título e do texto. */}
+      <PedrasFundo side={image ? "full" : "right"} intro={intro} />
       <div className={cx("ap-container ap-hero-grid", paisagem && "ap-hero-grid-paisagem")}>
         <div className="ap-hero-copy">
           {eyebrow && <p className="ap-eyebrow">{eyebrow}</p>}

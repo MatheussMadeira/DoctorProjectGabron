@@ -20,7 +20,7 @@ export function Footer({ phone, email, address, instagram, links = [], legal }: 
       <div className="ap-container">
         <div className="ap-footer-grid">
           <div className="ap-footer-brand">
-            <Logo variant="vertical" width={180} />
+            <Logo variant="vertical" width={210} />
           </div>
           {links.length > 0 && (
             <nav aria-label="Rodapé" className="ap-footer-col">

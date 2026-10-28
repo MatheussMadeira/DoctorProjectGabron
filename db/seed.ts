@@ -1,19 +1,28 @@
 /* Seed com as turmas de exemplo (lib/dados-exemplo.ts) e inscrições fictícias para reproduzir as contagens de vagas.
    Uso: SEED_PERMITIDO=1 yarn db:seed
    Nunca rode no banco de produção: as inscrições são fictícias (e-mail @exemplo.invalid). */
-import { eq, isNull, like } from "drizzle-orm";
+import { eq, isNull, like, notLike } from "drizzle-orm";
 import { GALERIA_EXEMPLO, PROFESSORES_EXEMPLO, TURMAS_EXEMPLO } from "@/lib/dados-exemplo";
 import { db, pool } from "./index";
-import { fotosGaleria, inscricoes, professores, turmaProfessores, turmas, type Situacao } from "./schema";
+import { motivoParaRecusar } from "./seed-guarda";
+import { fotosGaleria, inscricoes, mensagensContato, professores, turmaProfessores, turmas, type Situacao } from "./schema";
 
-if (process.env.SEED_PERMITIDO !== "1") {
-  console.error("Seed bloqueado. Rode com SEED_PERMITIDO=1, e só em banco de desenvolvimento ou preview.");
+const recusa = motivoParaRecusar(process.env);
+if (recusa) {
+  console.error(recusa);
   process.exit(1);
 }
 
 const EMAIL_FICTICIO = "@exemplo.invalid";
 
 async function main() {
+  // Segunda trava, pelos dados: banco com inscrição ou mensagem de gente de verdade (e-mail que não é @exemplo.invalid) não recebe seed.
+  const [real] = await db.select({ id: inscricoes.id }).from(inscricoes).where(notLike(inscricoes.email, `%${EMAIL_FICTICIO}`)).limit(1);
+  const [realMsg] = await db.select({ id: mensagensContato.id }).from(mensagensContato).where(notLike(mensagensContato.email, `%${EMAIL_FICTICIO}`)).limit(1);
+  if ((real || realMsg) && process.env.SEED_DADOS_REAIS_OK !== "1") {
+    throw new Error("Seed recusado: este banco tem inscrições ou mensagens que não são fictícias (e-mail fora de @exemplo.invalid). Se é só teste seu num banco de desenvolvimento, rode com SEED_DADOS_REAIS_OK=1.");
+  }
+
   await db.transaction(async (tx) => {
     // Reexecutar o seed é seguro: troca as inscrições fictícias e atualiza as turmas pelo slug.
     await tx.delete(inscricoes).where(like(inscricoes.email, `%${EMAIL_FICTICIO}`));

@@ -129,3 +129,13 @@ test("frase de apoio dos professores segue o design: 'Três professores que cond
   assert.equal(leadDosProfessores(9), "Os professores que conduzem juntos as aulas teóricas e acompanham a prática.");
   assert.equal(leadDosProfessores(1), "O professor que conduz as aulas teóricas e acompanha a prática.");
 });
+
+test("seed: recusa sem SEED_PERMITIDO, em produção e quando o DATABASE_URL é o do banco de produção", async () => {
+  const { motivoParaRecusar } = await import("../db/seed-guarda");
+  assert.match(motivoParaRecusar({})!, /SEED_PERMITIDO/);
+  assert.match(motivoParaRecusar({ SEED_PERMITIDO: "1", VERCEL_ENV: "production" })!, /produção/);
+  assert.match(motivoParaRecusar({ SEED_PERMITIDO: "1", NODE_ENV: "production" })!, /produção/);
+  assert.match(motivoParaRecusar({ SEED_PERMITIDO: "1", DATABASE_URL: "postgresql://u@ep-wild-shadow-b6wreahl-pooler.sa-east-1.aws.neon.tech/neondb" })!, /produção/);
+  assert.match(motivoParaRecusar({ SEED_PERMITIDO: "1", DATABASE_URL: "postgresql://u@ep-flat-hat-xyz.neon.tech/neondb", DATABASE_URL_UNPOOLED: "postgresql://u@ep-wild-shadow-b6wreahl.neon.tech/neondb" })!, /produção/);
+  assert.equal(motivoParaRecusar({ SEED_PERMITIDO: "1", DATABASE_URL: "postgresql://u@ep-flat-hat-xyz.neon.tech/neondb" }), null);
+});

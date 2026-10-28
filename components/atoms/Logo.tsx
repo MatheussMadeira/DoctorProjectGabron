@@ -17,10 +17,47 @@ interface No {
 interface Geo {
   vb: string;
   nos: No[];
+  /** Altura do símbolo em unidades do viewBox (medida pelo gerador). */
+  simboloAltura: number;
+  /** Só nas variantes com linha de apoio: altura da letra maiúscula da linha e como ficar sem ela. */
+  linha?: { cap: number; vbSem?: string; fallback?: LogoVariant };
 }
 const GEO = geoJson as unknown as Record<string, Geo>;
 
 export type LogoVariant = "horizontal" | "compacta" | "vertical" | "selo" | "simbolo";
+
+/** Regras do kit, valem em todo lugar onde o logo aparece:
+    - a linha de apoio ("Toxina botulínica na reabilitação") só é desenhada quando a letra dela fica com 11 px ou mais de altura;
+      abaixo disso o logo sai sem a linha (a horizontal vira a compacta; a vertical perde a linha e o espaço dela);
+    - o símbolo precisa ter pelo menos 24 px de altura (a variante compacta é ajustada no gerador para isso, a partir de 140 px). */
+export const ALTURA_MINIMA_DA_LETRA_DA_LINHA_PX = 11;
+export const ALTURA_MINIMA_DO_SIMBOLO_PX = 24;
+
+const larguraDoViewBox = (vb: string) => Number(vb.split(" ")[2]);
+
+/** Largura (px) a partir da qual a linha de apoio da variante tem letra legível. Infinity se a variante não tem linha. */
+export function larguraMinimaDaLinha(variant: LogoVariant): number {
+  const g = GEO[variant];
+  if (!g?.linha) return Infinity;
+  return (ALTURA_MINIMA_DA_LETRA_DA_LINHA_PX * larguraDoViewBox(g.vb)) / g.linha.cap;
+}
+
+/** Altura (px) do símbolo da variante quando o logo tem a largura dada. */
+export function alturaDoSimboloPx(variant: LogoVariant, largura: number): number {
+  const g = GEO[variant];
+  return (g.simboloAltura * largura) / larguraDoViewBox(g.vb);
+}
+
+/** Qual desenho usar: a variante pedida ou, sem espaço para a linha de apoio, a versão sem ela. Sem largura em número (tamanho por CSS), mantém a pedida. */
+export function resolverLogo(variant: LogoVariant, largura?: number | string): { variant: LogoVariant; vb: string; semLinha: boolean } {
+  const g = GEO[variant] ?? GEO.horizontal;
+  const numero = typeof largura === "number" ? largura : undefined;
+  if (g.linha && numero !== undefined && numero < larguraMinimaDaLinha(variant)) {
+    if (g.linha.fallback) return { variant: g.linha.fallback, vb: GEO[g.linha.fallback].vb, semLinha: true };
+    if (g.linha.vbSem) return { variant, vb: g.linha.vbSem, semLinha: true };
+  }
+  return { variant, vb: g.vb, semLinha: false };
+}
 
 export interface LogoProps {
   /** "compacta" (sem linha de apoio) é a do Header e do painel; "horizontal" e "vertical" levam a linha de apoio. */
@@ -49,23 +86,26 @@ function propsDe(a: Record<string, string>, chave: number): Record<string, unkno
   return p;
 }
 
-function desenhar(nos: No[]): ReactNode[] {
-  return nos.map((n, i) => createElement(n.t, propsDe(n.a, i), ...(n.c ? desenhar(n.c) : [])));
+function desenhar(nos: No[], semLinha = false): ReactNode[] {
+  return nos
+    .filter((n) => !(semLinha && n.a.id === "linha-de-apoio"))
+    .map((n, i) => createElement(n.t, propsDe(n.a, i), ...(n.c ? desenhar(n.c, semLinha) : [])));
 }
 
 export function Logo({ variant = "horizontal", mono = false, animated = false, width, className, style, title = "ReabToxin" }: LogoProps) {
-  const g = GEO[variant] ?? GEO.horizontal;
+  const r = resolverLogo(variant, width);
+  const g = GEO[r.variant] ?? GEO.horizontal;
   return (
     <svg
       className={cx("ap-logo", mono && "ap-logo-mono", animated && "ap-logo-intro", className)}
-      viewBox={g.vb}
+      viewBox={r.vb}
       width={width}
       style={style}
       role="img"
       aria-label={title || undefined}
       aria-hidden={title ? undefined : true}
     >
-      {desenhar(g.nos)}
+      {desenhar(g.nos, r.semLinha)}
     </svg>
   );
 }
