@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>Contato (celular) — Dra. Ana Paula Fonseca</title>
+<title>Contato (celular) — ReabToxin</title>
 <script src="./support.js"></script>
 <link rel="stylesheet" href="ap-tokens.css">
 <link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
@@ -23,7 +23,7 @@ a{color:var(--ink)}a:hover{color:var(--ink-muted)}
 
 <main>
 
-<x-import component-from-global-scope="ApFonseca.Hero" eyebrow="Contato" title="Fale com a clínica" lead="Agende uma consulta ou tire suas dúvidas sobre as turmas de toxina botulínica. A equipe responde pelo canal que você preferir."></x-import>
+<x-import component-from-global-scope="ApFonseca.Hero" eyebrow="Contato" title="Fale com a equipe" lead="Tire suas dúvidas sobre o ReabToxin, as turmas e as inscrições. A equipe responde pelo canal que você preferir."></x-import>
 
 <x-import component-from-global-scope="ApFonseca.Section" id="formulario" background="surface">
 <div style="display: flex; flex-wrap: wrap; gap: var(--space-7); align-items: flex-start;">
@@ -40,14 +40,14 @@ a{color:var(--ink)}a:hover{color:var(--ink-muted)}
 <x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="E-mail" type="email" name="email" auto-complete="email" required="{{yes}}"></x-import>
 <x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" label="Telefone ou WhatsApp" type="tel" name="telefone" auto-complete="tel"></x-import>
 <x-import component-from-global-scope="ApFonseca.Select" label="Assunto" name="assunto" required="{{yes}}" options="{{assuntos}}"></x-import>
-<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" multiline="{{yes}}" rows="{{five}}" label="Mensagem" name="mensagem" hint="Não envie informações de saúde por aqui. Elas são tratadas na consulta."></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" floating="{{yes}}" multiline="{{yes}}" rows="{{five}}" label="Mensagem" name="mensagem" hint="Não envie informações de saúde por aqui."></x-import>
 <x-import component-from-global-scope="ApFonseca.Checkbox" name="privacidade" required="{{yes}}" label="Li e aceito a Política de Privacidade." hint="Seus dados são usados só para responder a este contato."></x-import>
 <x-import component-from-global-scope="ApFonseca.Button" type="submit" size="lg" arrow="{{yes}}" full="{{yes}}">Enviar mensagem</x-import>
 </form>
 </sc-if>
 <sc-if value="{{sent}}" hint-placeholder-val="{{no}}">
 <div style="display: flex; flex-direction: column; gap: var(--space-5); align-items: stretch;">
-<x-import component-from-global-scope="ApFonseca.Alert" tone="success" title="Mensagem enviada">Obrigado pelo contato. A equipe da clínica vai responder pelo e-mail ou telefone que você informou.</x-import>
+<x-import component-from-global-scope="ApFonseca.Alert" tone="success" title="Mensagem enviada">Obrigado pelo contato. A equipe do ReabToxin vai responder pelo e-mail ou telefone que você informou.</x-import>
 <x-import component-from-global-scope="ApFonseca.Button" variant="ghost" onClick="{{reset}}" full="{{yes}}">Enviar outra mensagem</x-import>
 </div>
 </sc-if>
@@ -81,9 +81,9 @@ a{color:var(--ink)}a:hover{color:var(--ink-muted)}
 <span>Segunda a sexta, 00h às 00h</span>
 </li>
 </ul>
-<div role="img" aria-label="Espaço reservado para o mapa da clínica" style="aspect-ratio: 4 / 3; background: var(--surface-sunken); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2); color: var(--ink-muted);">
+<div role="img" aria-label="Espaço reservado para o mapa do local das turmas" style="aspect-ratio: 4 / 3; background: var(--surface-sunken); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2); color: var(--ink-muted);">
 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="21"></line></svg>
-<span style="font-size: 14px; line-height: 22px;">Mapa da clínica</span>
+<span style="font-size: 14px; line-height: 22px;">Mapa do local das turmas</span>
 </div>
 </div>
 </x-import>
@@ -94,7 +94,7 @@ a{color:var(--ink)}a:hover{color:var(--ink-muted)}
 
 </main>
 
-<x-import component-from-global-scope="ApFonseca.Footer" phone="+55 31 0000-0000" email="contato@dominio.com.br" instagram="@perfil" address="Endereço da clínica, Belo Horizonte — MG" links="{{footerLinks}}" legal="© 2026 Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG 00000 · RQE 00000"></x-import>
+<x-import component-from-global-scope="ApFonseca.Footer" phone="+55 31 0000-0000" email="contato@dominio.com.br" instagram="@perfil" address="Local das turmas, Belo Horizonte — MG" links="{{footerLinks}}" legal="© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG"></x-import>
 
 </div>
 </x-dc>
@@ -105,8 +105,7 @@ class Component extends DCLogic {
     const sent = (this.state && this.state.sent != null) ? this.state.sent : !!this.props.sent;
     const nav = [
       { label: 'Início', href: '/' },
-      { label: 'Sobre a Dra.', href: '/sobre' },
-      { label: 'Clínica', href: '/clinica' },
+      { label: 'Sobre o curso', href: '/sobre-o-curso' },
       { label: 'Agenda de cursos', href: '/agenda' },
       { label: 'Contato', href: '/contato' }
     ];
@@ -123,7 +122,7 @@ class Component extends DCLogic {
       navLinks: nav,
       footerLinks: nav.slice(1),
       headerCta: { label: 'Próximas turmas', href: '/agenda' },
-      assuntos: ['Consulta na clínica', 'Turmas de toxina botulínica', 'Outro assunto']
+      assuntos: ['Inscrições e turmas', 'Pagamento', 'Turma para grupo ou instituição', 'Outro assunto']
     };
   }
 }

@@ -12,7 +12,7 @@ import { TAG_CONFIGURACOES } from "@/lib/configuracoes";
 import { configuracoesSchema, type EstadoConfiguracoes } from "@/lib/configuracoes-form";
 import { autorizar } from "@/lib/sessao";
 
-const CAMPOS = ["telefone", "whatsapp", "instagram", "email", "enderecoLinha1", "enderecoLinha2", "horario", "crm", "rqe"] as const;
+const CAMPOS = ["telefone", "whatsapp", "instagram", "email", "enderecoLinha1", "enderecoLinha2", "horario"] as const;
 
 /** Só o ADMIN edita os dados da clínica. Vale para o Header, o Footer, o WhatsApp, a página de contato e os e-mails. */
 export async function salvarConfiguracoes(_anterior: EstadoConfiguracoes, formData: FormData): Promise<EstadoConfiguracoes> {
@@ -45,7 +45,7 @@ export async function enviarEmailDeTeste(): Promise<EstadoConfiguracoes> {
   const cfg = lerConfig();
   const r = await enviarEmail({
     para: [auth.usuario.email],
-    assunto: "Teste de envio do site da clínica",
+    assunto: "Teste de envio do site do ReabToxin",
     react: createElement(EmailTeste, {
       quemPediu: `${auth.usuario.nome} (${auth.usuario.email})`,
       provedor: cfg.provedor,

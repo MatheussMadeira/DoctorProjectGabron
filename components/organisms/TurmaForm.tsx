@@ -66,6 +66,8 @@ export const TURMA_NOVA: TurmaFormValores = {
   faq: [],
 };
 
+import { ProfessoresDaTurma, type ProfessorOpcao } from "./ProfessoresDaTurma";
+
 export interface TurmaFormProps {
   /** Server Action já ligada ao id (ou a null, ao criar): (estado, formData) → estado. */
   acao: (anterior: EstadoTurma, formData: FormData) => Promise<EstadoTurma>;
@@ -73,9 +75,12 @@ export interface TurmaFormProps {
   /** Inscrições que já ocupam vagas (só há ao editar); alimenta o aviso de vagas e a prévia. */
   ocupadas?: number;
   listaEspera?: number;
+  /** Todos os professores cadastrados e quais já conduzem esta turma (na ordem). */
+  professores?: ProfessorOpcao[];
+  professoresDaTurma?: string[];
 }
 
-export function TurmaForm({ acao, valores, ocupadas = 0, listaEspera = 0 }: TurmaFormProps) {
+export function TurmaForm({ acao, valores, ocupadas = 0, listaEspera = 0, professores = [], professoresDaTurma = [] }: TurmaFormProps) {
   const [estado, enviar, pendente] = useActionState(acao, {} as EstadoTurma);
   const erros = estado.erros ?? {};
 
@@ -166,6 +171,11 @@ export function TurmaForm({ acao, valores, ocupadas = 0, listaEspera = 0 }: Turm
               {(erros.fotoUrl || erros.fotoAlt) && <p className="ap-hint ap-hint-error">{erros.fotoUrl ?? erros.fotoAlt}</p>}
             </div>
           </div>
+        </AdminCard>
+
+        <AdminCard titulo="Professores desta turma">
+          <p className={styles.nota}>Aparecem na seção &quot;Professores&quot; da página da turma, na ordem marcada. O cadastro fica em Configurações › Professores.</p>
+          <ProfessoresDaTurma todos={professores} selecionados={professoresDaTurma} />
         </AdminCard>
 
         <AdminCard titulo="Conteúdo da página">

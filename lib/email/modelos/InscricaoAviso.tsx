@@ -18,7 +18,7 @@ export interface InscricaoAvisoProps {
   contexto: ContextoEmail;
 }
 
-/** Aviso interno: chega na caixa da clínica quando alguém se inscreve. */
+/** Aviso interno: chega na caixa da equipe quando alguém se inscreve. */
 export function InscricaoAviso(p: InscricaoAvisoProps) {
   return (
     <Base contexto={p.contexto} previa={`Nova inscrição: ${p.nome} · ${p.turma.titulo}`}>

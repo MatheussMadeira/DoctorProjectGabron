@@ -11,7 +11,6 @@ export interface FooterProps {
   address?: string;
   instagram?: string;
   links?: Array<{ label: string; href: string }>;
-  /** CRM e RQE junto ao nome da Dra. (CFM). */
   legal?: ReactNode;
 }
 

@@ -90,7 +90,7 @@ const PROGRAMACAO_UM_DIA = (titulo: string) => [
 
 const DESCRICAO_PLACEHOLDER = [
   "Primeiro parágrafo de descrição da turma: o objetivo, o formato e como o conteúdo se liga à prática.",
-  "Segundo parágrafo: o que diferencia a formação, o tamanho da turma e o acompanhamento da Dra.",
+  "Segundo parágrafo: o que diferencia a formação, o tamanho da turma e o acompanhamento dos professores.",
 ];
 
 export const TURMAS_EXEMPLO: TurmaExemplo[] = [
@@ -233,17 +233,11 @@ export const TURMAS_EXEMPLO: TurmaExemplo[] = [
 
 /* ---------- Conteúdo institucional ---------- */
 
-export const CREDENCIAIS = [
-  "Especialista em Medicina Física e Reabilitação — instituição a confirmar",
-  "Título ou formação complementar",
-  "Sociedade ou associação de que faz parte",
-];
-
-export const NUMEROS_TRAJETORIA = [
-  { value: "00", label: "Anos de experiência" },
+export const NUMEROS_CURSO = [
   { value: "00", label: "Turmas realizadas" },
   { value: "00", label: "Profissionais formados" },
   { value: "00", label: "Horas de prática por turma" },
+  { value: "00", label: "Professores" },
 ];
 
 export const DEPOIMENTOS = [
@@ -261,4 +255,27 @@ export const FAQ_CLINICA = [
 
 export const PROFISSOES = ["Médico(a)", "Cirurgião(ã)-dentista", "Biomédico(a)", "Farmacêutico(a)", "Outra profissão habilitada"];
 export const CONSELHOS = ["CRM", "CRO", "CRBM", "CRF", "Outro"];
-export const ASSUNTOS_CONTATO = ["Consulta na clínica", "Turmas de toxina botulínica", "Outro assunto"];
+export const ASSUNTOS_CONTATO = ["Inscrições e turmas", "Pagamento", "Turma para grupo ou instituição", "Outro assunto"];
+
+/** Professores de exemplo do seed: três professores iguais (a ordem é a do admin). Só o primeiro tem nome e foto; os outros são placeholders (nome e registro a confirmar). */
+export const PROFESSORES_EXEMPLO = [
+  {
+    nome: "Dra. Ana Paula Fonseca",
+    funcao: "Médica Fisiatra",
+    registro: "CRM-MG 00000 · RQE 00000",
+    bio: "Mini bio: formação em fisiatria e o que ensina no curso.",
+    fotoUrl: "/images/retrato-dra-ana-paula.webp",
+    fotoAlt: "Dra. Ana Paula Fonseca",
+  },
+  { nome: "Nome do professor", funcao: "Especialidade a confirmar", registro: "Conselho e registro 00000", bio: "Mini bio: formação e o que ensina no curso.", fotoUrl: null, fotoAlt: null },
+  { nome: "Nome da professora", funcao: "Especialidade a confirmar", registro: "Conselho e registro 00000", bio: "Mini bio: formação e o que ensina no curso.", fotoUrl: null, fotoAlt: null },
+];
+
+/** Galeria de exemplo do seed (fotos da marca; trocar por fotos reais das turmas). */
+export const GALERIA_EXEMPLO = [
+  { url: "/images/maos.webp", alt: "Mãos em luvas preparando uma aplicação" },
+  { url: "/images/anatomia-quadril.webp", alt: "Modelo anatômico do quadril" },
+  { url: "/images/luvas.webp", alt: "Luvas cirúrgicas sobre bancada" },
+  { url: "/images/boneco-articulado.webp", alt: "Boneco articulado de madeira" },
+  { url: "/images/pedras-empilhadas.webp", alt: "Pedras empilhadas em equilíbrio" },
+];

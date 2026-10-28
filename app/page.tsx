@@ -1,71 +1,59 @@
 import type { Metadata } from "next";
-import { Activity, ClipboardList, Users } from "lucide-react";
 import { Button, Grid, JsonLd, Photo, Reveal, Stack } from "@/components/atoms";
-import { FeatureItem, ItemList, SectionHeading, Stats, Testimonial } from "@/components/molecules";
-import { AboutDoctor, CTABand, EventCard, Hero } from "@/components/organisms";
+import { ItemList, SectionHeading, StepItem, Stats, Testimonial } from "@/components/molecules";
+import { CTABand, EventCard, Hero, ProfessorCard } from "@/components/organisms";
 import { PublicTemplate, Section, SplitLayout } from "@/components/templates";
 import { obterSite } from "@/lib/configuracoes";
-import { medicoLd } from "@/lib/dados-estruturados";
+import { organizacaoLd } from "@/lib/dados-estruturados";
+import { DEPOIMENTOS, NUMEROS_CURSO } from "@/lib/dados-exemplo";
+import { listarProfessores } from "@/lib/professores";
+import { leadDosProfessores } from "@/lib/professores-texto";
 import { urlDoSite } from "@/lib/seo";
-import { CREDENCIAIS, DEPOIMENTOS, NUMEROS_TRAJETORIA } from "@/lib/dados-exemplo";
 import { listarProximas, proximaComInscricoesAbertas } from "@/lib/turmas";
 import { cardProps, chamadaProxima } from "@/lib/turmas-view";
-import styles from "./paginas.module.css";
 
 export const metadata: Metadata = {
-  title: { absolute: "Dra. Ana Paula Fonseca — Médica Fisiatra em Belo Horizonte" },
-  description: "Medicina física e reabilitação em Belo Horizonte e turmas de toxina botulínica para profissionais da saúde.",
+  title: { absolute: "ReabToxin — Curso de toxina botulínica para profissionais da saúde" },
+  description: "Curso prático de toxina botulínica para médicos, dentistas, biomédicos e outros profissionais da saúde, com base anatômica e prática supervisionada.",
   alternates: { canonical: "/" },
 };
 
 export default async function Home() {
-  const [destaques, proxima, site] = await Promise.all([listarProximas(3), proximaComInscricoesAbertas(), obterSite()]);
+  const [destaques, proxima, site, professores] = await Promise.all([listarProximas(3), proximaComInscricoesAbertas(), obterSite(), listarProfessores()]);
   const chamada = proxima && chamadaProxima(proxima);
 
   return (
     <PublicTemplate>
-      <JsonLd dados={medicoLd(site, urlDoSite())} />
+      <JsonLd dados={organizacaoLd(site, urlDoSite())} />
       <Hero
-        eyebrow="Médica Fisiatra"
-        title="Movimento com equilíbrio"
-        lead="Medicina física e reabilitação em Belo Horizonte, e turmas de toxina botulínica para médicos, dentistas, biomédicos e outros profissionais da saúde."
+        eyebrow="Formação em toxina botulínica"
+        title="ReabToxin"
+        lead="Curso prático de toxina botulínica para médicos, dentistas, biomédicos e outros profissionais da saúde, com base anatômica e prática supervisionada."
         primary={{ label: "Ver agenda de cursos", href: "/agenda" }}
-        secondary={{ label: "Conheça a Dra.", href: "#sobre" }}
-        image="/images/retrato-dra-ana-paula.webp"
-        imageAlt="Retrato da Dra. Ana Paula Fonseca"
+        secondary={{ label: "Conheça o curso", href: "/sobre-o-curso" }}
+        image="/images/maos.webp"
+        imageAlt="Mãos em luvas preparando uma aplicação"
       />
 
-      <Section id="clinica">
+      <Section id="curso">
         <SplitLayout>
           <Stack gap={7}>
             <Reveal>
-              <SectionHeading
-                number="01"
-                eyebrow="A clínica"
-                title="Fisiatria"
-                lead="A fisiatria é a especialidade médica que cuida da função e do movimento: dor, limitações e reabilitação, com tratamento conservador e um plano feito para cada pessoa."
-              />
+              <SectionHeading number="01" eyebrow="O curso" title="Como é a formação" lead="Texto curto sobre a proposta do ReabToxin: o que o curso ensina, para quem é e o que o diferencia." />
             </Reveal>
-            <ItemList>
-              <FeatureItem icon={<ClipboardList size={24} strokeWidth={1.5} aria-hidden />} title="Avaliação completa">
-                Consulta sem pressa, com exame físico e revisão dos exames que você já tem, para entender a dor e o que ela limita no seu dia.
-              </FeatureItem>
-              <FeatureItem icon={<Activity size={24} strokeWidth={1.5} aria-hidden />} title="Plano individual">
-                Tratamento conservador que pode combinar medicação, procedimentos e orientação de exercícios, conforme a indicação de cada caso.
-              </FeatureItem>
-              <FeatureItem icon={<Users size={24} strokeWidth={1.5} aria-hidden />} title="Acompanhamento próximo">
-                Retornos para ajustar o plano e conversa com fisioterapeutas e outros profissionais que cuidam de você.
-              </FeatureItem>
+            <ItemList ordered step={120}>
+              <StepItem marker="01" title="Base anatômica">Cada técnica parte da anatomia aplicada e do critério de indicação.</StepItem>
+              <StepItem marker="02" title="Prática supervisionada">As aplicações são acompanhadas de perto pelos professores, com orientação individual.</StepItem>
+              <StepItem marker="03" title="Segurança antes de tudo">Critérios para indicar ou não o procedimento e conduta diante de intercorrências.</StepItem>
             </ItemList>
-            <Stack row wrap align="center" gap={5} rowGap={4}>
-              <Button variant="secondary" href="/contato" arrow>
-                Agendar consulta
+            <div>
+              <Button variant="secondary" href="/sobre-o-curso" arrow>
+                Conheça o curso
               </Button>
-              <span className={styles.nota}>{site.enderecoCurto}</span>
-            </Stack>
+            </div>
           </Stack>
           <Reveal delay={120}>
-            <Photo src="/images/boneco-articulado.webp" alt="Boneco articulado de madeira em pose de movimento" />
+            <Photo src="/images/anatomia-quadril.webp" alt="Modelo anatômico usado nas aulas" />
           </Reveal>
         </SplitLayout>
       </Section>
@@ -73,12 +61,7 @@ export default async function Home() {
       <Section id="turmas" background="sunken">
         <Stack gap={7}>
           <Reveal>
-            <SectionHeading
-              number="02"
-              eyebrow="Agenda de cursos"
-              title="Próximas turmas"
-              lead="Formação em toxina botulínica para profissionais da saúde. Veja datas, local e programação, e faça sua inscrição."
-            />
+            <SectionHeading number="02" eyebrow="Agenda de cursos" title="Próximas turmas" lead="Veja datas, local e programação de cada turma, e faça sua inscrição." />
           </Reveal>
           <Grid minWidth={320}>
             {destaques.map((t, i) => (
@@ -95,31 +78,41 @@ export default async function Home() {
         </Stack>
       </Section>
 
-      <Section id="sobre">
-        <Reveal>
-          <AboutDoctor
-            photo="/images/retrato-dra-ana-paula.webp"
-            registry={site.registro}
-            bio="Texto de apresentação da Dra. Ana Paula Fonseca: formação, trajetória em fisiatria e como chegou ao ensino da toxina botulínica."
-            credentials={CREDENCIAIS}
-            action={{ label: "Conheça a Dra.", href: "/sobre" }}
-          />
-        </Reveal>
-      </Section>
+      {professores.length > 0 && (
+        <Section id="professores">
+          <Stack gap={7}>
+            <Reveal>
+              <SectionHeading number="03" eyebrow="Professores" title="Quem ensina" lead={leadDosProfessores(professores.length)} />
+            </Reveal>
+            <div className="ap-prof-grade">
+              {professores.map((p, i) => (
+                <Reveal key={p.id} delay={Math.min(i, 3) * 120}>
+                  <ProfessorCard nome={p.nome} titulo={p.funcao} registro={p.registro} foto={p.fotoUrl} fotoAlt={p.fotoAlt} />
+                </Reveal>
+              ))}
+            </div>
+            <Stack row justify="end">
+              <Button variant="link" href="/sobre-o-curso#professores" arrow>
+                Conheça os professores
+              </Button>
+            </Stack>
+          </Stack>
+        </Section>
+      )}
 
       <Section theme="escuro">
         <Stack gap={7}>
           <Reveal>
-            <SectionHeading align="center" eyebrow="Trajetória" title="Em números" />
+            <SectionHeading align="center" eyebrow="ReabToxin" title="O curso em números" />
           </Reveal>
-          <Stats items={NUMEROS_TRAJETORIA} />
+          <Stats items={NUMEROS_CURSO} />
         </Stack>
       </Section>
 
       <Section id="depoimentos" background="sunken">
         <Stack gap={7}>
           <Reveal>
-            <SectionHeading number="03" eyebrow="Depoimentos" title="Quem já fez a formação" />
+            <SectionHeading number="04" eyebrow="Depoimentos" title="Quem já fez a formação" />
           </Reveal>
           <Grid minWidth={300}>
             {DEPOIMENTOS.map((d, i) => (
@@ -134,12 +127,7 @@ export default async function Home() {
       {chamada && (
         <Section>
           <Reveal>
-            <CTABand
-              eyebrow="Próxima turma · Inscrições abertas"
-              title={chamada.title}
-              text={chamada.text}
-              action={{ label: "Garantir minha vaga", href: chamada.href }}
-            />
+            <CTABand eyebrow="Próxima turma · Inscrições abertas" title={chamada.title} text={chamada.text} action={{ label: "Garantir minha vaga", href: chamada.href }} />
           </Reveal>
         </Section>
       )}

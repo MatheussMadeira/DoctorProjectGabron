@@ -6,12 +6,12 @@
    resend         RESEND_API_KEY e EMAIL_REMETENTE (endereço de um domínio verificado no Resend).
    console        não envia: imprime no terminal. Para desenvolvimento e testes automáticos.
 
-   Comuns         EMAIL_REMETENTE_NOME (padrão "Dra. Ana Paula Fonseca"); EMAIL_EQUIPE (quem recebe os avisos
+   Comuns         EMAIL_REMETENTE_NOME (padrão "ReabToxin"); EMAIL_EQUIPE (quem recebe os avisos
                   internos; padrão = o próprio remetente). */
 
 export type Provedor = "smtp" | "resend" | "console";
 
-export const REMETENTE_NOME_PADRAO = "Dra. Ana Paula Fonseca";
+export const REMETENTE_NOME_PADRAO = "ReabToxin";
 
 export type ConfigEmail =
   | {

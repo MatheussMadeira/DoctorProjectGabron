@@ -61,3 +61,13 @@
 @media (max-width: 767px) {
   .vazia, .aviso { padding: var(--space-6) var(--space-4); }
 }
+
+/* Sobre o curso: proposta em duas colunas (texto + pilares numerados). */
+.proposta { display: flex; flex-wrap: wrap; gap: var(--space-8); align-items: flex-start; }
+.proposta > * { flex: 1 1 440px; min-width: 0; }
+.pilares { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.pilar { display: flex; gap: var(--space-5); padding: var(--space-5) 0; border-top: 1px solid var(--line); }
+.pilares > li:last-child .pilar { border-bottom: 1px solid var(--line); }
+.pilarNumero { flex: none; width: 56px; font-size: 40px; line-height: 44px; font-weight: 300; color: var(--accent-ink); }
+.pilarTitulo { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em; }
+.pilarTexto { margin: var(--space-1) 0 0; color: var(--ink-muted); }

@@ -53,7 +53,7 @@ export function InscricaoConfirmacao({ nome, turma, conselho, registro, listaEsp
       </Button>
 
       <Hr style={estilos.linha} />
-      <Text style={estilos.suave}>Se alguma informação estiver errada, responda este e-mail. A equipe da clínica lê as respostas.</Text>
+      <Text style={estilos.suave}>Se alguma informação estiver errada, responda este e-mail. A equipe do ReabToxin lê as respostas.</Text>
     </Base>
   );
 }

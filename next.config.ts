@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
     // Fotos enviadas pelo painel ficam no Vercel Blob (https://<loja>.public.blob.vercel-storage.com/...).
     remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
   },
+  // Rotas antigas (site da Dra.) → rotas do curso. 301 (e não o 308 do `permanent: true`): é o que o Google espera ao trocar um endereço.
+  async redirects() {
+    return [
+      { source: "/sobre", destination: "/sobre-o-curso", statusCode: 301 },
+      { source: "/clinica", destination: "/", statusCode: 301 },
+    ];
+  },
   async headers() {
     return [
       // O painel nunca é indexado, em nenhum modo.

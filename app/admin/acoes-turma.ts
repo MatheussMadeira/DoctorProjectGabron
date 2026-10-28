@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { updateTag } from "next/cache";
 import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
-import { turmas, type Publicacao } from "@/db/schema";
+import { turmaProfessores, turmas, type Publicacao } from "@/db/schema";
 import { obterTurmaAdmin } from "@/lib/admin-turmas";
 import { autorizar } from "@/lib/sessao";
 import { errosPorCampo, gerarSlug, turmaSchema, type EstadoTurma } from "@/lib/turma-form";
@@ -79,8 +79,16 @@ export async function salvarTurma(id: string | null, _anterior: EstadoTurma, for
     await db.update(turmas).set(valores).where(and(eq(turmas.id, id), isNull(turmas.excluidaEm)));
   } else {
     slug = await slugLivre(gerarSlug(t.tituloCurto || t.titulo, t.inicio));
-    await db.insert(turmas).values({ ...valores, slug });
+    const [nova] = await db.insert(turmas).values({ ...valores, slug }).returning({ id: turmas.id });
+    id = nova.id;
   }
+
+  // Professores desta turma, na ordem escolhida (campos "professorId" repetidos, já na ordem da tela).
+  const escolhidos = [...new Set(formData.getAll("professorId").map(String).filter((v) => /^[0-9a-f-]{36}$/i.test(v)))];
+  await db.transaction(async (tx) => {
+    await tx.delete(turmaProfessores).where(eq(turmaProfessores.turmaId, id!));
+    if (escolhidos.length) await tx.insert(turmaProfessores).values(escolhidos.map((professorId, ordem) => ({ turmaId: id!, professorId, ordem })));
+  });
 
   invalidar(slug);
   redirect(`/admin/agenda?salvo=${publicacao === "RASCUNHO" ? "rascunho" : "publicada"}`);

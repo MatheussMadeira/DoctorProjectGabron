@@ -80,7 +80,7 @@ export function ContatoForm({ assuntos, acao = semAcao, estadoInicial = {} }: Co
       ) : (
         <div className={styles.replied}>
           <Alert tone="success" title="Mensagem enviada">
-            Obrigado pelo contato. A equipe da clínica vai responder pelo e-mail ou telefone que você informou.
+            Obrigado pelo contato. A equipe do ReabToxin vai responder pelo e-mail ou telefone que você informou.
           </Alert>
           <Button variant="ghost" onClick={() => setDescartado(estado)}>
             Enviar outra mensagem

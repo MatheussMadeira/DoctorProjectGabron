@@ -95,7 +95,7 @@ test("contato com autopreenchimento: a mensagem é gravada, e o campo-armadilha 
   expect(deFora).toEqual(["campo_hp_7k"]); // só a armadilha ficou sem valor: nenhum nome reconhecível
   await expect(page.locator('input[name="campo_hp_7k"]')).toHaveValue("");
 
-  await page.locator('select[name="assunto"]').selectOption("Consulta na clínica");
+  await page.locator('select[name="assunto"]').selectOption("Inscrições e turmas");
   await expect(async () => {
     await page.getByLabel(/Li e aceito a Política de Privacidade/).check({ force: true, timeout: 2000 });
   }).toPass();
@@ -167,7 +167,7 @@ test("envio rápido demais: aviso de verdade (nunca falso sucesso), nada gravado
   const email = emailDoTeste("rapido");
 
   await autopreencher(page, "form", email);
-  await page.locator('select[name="assunto"]').selectOption("Consulta na clínica");
+  await page.locator('select[name="assunto"]').selectOption("Inscrições e turmas");
   await expect(async () => {
     await page.getByLabel(/Li e aceito a Política de Privacidade/).check({ force: true, timeout: 2000 });
   }).toPass();
@@ -178,7 +178,7 @@ test("envio rápido demais: aviso de verdade (nunca falso sucesso), nada gravado
   await expect(page.getByText("Mensagem enviada")).toHaveCount(0);
   expect(await db.select().from(mensagensContato).where(eq(mensagensContato.email, email))).toHaveLength(0);
   await expect(page.locator('input[name="email"]')).toHaveValue(email); // o que foi digitado fica
-  await expect(page.locator('select[name="assunto"]')).toHaveValue("Consulta na clínica");
+  await expect(page.locator('select[name="assunto"]')).toHaveValue("Inscrições e turmas");
   await expect(page.getByLabel(/Li e aceito a Política de Privacidade/)).toBeChecked();
 
   // Passado o mínimo, o mesmo formulário envia.
@@ -194,7 +194,7 @@ test("sem carimbo (envio direto): pede para recarregar, não grava e não dá fa
   await esperarFormulario(page);
   const email = emailDoTeste("semcarimbo");
   await autopreencher(page, "form", email);
-  await page.locator('select[name="assunto"]').selectOption("Consulta na clínica");
+  await page.locator('select[name="assunto"]').selectOption("Inscrições e turmas");
   await expect(async () => {
     await page.getByLabel(/Li e aceito a Política de Privacidade/).check({ force: true, timeout: 2000 });
   }).toPass();
@@ -218,7 +218,7 @@ test("campo-armadilha preenchido (robô): parece sucesso, nada é gravado, e o d
   await esperarFormulario(page);
   const email = emailDoTeste("robo");
   await autopreencher(page, "form", email);
-  await page.locator('select[name="assunto"]').selectOption("Consulta na clínica");
+  await page.locator('select[name="assunto"]').selectOption("Inscrições e turmas");
   await expect(async () => {
     await page.getByLabel(/Li e aceito a Política de Privacidade/).check({ force: true, timeout: 2000 });
   }).toPass();
@@ -251,7 +251,7 @@ test("aba aberta de um dia para o outro: carimbo vencido é renovado e reenviado
   const email = emailDoTeste("overnight");
 
   await autopreencher(page, "form", email);
-  await page.locator('select[name="assunto"]').selectOption("Consulta na clínica");
+  await page.locator('select[name="assunto"]').selectOption("Inscrições e turmas");
   await expect(async () => {
     await page.getByLabel(/Li e aceito a Política de Privacidade/).check({ force: true, timeout: 2000 });
   }).toPass();

@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>Agenda de cursos — Dra. Ana Paula Fonseca</title>
+<title>Agenda de cursos — ReabToxin</title>
 <script src="./support.js"></script>
 <link rel="stylesheet" href="ap-tokens.css">
 <link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
@@ -41,7 +41,7 @@ a{color:var(--ink)}a:hover{color:var(--ink-muted)}
 </x-import>
 </main>
 
-<x-import component-from-global-scope="ApFonseca.Footer" phone="+55 31 0000-0000" email="contato@dominio.com.br" instagram="@perfil" address="Endereço da clínica, Belo Horizonte — MG" links="{{footerLinks}}" legal="© 2026 Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG 00000 · RQE 00000"></x-import>
+<x-import component-from-global-scope="ApFonseca.Footer" phone="+55 31 0000-0000" email="contato@dominio.com.br" instagram="@perfil" address="Local das turmas, Belo Horizonte — MG" links="{{footerLinks}}" legal="© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG"></x-import>
 
 <x-import component-from-global-scope="ApFonseca.WhatsAppButton" phone="5531000000000" message="Olá! Gostaria de saber mais sobre as próximas turmas." label="Fale conosco no WhatsApp"></x-import>
 
@@ -53,8 +53,7 @@ class Component extends DCLogic {
     const theme = (this.state && this.state.theme) || this.props.theme || 'claro';
     const nav = [
       { label: 'Início', href: '/' },
-      { label: 'Sobre a Dra.', href: '/sobre' },
-      { label: 'Clínica', href: '/clinica' },
+      { label: 'Sobre o curso', href: '/sobre-o-curso' },
       { label: 'Agenda de cursos', href: '/agenda' },
       { label: 'Contato', href: '/contato' }
     ];

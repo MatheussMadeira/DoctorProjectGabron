@@ -12,7 +12,7 @@ import styles from "../paginas.module.css";
 
 export const metadata: Metadata = {
   title: "Contato",
-  description: "Agende uma consulta ou tire dúvidas sobre as turmas de toxina botulínica.",
+  description: "Tire suas dúvidas sobre o ReabToxin, as turmas e as inscrições. A equipe responde pelo canal que você preferir.",
   alternates: { canonical: "/contato" },
 };
 
@@ -25,8 +25,8 @@ export default async function ContatoPage() {
     <PublicTemplate hideWhatsApp>
       <Hero
         eyebrow="Contato"
-        title="Fale com a clínica"
-        lead="Agende uma consulta ou tire suas dúvidas sobre as turmas de toxina botulínica. A equipe responde pelo canal que você preferir."
+        title="Fale com a equipe"
+        lead="Tire suas dúvidas sobre o ReabToxin, as turmas e as inscrições. A equipe responde pelo canal que você preferir."
       />
 
       <Section id="formulario">

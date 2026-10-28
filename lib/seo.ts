@@ -23,8 +23,8 @@ export function openGraphDoSite(extra: { title?: string; description?: string; u
   return {
     type: "website",
     locale: "pt_BR",
-    siteName: "Dra. Ana Paula Fonseca",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Dra. Ana Paula Fonseca — Médica Fisiatra" }],
+    siteName: "ReabToxin",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "ReabToxin — Curso de toxina botulínica" }],
     ...extra,
   };
 }
@@ -56,8 +56,7 @@ export interface PaginaDoSitemap {
 export const PAGINAS_PUBLICAS: PaginaDoSitemap[] = [
   { caminho: "/", prioridade: 1, frequencia: "weekly" },
   { caminho: "/agenda", prioridade: 0.9, frequencia: "weekly" },
-  { caminho: "/sobre", prioridade: 0.7, frequencia: "monthly" },
-  { caminho: "/clinica", prioridade: 0.7, frequencia: "monthly" },
+  { caminho: "/sobre-o-curso", prioridade: 0.7, frequencia: "monthly" },
   { caminho: "/contato", prioridade: 0.6, frequencia: "yearly" },
   { caminho: "/politica-de-privacidade", prioridade: 0.2, frequencia: "yearly" },
 ];

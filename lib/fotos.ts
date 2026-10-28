@@ -32,13 +32,24 @@ export const ehHeic = (a: ArquivoLike) => /^image\/hei[cf]$/i.test(a.type) || /\
 /** Aceita pelo tipo ou, quando o sistema não informa o tipo (comum com HEIC no Windows), pela extensão. */
 export const tipoAceito = (a: ArquivoLike) => (FOTO_REGRAS.tiposOriginais as readonly string[]).includes(a.type.toLowerCase()) || ((!a.type || a.type === "application/octet-stream") && FOTO_REGRAS.extensoesOriginais.test(a.name));
 
-/** Tamanho do arquivo final a partir da largura (em pixels da foto original) do recorte: no máximo 2000 de largura, sempre 16:10. */
-export function tamanhoDeSaida(larguraDoRecorte: number): { largura: number; altura: number } {
-  const largura = Math.max(1, Math.min(FOTO_REGRAS.larguraMaxima, Math.round(larguraDoRecorte)));
-  return { largura, altura: Math.max(1, Math.round(largura / FOTO_REGRAS.proporcao)) };
+/** Formatos do recorte: "paisagem" (16:10, foto da turma), "retrato" (4:5, professor) e "livre" (galeria: mantém o enquadramento original). */
+export type FormatoFoto = "paisagem" | "retrato" | "livre";
+export const FORMATOS_FOTO = {
+  paisagem: { proporcao: 16 / 10, larguraMaxima: 2000, larguraAviso: 1200 },
+  retrato: { proporcao: 4 / 5, larguraMaxima: 1200, larguraAviso: 800 },
+  livre: { proporcao: null, larguraMaxima: 2000, larguraAviso: 1200 },
+} as const;
+
+/** Tamanho do arquivo final a partir do recorte (em pixels da foto original): nunca passa da largura máxima do formato e nunca é ampliado.
+    "livre" mantém a proporção do recorte (passe a altura dele). */
+export function tamanhoDeSaida(larguraDoRecorte: number, formato: FormatoFoto = "paisagem", alturaDoRecorte?: number): { largura: number; altura: number } {
+  const f = FORMATOS_FOTO[formato];
+  const largura = Math.max(1, Math.min(f.larguraMaxima, Math.round(larguraDoRecorte)));
+  const proporcao = f.proporcao ?? (alturaDoRecorte ? larguraDoRecorte / alturaDoRecorte : FORMATOS_FOTO.paisagem.proporcao);
+  return { largura, altura: Math.max(1, Math.round(largura / proporcao)) };
 }
 
-export const recorteEhPequeno = (larguraDoRecorte: number) => larguraDoRecorte < FOTO_REGRAS.larguraAviso;
+export const recorteEhPequeno = (larguraDoRecorte: number, formato: FormatoFoto = "paisagem") => larguraDoRecorte < FORMATOS_FOTO[formato].larguraAviso;
 
 /** Mensagens em linguagem simples (sem proporção, pixels ou megabytes quando dá para evitar). */
 export const MENSAGENS_FOTO = {

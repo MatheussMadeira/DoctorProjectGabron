@@ -37,8 +37,8 @@ export function Header({ links = [], current, cta, contato, sticky = true }: Hea
   return (
     <header className={cx("ap-header", sticky && "is-sticky", scrolled && "is-scrolled")}>
       <div className="ap-container ap-header-row">
-        <Link href="/" className="ap-header-logo" aria-label="Início — Dra. Ana Paula Fonseca">
-          <Logo variant="horizontal" title="" />
+        <Link href="/" className="ap-header-logo" aria-label="Início — ReabToxin">
+          <Logo variant="compacta" title="" />
         </Link>
         <nav className="ap-nav" aria-label="Principal">
           {links.map((l) => (

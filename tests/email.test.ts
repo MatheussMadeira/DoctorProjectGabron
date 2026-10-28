@@ -13,7 +13,7 @@ import { VagaConfirmada } from "../lib/email/modelos/VagaConfirmada";
 
 const contexto = {
   logoUrl: "https://site.exemplo.invalid/logos/logo-horizontal-negativo-2x.png",
-  legal: "© 2026 Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG 12345 · RQE 6789",
+  legal: "© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG",
 };
 
 test("smtp: sem EMAIL_TESTE e SENHA_TESTE a configuração acusa o que falta", () => {
@@ -27,7 +27,7 @@ test("smtp: usa o Gmail do site como remetente e tira os espaços da senha de ap
   assert.ok(c.ok);
   if (!c.ok) return;
   assert.equal(c.provedor, "smtp");
-  assert.deepEqual(c.remetente, { nome: "Dra. Ana Paula Fonseca", email: "site@gmail.com" });
+  assert.deepEqual(c.remetente, { nome: "ReabToxin", email: "site@gmail.com" });
   assert.equal(c.smtp?.senha, "abcdefghijklmnop");
   assert.equal(c.smtp?.host, "smtp.gmail.com");
   assert.equal(c.equipe, "site@gmail.com");
@@ -96,14 +96,14 @@ test("modelo de confirmação: identidade, dados da turma e tom (sem exclamaçã
 test("o logo vai como PNG com endereço absoluto, com texto alternativo", async () => {
   const html = await render(createElement(InscricaoConfirmacao, props));
   assert.match(html, /<img[^>]+src="https:\/\/site\.exemplo\.invalid\/logos\/logo-horizontal-negativo-2x\.png"/);
-  assert.match(html, /alt="Dra\. Ana Paula Fonseca — Médica Fisiatra"/);
+  assert.match(html, /alt="ReabToxin"/);
   assert.ok(!/src="\//.test(html), "nenhuma imagem com caminho relativo");
 });
 
-test("o rodapé usa o CRM e o RQE de Configurações, não um placeholder fixo", async () => {
+test("o rodapé legal do e-mail é o do ReabToxin, sem CRM nem RQE", async () => {
   const texto = await render(createElement(InscricaoConfirmacao, props), { plainText: true });
-  assert.match(texto, /CRM-MG 12345 · RQE 6789/);
-  assert.ok(!/CRM-MG 00000/.test(texto));
+  assert.ok(texto.includes("© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG"));
+  assert.ok(!/Coordenação|responsabilidade técnica/.test(texto));
 });
 
 test("modelo de confirmação na lista de espera não promete vaga nem pagamento", async () => {

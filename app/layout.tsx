@@ -24,12 +24,21 @@ const sans = Source_Sans_3({
 export const metadata: Metadata = {
   metadataBase: new URL(urlDoSite()),
   title: {
-    default: "Dra. Ana Paula Fonseca — Médica Fisiatra em Belo Horizonte",
-    template: "%s · Dra. Ana Paula Fonseca",
+    default: "ReabToxin — Curso de toxina botulínica para profissionais da saúde",
+    template: "%s · ReabToxin",
   },
-  description: "Médica fisiatra em Belo Horizonte e turmas de toxina botulínica para profissionais da saúde.",
-  applicationName: "Dra. Ana Paula Fonseca",
-  icons: { icon: "/favicon.svg" },
+  description: "Curso prático de toxina botulínica para médicos, dentistas, biomédicos e outros profissionais da saúde, com base anatômica e prática supervisionada.",
+  applicationName: "ReabToxin",
+  // Kit de logo do ReabToxin: SVG (navegadores novos), PNG de 16 e 32 (fallback) e o ícone do iOS (180).
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  manifest: "/manifest.webmanifest",
   robots: robotsDaPagina(sitePublico()),
   openGraph: openGraphDoSite(),
   twitter: { card: "summary_large_image", images: ["/og.png"] },

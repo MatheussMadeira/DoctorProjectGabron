@@ -15,10 +15,12 @@ a { color: inherit; }
 .ap-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ---------- marca ---------- */
-.ap-logo { display: block; height: auto; max-width: 100%; }
-.ap-logo-i { fill: var(--logo-ink); }
-.ap-logo-s { fill: var(--logo-stone); }
-.ap-logo-mono .ap-logo-s { fill: var(--logo-ink); }
+/* Cores do logo pelo tema: o SVG usa as classes do kit (rt-nome, rt-nome-traco, rt-pedra) e estas variáveis. */
+.ap-logo { display: block; height: auto; max-width: 100%; --rt-nome: var(--logo-ink); --rt-pedra: var(--logo-stone); }
+.ap-logo .rt-nome { fill: var(--rt-nome, currentColor); }
+.ap-logo .rt-nome-traco { stroke: var(--rt-nome, currentColor); }
+.ap-logo .rt-pedra { fill: var(--rt-pedra, #9bacbe); }
+.ap-logo-mono { --rt-pedra: var(--logo-ink); }
 
 .ap-pedras { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 .ap-pedras-svg { position: absolute; height: 150%; width: auto; top: -22%; left: 38%; overflow: visible; will-change: transform; }
@@ -30,9 +32,9 @@ a { color: inherit; }
 @keyframes ap-float { from { transform: translate(-1.5%, -2%) rotate(-1deg); } to { transform: translate(1.5%, 2%) rotate(1deg); } }
 @keyframes ap-settle-stone { from { opacity: 0; transform: translateY(-35%) rotate(-4deg); } 60% { opacity: 1; } to { opacity: 1; transform: none; } }
 
-/* logo animado: as pedras caem e se empilham de baixo para cima, depois o nome aparece */
-.ap-logo-intro .ap-logo-s { transform-box: fill-box; transform-origin: center bottom; animation: ap-drop var(--duration-intro, 1400ms) var(--ease-settle, cubic-bezier(0.2, 0.9, 0.25, 1)) both; animation-delay: calc(var(--i, 0) * 180ms + 100ms); }
-.ap-logo-intro .ap-logo-i { animation: ap-fade 900ms var(--ease-out, ease-out) both; animation-delay: 900ms; }
+/* logo animado: as pedras caem e se empilham de baixo para cima (data-ordem), depois o nome aparece */
+.ap-logo-intro [data-ordem] { transform-box: fill-box; transform-origin: center bottom; animation: ap-drop var(--duration-intro, 1400ms) var(--ease-settle, cubic-bezier(0.2, 0.9, 0.25, 1)) both; animation-delay: calc(var(--i, 0) * 350ms + 100ms); }
+.ap-logo-intro [data-camada="nome"], .ap-logo-intro [data-camada="linha-de-apoio"], .ap-logo-intro [data-camada="aneis"] { animation: ap-fade 900ms var(--ease-out, ease-out) both; animation-delay: 1500ms; }
 @keyframes ap-drop { from { opacity: 0; transform: translateY(-140%) rotate(-8deg); } 55% { opacity: 1; } to { opacity: 1; transform: none; } }
 @keyframes ap-fade { from { opacity: 0; } to { opacity: 1; } }
 

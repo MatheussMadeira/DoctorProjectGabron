@@ -31,8 +31,6 @@ export const configuracoesSchema = z.object({
   enderecoLinha1: opcional("Endereço", 120),
   enderecoLinha2: opcional("Cidade e CEP", 120),
   horario: opcional("Horário", 80),
-  crm: opcional("CRM", 40),
-  rqe: opcional("RQE", 40),
 });
 
 export type ConfiguracoesForm = z.output<typeof configuracoesSchema>;

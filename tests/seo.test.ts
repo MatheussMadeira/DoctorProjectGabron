@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { eventoLd, medicoLd } from "../lib/dados-estruturados";
+import { cursoLd, eventoLd, organizacaoLd } from "../lib/dados-estruturados";
+import type { ProfessorPublico } from "../lib/professores";
 import { cabecalhosDeIndexacao, entradasDoSitemap, PAGINAS_PUBLICAS, regrasDoRobots, robotsDaPagina, sitePublico, urlDoSite } from "../lib/seo";
 import { montarSite } from "../lib/site";
 import type { Turma } from "../lib/turmas";
@@ -54,42 +55,77 @@ const turma: Turma = {
   preco: "R$ 0.000", precoCentavos: null, atualizadaEm: "2026-10-01T00:00:00Z", fotoUrl: "/images/maos.webp", fotoAlt: "x", publicoAlvo: [], aprendizados: [], programacao: [], faq: [], status: "aberto",
 };
 
-test("dados estruturados da Dra.: com placeholders, nenhum CRM, telefone, e-mail ou endereço sai", () => {
-  const ld = medicoLd(montarSite(null), BASE);
-  assert.equal(ld["@type"], "Physician");
-  assert.equal(ld.name, "Dra. Ana Paula Fonseca");
-  for (const campo of ["telephone", "email", "identifier", "sameAs"]) assert.equal(campo in ld, false, campo);
+const professor = (nome: string, extra: Partial<ProfessorPublico> = {}): ProfessorPublico => ({ id: nome, nome, funcao: "Médica Fisiatra", registro: "CRM-MG 12345 · RQE 6789", bio: "", fotoUrl: "/images/retrato-dra-ana-paula.webp", fotoAlt: null, ...extra });
+
+test("Organization (ReabToxin): com placeholders, nenhum telefone, e-mail ou endereço sai, e ninguém aparece como fundador ou coordenador", () => {
+  const ld = organizacaoLd(montarSite(null), BASE);
+  assert.equal(ld["@type"], "Organization");
+  assert.equal(ld.name, "ReabToxin");
+  assert.equal(ld["@id"], `${BASE}/#organizacao`);
+  assert.equal("founder" in ld, false, "sem coordenação nem responsável técnico nos dados estruturados");
+  for (const campo of ["telephone", "email", "sameAs"]) assert.equal(campo in ld, false, campo);
   assert.ok(!JSON.stringify(ld).includes("00000"), "nenhum zero de placeholder");
+  assert.ok(!JSON.stringify(ld).includes("Physician"), "sem Physician/clínica");
   assert.deepEqual(ld.address, { "@type": "PostalAddress", addressLocality: "Belo Horizonte", addressRegion: "MG", addressCountry: "BR" });
 });
 
-test("dados estruturados da Dra.: o que foi preenchido de verdade aparece", () => {
-  const ld = medicoLd(montarSite({ telefone: "(31) 99999-9999", crm: "CRM-MG 12345", rqe: "RQE 6789", instagram: "@dra.ana", enderecoLinha1: "Rua das Pedras, 10, sala 2", enderecoLinha2: "Belo Horizonte — MG · CEP 30000-000" }), BASE);
+test("Organization: o que foi preenchido de verdade aparece", () => {
+  const ld = organizacaoLd(montarSite({ telefone: "(31) 99999-9999", instagram: "@reabtoxin", enderecoLinha1: "Rua das Pedras, 10, sala 2", enderecoLinha2: "Belo Horizonte — MG · CEP 30000-000" }), BASE);
   assert.equal(ld.telephone, "(31) 99999-9999");
-  assert.deepEqual(ld.sameAs, ["https://instagram.com/dra.ana"]);
-  assert.equal((ld.identifier as unknown[]).length, 2);
+  assert.deepEqual(ld.sameAs, ["https://instagram.com/reabtoxin"]);
   assert.equal((ld.address as Record<string, string>).streetAddress, "Rua das Pedras, 10, sala 2");
 });
 
-test("Event: datas, modo presencial, local e imagem absoluta; sem preço enquanto for placeholder", () => {
-  const ld = eventoLd(turma, montarSite(null), BASE);
-  assert.equal(ld["@type"], "Event");
+test("Course: curso com CourseInstance (modo, datas, local e professores de verdade); provedor é o ReabToxin", () => {
+  const ld = cursoLd(turma, [professor("Dra. Ana Paula Fonseca")], BASE);
+  assert.equal(ld["@type"], "Course");
+  assert.equal((ld.provider as Record<string, string>).name, "ReabToxin");
+  const inst = ld.hasCourseInstance as Record<string, unknown>;
+  assert.equal(inst["@type"], "CourseInstance");
+  assert.equal(inst.courseMode, "onsite");
+  assert.equal(inst.startDate, "2026-11-21");
+  assert.equal((inst.instructor as Array<Record<string, string>>)[0].name, "Dra. Ana Paula Fonseca");
+  const online = cursoLd({ ...turma, modalidade: "Online", cidade: "Ao vivo", local: undefined }, [], BASE);
+  assert.equal((online.hasCourseInstance as Record<string, unknown>).courseMode, "online");
+  assert.equal("instructor" in (online.hasCourseInstance as Record<string, unknown>), false, "sem professores, sem instructor");
+});
+
+test("professor de exemplo (\"Nome do professor\") não vai para o Google", () => {
+  const ld = eventoLd(turma, [professor("Dra. Ana Paula Fonseca"), professor("Nome do professor", { funcao: "Especialidade a confirmar" }), professor("Nome da professora")], BASE);
+  const nomes = (ld.performer as Array<Record<string, string>>).map((p) => p.name);
+  assert.deepEqual(nomes, ["Dra. Ana Paula Fonseca"]);
+  assert.ok(!JSON.stringify(ld).includes("00000"));
+});
+
+test("EducationEvent: datas, modo presencial, local e imagem absoluta; sem preço enquanto for placeholder", () => {
+  const ld = eventoLd(turma, [], BASE);
+  assert.equal(ld["@type"], "EducationEvent");
+  assert.equal((ld.organizer as Record<string, string>).name, "ReabToxin");
   assert.equal(ld.startDate, "2026-11-21");
   assert.equal(ld.endDate, "2026-11-22");
   assert.equal(ld.eventAttendanceMode, "https://schema.org/OfflineEventAttendanceMode");
   assert.deepEqual(ld.image, [`${BASE}/images/maos.webp`]);
   assert.equal("offers" in ld, false, "preço de placeholder não vai para o Google");
+  assert.equal("performer" in ld, false);
 });
 
-test("Event: preço real vira Offer; esgotada vira SoldOut; online vira VirtualLocation; em breve não leva oferta", () => {
-  const real = eventoLd({ ...turma, precoCentavos: 150000 }, montarSite(null), BASE);
+test("EducationEvent: preço real vira Offer; esgotada vira SoldOut; online vira VirtualLocation; em breve não leva oferta", () => {
+  const real = eventoLd({ ...turma, precoCentavos: 150000 }, [], BASE);
   assert.deepEqual((real.offers as Record<string, string>).price, "1500.00");
   assert.equal((real.offers as Record<string, string>).priceCurrency, "BRL");
-  const esgotada = eventoLd({ ...turma, precoCentavos: 150000, status: "esgotado" }, montarSite(null), BASE);
+  const esgotada = eventoLd({ ...turma, precoCentavos: 150000, status: "esgotado" }, [], BASE);
   assert.equal((esgotada.offers as Record<string, string>).availability, "https://schema.org/SoldOut");
-  const online = eventoLd({ ...turma, modalidade: "Online", cidade: "Ao vivo", local: undefined }, montarSite(null), BASE);
+  const online = eventoLd({ ...turma, modalidade: "Online", cidade: "Ao vivo", local: undefined }, [], BASE);
   assert.equal(online.eventAttendanceMode, "https://schema.org/OnlineEventAttendanceMode");
   assert.equal((online.location as Record<string, string>)["@type"], "VirtualLocation");
-  const emBreve = eventoLd({ ...turma, precoCentavos: 150000, status: "em-breve" }, montarSite(null), BASE);
+  const emBreve = eventoLd({ ...turma, precoCentavos: 150000, status: "em-breve" }, [], BASE);
   assert.equal("offers" in emBreve, false);
+});
+
+test("frase de apoio dos professores segue o design: 'Três professores que conduzem juntos…'", async () => {
+  const { leadDosProfessores } = await import("../lib/professores-texto");
+  assert.equal(leadDosProfessores(3), "Três professores que conduzem juntos as aulas teóricas e acompanham a prática.");
+  assert.equal(leadDosProfessores(2), "Dois professores que conduzem juntos as aulas teóricas e acompanham a prática.");
+  assert.equal(leadDosProfessores(9), "Os professores que conduzem juntos as aulas teóricas e acompanham a prática.");
+  assert.equal(leadDosProfessores(1), "O professor que conduz as aulas teóricas e acompanha a prática.");
 });

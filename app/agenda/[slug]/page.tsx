@@ -3,12 +3,13 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Button, Grid, JsonLd, Reveal, Stack } from "@/components/atoms";
 import { Alert, BulletItem, ItemList, SectionHeading, Testimonial } from "@/components/molecules";
-import { AboutDoctor, EventSummary, FAQ, Hero, InscricaoForm, Schedule } from "@/components/organisms";
+import { EventSummary, FAQ, Hero, InscricaoForm, ProfessorCard, Schedule } from "@/components/organisms";
 import { MainAside, PublicTemplate, Section } from "@/components/templates";
 import { obterSite } from "@/lib/configuracoes";
-import { eventoLd } from "@/lib/dados-estruturados";
+import { cursoLd, eventoLd } from "@/lib/dados-estruturados";
+import { professoresDaTurma } from "@/lib/professores";
 import { openGraphDoSite, urlDoSite } from "@/lib/seo";
-import { CONSELHOS, CREDENCIAIS, DEPOIMENTOS, PROFISSOES } from "@/lib/dados-exemplo";
+import { CONSELHOS, DEPOIMENTOS, PROFISSOES } from "@/lib/dados-exemplo";
 import { duracaoPorExtenso, formatPeriodo } from "@/lib/datas";
 import { listarSlugs, obterTurma, type Turma } from "@/lib/turmas";
 import { localDaTurma, sobretituloDaTurma } from "@/lib/turmas-view";
@@ -52,13 +53,14 @@ async function Turma({ params }: Pick<PageProps<"/agenda/[slug]">, "params">) {
   // Antes de qualquer trecho da página ser enviado: a resposta sai com status 404 de verdade.
   if (!turma) notFound();
 
-  const site = await obterSite();
+  const [site, professores] = await Promise.all([obterSite(), professoresDaTurma(turma.id, turma.slug)]);
   const periodo = formatPeriodo(turma.inicio, turma.fim);
   const dias = turma.programacao.length;
 
   return (
     <PublicTemplate withBar whatsAppMessage={`Olá! Tenho uma dúvida sobre a turma ${turma.titulo} de ${periodo}.`}>
-      <JsonLd dados={eventoLd(turma, site, urlDoSite())} />
+      <JsonLd dados={cursoLd(turma, professores, urlDoSite())} />
+      <JsonLd dados={eventoLd(turma, professores, urlDoSite())} />
       <Hero
         eyebrow={sobretituloDaTurma(turma)}
         title={turma.titulo}
@@ -124,7 +126,7 @@ async function Turma({ params }: Pick<PageProps<"/agenda/[slug]">, "params">) {
                     number="04"
                     eyebrow={duracaoPorExtenso(turma.inicio, turma.fim)}
                     title="Programação"
-                    lead="Programação de exemplo, a confirmar com a Dra."
+                    lead="Programação de exemplo, a confirmar com os professores."
                   />
                 </Reveal>
                 {turma.programacao.map((dia) => (
@@ -132,24 +134,29 @@ async function Turma({ params }: Pick<PageProps<"/agenda/[slug]">, "params">) {
                 ))}
               </section>
 
-              <section id="quem-conduz" className={styles.secao}>
-                <Reveal>
-                  <SectionHeading number="05" eyebrow="Professora" title="Quem conduz" />
-                </Reveal>
-                <Reveal delay={120}>
-                  <AboutDoctor
-                    photo="/images/retrato-dra-ana-paula.webp"
-                    registry={site.registro}
-                    bio="Texto curto sobre a Dra. Ana Paula Fonseca: formação em fisiatria e experiência com toxina botulínica e com o ensino."
-                    credentials={CREDENCIAIS}
-                    action={{ label: "Conheça a Dra.", href: "/sobre" }}
-                  />
-                </Reveal>
-              </section>
+              {professores.length > 0 && (
+                <section id="professores" className={styles.secao}>
+                  <Reveal>
+                    <SectionHeading number="05" eyebrow="Professores" title="Quem conduz esta turma" />
+                  </Reveal>
+                  <div className="ap-prof-lista">
+                    {professores.map((p, i) => (
+                      <Reveal key={p.id} delay={Math.min(i, 3) * 120}>
+                        <ProfessorCard layout="horizontal" nome={p.nome} titulo={p.funcao} registro={p.registro} bio={p.bio} foto={p.fotoUrl} fotoAlt={p.fotoAlt} />
+                      </Reveal>
+                    ))}
+                  </div>
+                  <div>
+                    <Button variant="link" href="/sobre-o-curso#professores" arrow>
+                      Conheça todos os professores
+                    </Button>
+                  </div>
+                </section>
+              )}
 
               <section id="duvidas" className={styles.secao}>
                 <Reveal>
-                  <SectionHeading number="06" eyebrow="Dúvidas" title="Perguntas frequentes" />
+                  <SectionHeading number={professores.length > 0 ? "06" : "05"} eyebrow="Dúvidas" title="Perguntas frequentes" />
                 </Reveal>
                 <Reveal delay={120}>
                   <FAQ items={turma.faq} />

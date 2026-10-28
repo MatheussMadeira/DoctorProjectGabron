@@ -195,6 +195,55 @@ export const limitesTaxa = pgTable("limites_taxa", {
   janelaFim: timestamp("janela_fim", { withTimezone: true }).notNull(),
 });
 
+/** Professores do curso: todos iguais, na ordem do admin (`ordem`); `visivel` controla o site.
+    Professor médico sempre mostra CRM e RQE em `registro` (regra do CFM; validada em lib/professor-form.ts). */
+export const professores = pgTable(
+  "professores",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    nome: text("nome").notNull(),
+    /** Função ou especialidade: "Médica Fisiatra". */
+    funcao: text("funcao").notNull(),
+    /** "CRM-MG 00000 · RQE 00000" (médicos) ou conselho e número (demais). */
+    registro: text("registro").notNull(),
+    bio: text("bio").notNull().default(""),
+    fotoUrl: text("foto_url"),
+    fotoAlt: text("foto_alt"),
+    visivel: boolean("visivel").notNull().default(true),
+    ordem: integer("ordem").notNull().default(0),
+    ...timestamps,
+  },
+  (t) => [index("professores_ordem_idx").on(t.ordem)],
+);
+
+/** Quais professores conduzem cada turma, e em que ordem. */
+export const turmaProfessores = pgTable(
+  "turma_professores",
+  {
+    turmaId: uuid("turma_id")
+      .notNull()
+      .references(() => turmas.id, { onDelete: "cascade" }),
+    professorId: uuid("professor_id")
+      .notNull()
+      .references(() => professores.id, { onDelete: "cascade" }),
+    ordem: integer("ordem").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.turmaId, t.professorId] }), index("turma_professores_prof_idx").on(t.professorId)],
+);
+
+/** Galeria de "Sobre o curso". A primeira foto aparece maior. Descrição (alt) obrigatória. */
+export const fotosGaleria = pgTable(
+  "fotos_galeria",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    url: text("url").notNull(),
+    alt: text("alt").notNull(),
+    ordem: integer("ordem").notNull().default(0),
+    ...timestamps,
+  },
+  (t) => [index("fotos_galeria_ordem_idx").on(t.ordem)],
+);
+
 /** Envios barrados nos formulários, contados por dia, formulário e motivo (sem dados pessoais e sem crescer a cada tentativa).
     O painel mostra estes números: se "Tempo" ou "Limite" subir sem motivo, pessoas reais podem estar sendo barradas. */
 export const formulariosDescartes = pgTable(
@@ -226,10 +275,6 @@ export const configuracoes = pgTable(
     enderecoLinha1: text("endereco_linha1"),
     enderecoLinha2: text("endereco_linha2"),
     horario: text("horario"),
-    /** "CRM-MG 12345" */
-    crm: text("crm"),
-    /** "RQE 6789" */
-    rqe: text("rqe"),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [check("configuracoes_linha_unica", sql`${t.id} = 1`)],

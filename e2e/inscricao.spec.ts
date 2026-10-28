@@ -185,14 +185,14 @@ test("contato: grava a mensagem e registra o aviso à clínica", async ({ page }
   const email = emailDoTeste("contato");
   await digitar(page, 'input[name="nome"]', "Maria da Silva");
   await digitar(page, 'input[name="email"]', email);
-  await page.locator('select[name="assunto"]').selectOption("Consulta na clínica");
+  await page.locator('select[name="assunto"]').selectOption("Inscrições e turmas");
   await digitar(page, 'textarea[name="mensagem"]', "Gostaria de agendar uma consulta.");
   await page.getByLabel(/Li e aceito a Política de Privacidade/).check({ force: true });
   await page.getByRole("button", { name: "Enviar mensagem" }).click();
   await expect(page.getByText("Mensagem enviada")).toBeVisible();
 
   const [msg] = await db.select().from(mensagensContato).where(eq(mensagensContato.email, email));
-  expect(msg.assunto).toBe("Consulta na clínica");
+  expect(msg.assunto).toBe("Inscrições e turmas");
   await expect
     .poll(async () => (await db.select().from(emailsEnvios).where(eq(emailsEnvios.mensagemId, msg.id))).map((e) => `${e.tipo}:${e.status}`), { timeout: 15_000 })
     .toEqual(["CONTATO_AVISO:ENVIADO"]);
@@ -247,7 +247,7 @@ test("painel: e-mail que falhou aparece como Falhou e o botão Reenviar refaz o 
   await page.goto(`/admin/inscricoes?turma=${id}`);
   await page.waitForLoadState("networkidle");
   await expect(page.getByText("Falha simulada pelo teste")).toBeVisible();
-  await expect(page.getByText("Falhou")).toBeVisible();
+  await expect(page.getByText("Falhou").first()).toBeVisible();
 
   await page.getByRole("button", { name: "Reenviar" }).first().click();
   await expect(page.getByText("Falha simulada pelo teste")).toHaveCount(0);

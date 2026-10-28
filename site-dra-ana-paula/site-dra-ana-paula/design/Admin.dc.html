@@ -103,6 +103,14 @@ body{margin:0}
 </div>
 </div>
 
+<div style="background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4);">
+<h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em;">Professores desta turma</h2>
+<p style="margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-muted);">Aparecem na seção "Professores" da página da turma, na ordem marcada. O cadastro fica em Configurações › Professores.</p>
+<sc-for list="{{profTurma}}" as="p" hint-placeholder-count="4">
+<x-import component-from-global-scope="ApFonseca.Checkbox" name="professores" label="{{p.label}}" hint="{{p.hint}}" default-checked="{{p.marcado}}"></x-import>
+</sc-for>
+</div>
+
 <div style="background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5);">
 <h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em;">Programação</h2>
 <p style="margin: 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink);">Dia 1 · Sábado, 21 de novembro</p>
@@ -147,6 +155,75 @@ body{margin:0}
 </div>
 <x-import component-from-global-scope="ApFonseca.DataTable" columns="{{inscCols}}" rows="{{inscritos}}" on-view="{{noop}}" empty="Nenhuma inscrição nesta turma ainda. Elas aparecem aqui assim que chegarem."></x-import>
 <p style="margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-muted);">Confira o registro no conselho antes de confirmar cada vaga.</p>
+</div>
+</sc-if>
+
+<!-- ========== CONFIGURAÇÕES ========== -->
+<sc-if value="{{isConfig}}" hint-placeholder-val="{{no}}">
+<div style="display: flex; flex-direction: column; gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.Tabs" items="{{configTabs}}" value="{{aba}}" on-change="{{setAba}}" label="Seções das configurações"></x-import>
+
+<sc-if value="{{abaProfessores}}" hint-placeholder-val="{{yes}}">
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start;">
+<div style="flex: 2 1 560px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-3);">
+<p style="margin: 0; color: var(--ink-muted);">A ordem da lista é a ordem em que os professores aparecem no site.</p>
+<x-import component-from-global-scope="ApFonseca.DataTable" columns="{{profCols}}" rows="{{professoresAdmin}}" on-edit="{{noop}}" on-delete="{{noop}}" empty="Nenhum professor cadastrado ainda."></x-import>
+</div>
+<form onSubmit="{{noopSubmit}}" style="flex: 1 1 360px; min-width: 0; background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4);">
+<h2 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em;">Editar professor</h2>
+<div style="display: flex; gap: var(--space-4); align-items: flex-end;">
+<img src="/images/retrato-dra-ana-paula.webp" alt="Foto atual de Dra. Ana Paula Fonseca" style="width: 96px; aspect-ratio: 4 / 5; object-fit: cover; object-position: 70% 30%; box-shadow: var(--shadow-sm);">
+<div style="display: flex; flex-direction: column; gap: var(--space-2); align-items: flex-start;">
+<x-import component-from-global-scope="ApFonseca.Button" variant="secondary" size="sm" onClick="{{openFoto}}">Trocar foto</x-import>
+<span style="font-size: 12px; line-height: 18px; color: var(--ink-muted);">Retrato vertical. Você ajusta o enquadramento.</span>
+</div>
+</div>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Nome" required="{{yes}}" default-value="Dra. Ana Paula Fonseca"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Especialidade" required="{{yes}}" default-value="Médica Fisiatra"></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Registro profissional" required="{{yes}}" default-value="CRM-MG 00000 · RQE 00000" hint="Médicos: CRM e RQE (obrigatórios pelo CFM). Demais: conselho e número."></x-import>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Mini bio" multiline="{{yes}}" rows="{{four}}" default-value="Conduz as aulas teóricas e acompanha a prática supervisionada." hint="Duas ou três frases. Sem promessa de resultado."></x-import>
+<x-import component-from-global-scope="ApFonseca.Checkbox" label="Mostrar no site" default-checked="{{yes}}"></x-import>
+<div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-3);">
+<x-import component-from-global-scope="ApFonseca.Button" variant="ghost">Cancelar</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" type="submit">Salvar professor</x-import>
+</div>
+</form>
+</div>
+</sc-if>
+
+<sc-if value="{{abaGaleria}}" hint-placeholder-val="{{no}}">
+<div style="display: flex; flex-direction: column; gap: var(--space-5);">
+<x-import component-from-global-scope="ApFonseca.Alert" tone="info" title="Fotos das turmas">Mostre aulas, materiais e o ambiente do curso. Sem fotos de pacientes, de antes e depois ou de resultados. A primeira foto aparece maior na galeria de "Sobre o curso".</x-import>
+<label style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2); padding: var(--space-6) var(--space-5); border: 1px dashed var(--line-strong); background: var(--surface-raised); text-align: center; cursor: pointer;">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--accent-ink);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+<span style="font-weight: 600;">Adicionar fotos</span>
+<span style="font-size: 14px; line-height: 22px; color: var(--ink-muted);">Arraste várias fotos de uma vez ou clique para escolher.</span>
+<input type="file" multiple="{{yes}}" accept="image/*" style="position: absolute; width: 1px; height: 1px; opacity: 0;">
+</label>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: var(--space-5);">
+<sc-for list="{{galeriaAdmin}}" as="g" hint-placeholder-count="5">
+<div style="background: var(--surface-raised); box-shadow: var(--shadow-sm); display: flex; flex-direction: column;">
+<img src="{{g.src}}" alt="{{g.alt}}" style="width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block;">
+<div style="padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3);">
+<span style="font-size: 12px; line-height: 18px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted);">{{g.posicao}}</span>
+<x-import component-from-global-scope="ApFonseca.TextField" label="Descrição da foto" default-value="{{g.alt}}" hint="Para quem usa leitor de tela."></x-import>
+<div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+<x-import component-from-global-scope="ApFonseca.Button" variant="ghost" size="sm">Subir</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" variant="ghost" size="sm">Descer</x-import>
+<x-import component-from-global-scope="ApFonseca.Button" variant="ghost" size="sm">Remover</x-import>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{abaOutras}}" hint-placeholder-val="{{no}}">
+<div style="background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-6);">
+<p style="margin: 0; color: var(--ink-muted);">Esta seção já existe no site (dados de contato, e-mail de teste e usuários). Não foi redesenhada aqui.</p>
+</div>
+</sc-if>
 </div>
 </sc-if>
 
@@ -213,7 +290,7 @@ body{margin:0}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"tela":{"editor":"enum","options":["painel","agenda","editar","inscricoes"],"default":"agenda"},"dialogo":{"editor":"enum","options":["nenhum","excluir","foto"],"default":"nenhum"},"$preview":{"width":1440,"height":1000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"tela":{"editor":"enum","options":["painel","agenda","editar","inscricoes","config"],"default":"agenda"},"aba":{"editor":"enum","options":["professores","galeria"],"default":"professores"},"dialogo":{"editor":"enum","options":["nenhum","excluir","foto"],"default":"nenhum"},"$preview":{"width":1440,"height":1000}}'>
 class Component extends DCLogic {
   renderVals() {
     const tela = (this.state && this.state.tela) || this.props.tela || 'agenda';
@@ -299,13 +376,38 @@ class Component extends DCLogic {
       { label: 'A conferir', value: '2', note: 'Registros no conselho' }
     ];
 
-    const titles = { painel: 'Painel', agenda: 'Agenda', editar: 'Editar data', inscricoes: 'Inscrições' };
+    const titles = { painel: 'Painel', agenda: 'Agenda', editar: 'Editar data', inscricoes: 'Inscrições', config: 'Configurações' };
+    const aba = (this.state && this.state.aba) || this.props.aba || 'professores';
+    const professoresAdmin = [
+      { id: 1, nome: 'Dra. Ana Paula Fonseca', funcao: 'Médica Fisiatra', reg: 'CRM-MG 00000 · RQE 00000', turmas: '3 turmas', visivel: true },
+      { id: 2, nome: 'Nome do professor', funcao: 'Especialidade a confirmar', reg: 'Conselho 00000', turmas: '3 turmas', visivel: true },
+      { id: 3, nome: 'Nome da professora', funcao: 'Especialidade a confirmar', reg: 'Conselho 00000', turmas: '3 turmas', visivel: true }
+    ];
+    const profCols = [
+      { key: 'nome', label: 'Professor', render: (r) => h ? h('span', { style: { display: 'flex', flexDirection: 'column' } }, h('strong', { style: { fontWeight: 600 } }, r.nome), h('span', { style: { color: 'var(--ink-muted)', fontSize: 14 } }, r.funcao)) : r.nome },
+      { key: 'reg', label: 'Registro' },
+      { key: 'turmas', label: 'Turmas' },
+      { key: 'visivel', label: 'No site', render: (r) => h && A.Badge ? h(A.Badge, { tone: r.visivel ? 'success' : 'neutral' }, r.visivel ? 'Visível' : 'Oculto') : (r.visivel ? 'Visível' : 'Oculto') }
+    ];
+    const galeriaAdmin = [
+      { src: '/images/maos.webp', alt: 'Mãos em luvas preparando uma aplicação' },
+      { src: '/images/anatomia-quadril.webp', alt: 'Modelo anatômico do quadril' },
+      { src: '/images/luvas.webp', alt: 'Luvas cirúrgicas sobre bancada' },
+      { src: '/images/boneco-articulado.webp', alt: 'Boneco articulado de madeira' },
+      { src: '/images/pedras-empilhadas.webp', alt: 'Pedras empilhadas em equilíbrio' }
+    ].map((g, i) => Object.assign({}, g, { posicao: i === 0 ? 'Foto 1 · destaque' : 'Foto ' + (i + 1) }));
+    const profTurma = [
+      { label: 'Dra. Ana Paula Fonseca', hint: 'Médica Fisiatra', marcado: true },
+      { label: 'Nome do professor', hint: 'Especialidade a confirmar', marcado: true },
+      { label: 'Nome da professora', hint: 'Especialidade a confirmar', marcado: true }
+    ];
     const navActive = tela === 'editar' ? 'agenda' : tela;
     const plusIcon = h && A.Icons ? h(A.Icons.Plus, { size: 18, strokeWidth: 1.5, 'aria-hidden': true }) : null;
     let actions = null;
     if (h && A.Button) {
       if (tela === 'agenda' || tela === 'painel') actions = h(A.Button, { size: 'sm', icon: plusIcon, onClick: go('editar') }, 'Nova data');
       if (tela === 'editar') actions = h(A.Button, { size: 'sm', variant: 'ghost', onClick: go('agenda') }, 'Voltar para a agenda');
+      if (tela === 'config' && aba === 'professores') actions = h(A.Button, { size: 'sm', icon: plusIcon }, 'Novo professor');
       if (tela === 'inscricoes') actions = h(R.Fragment, null,
         h(A.Button, { size: 'sm', variant: 'ghost', onClick: go('agenda') }, 'Voltar para a agenda'),
         h(A.Button, { size: 'sm', variant: 'secondary' }, 'Exportar planilha'));
@@ -340,7 +442,16 @@ class Component extends DCLogic {
       openFoto: () => this.setState({ dialog: 'foto' }),
       closeDialog: () => this.setState({ dialog: null }),
       foto: foto, biblioteca: biblioteca,
-      isPainel: tela === 'painel', isAgenda: tela === 'agenda', isEditar: tela === 'editar', isInscricoes: tela === 'inscricoes',
+      isPainel: tela === 'painel', isAgenda: tela === 'agenda', isEditar: tela === 'editar', isInscricoes: tela === 'inscricoes', isConfig: tela === 'config',
+      aba: aba, setAba: (v) => this.setState({ aba: v }),
+      abaProfessores: aba === 'professores', abaGaleria: aba === 'galeria', abaOutras: aba === 'contato' || aba === 'usuarios',
+      configTabs: [
+        { value: 'professores', label: 'Professores', count: professoresAdmin.length },
+        { value: 'galeria', label: 'Galeria', count: galeriaAdmin.length },
+        { value: 'contato', label: 'Contato do site' },
+        { value: 'usuarios', label: 'Usuários' }
+      ],
+      professoresAdmin: professoresAdmin, profCols: profCols, galeriaAdmin: galeriaAdmin, profTurma: profTurma,
       pageTitle: titles[tela], navActive: navActive, actions: actions, plusIcon: plusIcon,
       goAgenda: go('agenda'), goEditar: go('editar'), goInscricoes: go('inscricoes'),
       noop: () => {}, noopSubmit: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ tela: 'agenda' }); },

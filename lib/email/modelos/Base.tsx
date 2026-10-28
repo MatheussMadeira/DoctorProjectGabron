@@ -43,7 +43,7 @@ export const estilos: Record<string, CSSProperties> = {
 export interface ContextoEmail {
   /** Endereço ABSOLUTO do logo em PNG (SITE_URL + /logos/...). Leitores de e-mail não abrem caminhos relativos. */
   logoUrl: string;
-  /** "Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG … · RQE …" */
+  /** "© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG" */
   legal: string;
 }
 
@@ -55,12 +55,12 @@ export function Base({ previa, contexto, children }: { previa: string; contexto:
       <Body style={estilos.corpo}>
         <Container style={estilos.recipiente}>
           <Section style={estilos.topo}>
-            <Img src={contexto.logoUrl} width="168" alt="Dra. Ana Paula Fonseca — Médica Fisiatra" style={{ display: "block", border: 0, color: cores.creme, fontFamily: SERIFA, fontSize: 18, textTransform: "uppercase" }} />
+            <Img src={contexto.logoUrl} width="168" alt="ReabToxin" style={{ display: "block", border: 0, color: cores.creme, fontFamily: SERIFA, fontSize: 18, textTransform: "uppercase" }} />
           </Section>
           <Section style={estilos.cartao}>{children}</Section>
           <Section style={estilos.rodape}>
             <Text style={{ margin: 0 }}>{contexto.legal}</Text>
-            <Text style={{ margin: "6px 0 0" }}>Esta é uma mensagem automática enviada pelo site da clínica.</Text>
+            <Text style={{ margin: "6px 0 0" }}>Esta é uma mensagem automática enviada pelo site do ReabToxin.</Text>
           </Section>
         </Container>
       </Body>

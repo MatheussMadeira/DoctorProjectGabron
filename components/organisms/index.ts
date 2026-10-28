@@ -22,3 +22,5 @@ export * from "./ExcluirTurmaDialog";
 export * from "./ConfiguracoesForms";
 export * from "./InscricoesAdmin";
 export * from "./ConfiguracoesClinica";
+export * from "./ProfessorCard";
+export * from "./ProfessoresDaTurma";

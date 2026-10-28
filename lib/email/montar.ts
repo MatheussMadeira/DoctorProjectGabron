@@ -22,7 +22,7 @@ export interface OrigemEmail {
 /** Logo em PNG com endereço absoluto: public/logos/logo-horizontal-negativo-2x.png servido pelo próprio site (SITE_URL). */
 export const CAMINHO_LOGO_EMAIL = "/logos/logo-horizontal-negativo-2x.png";
 
-/** O que todo e-mail leva: logo (URL absoluta) e a linha legal com CRM/RQE, lidos de Configurações no momento do envio. */
+/** O que todo e-mail leva: logo (URL absoluta) e a linha legal, lida de Configurações no momento do envio. */
 export async function contextoDoEmail(): Promise<ContextoEmail> {
   const site = await obterSiteAtual();
   return { logoUrl: `${urlDoSite()}${CAMINHO_LOGO_EMAIL}`, legal: site.legal };

@@ -11,7 +11,7 @@ const base = process.argv[2] ?? "http://localhost:3107";
 const saida = process.argv[3] ?? "capturas/lighthouse";
 mkdirSync(saida, { recursive: true });
 
-const paginas = ["/", "/sobre", "/clinica", "/agenda", "/agenda/modulo-essencial-nov-2026", "/contato"];
+const paginas = ["/", "/sobre-o-curso", "/agenda", "/agenda/modulo-essencial-nov-2026", "/contato"];
 const categorias = ["performance", "accessibility", "best-practices", "seo"];
 const chrome = await chromeLauncher.launch({ chromePath: chromium.executablePath(), chromeFlags: ["--headless=new", "--no-sandbox"] });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { FOTO_REGRAS, MENSAGENS_FOTO, ehHeic, tamanhoDeSaida } from "./fotos";
+import { FOTO_REGRAS, FORMATOS_FOTO, MENSAGENS_FOTO, ehHeic, tamanhoDeSaida, type FormatoFoto } from "./fotos";
 
 /* Preparo da foto no navegador, antes de qualquer envio: abre (inclusive HEIC de iPhone), recorta, reduz, converte para
    WebP e, como o resultado sai de um canvas, não leva nenhum metadado junto (EXIF, localização GPS, miniatura). */
@@ -55,8 +55,9 @@ export interface FotoPreparada {
 }
 
 /** Aplica o recorte, reduz para no máximo 2000 de largura e converte para WebP (qualidade 0,82). Passando de 2 MB, reduz mais. */
-export async function prepararFoto(imagem: HTMLImageElement, area: AreaDoRecorte): Promise<FotoPreparada> {
-  let { largura, altura } = tamanhoDeSaida(area.width);
+export async function prepararFoto(imagem: HTMLImageElement, area: AreaDoRecorte, formato: FormatoFoto = "paisagem"): Promise<FotoPreparada> {
+  const proporcao = FORMATOS_FOTO[formato].proporcao ?? area.width / area.height;
+  let { largura, altura } = tamanhoDeSaida(area.width, formato, area.height);
   let qualidade: number = FOTO_REGRAS.qualidade;
   for (let tentativa = 0; tentativa < 6; tentativa++) {
     const canvas = document.createElement("canvas");
@@ -73,7 +74,7 @@ export async function prepararFoto(imagem: HTMLImageElement, area: AreaDoRecorte
     qualidade = Math.max(0.5, qualidade - 0.1);
     if (tentativa >= 1) {
       largura = Math.round(largura * 0.85);
-      altura = Math.round(largura / FOTO_REGRAS.proporcao);
+      altura = Math.round(largura / proporcao);
     }
   }
   throw new ErroDeFoto(MENSAGENS_FOTO.naoPreparou);

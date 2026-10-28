@@ -60,9 +60,9 @@ test("desktop: no Hero da turma, texto e foto dividem a largura em colunas iguai
   expect(Math.abs(copia!.width - figura!.width)).toBeLessThan(4);
 });
 
-test("home e Sobre mantêm o retrato 4:5", async ({ page }) => {
+test("home e Sobre o curso mantêm o 4:5", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  for (const caminho of ["/", "/sobre"]) {
+  for (const caminho of ["/", "/sobre-o-curso"]) {
     await page.goto(caminho);
     const figura = page.locator(".ap-hero-media");
     await expect(figura).toBeVisible();

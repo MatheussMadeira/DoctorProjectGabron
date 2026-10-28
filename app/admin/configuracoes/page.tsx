@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { asc } from "drizzle-orm";
 import { db } from "@/db";
 import { usuarios } from "@/db/schema";
+import { ConfiguracoesTabs } from "@/components/molecules";
 import { DadosClinicaForm, EmailDeTeste, TrocarSenhaForm, UsuariosAdmin } from "@/components/organisms";
+import { GaleriaAdmin } from "@/components/organisms/GaleriaAdmin";
+import { ProfessoresAdmin } from "@/components/organisms/ProfessoresAdmin";
+import { listarGaleriaAdmin, listarProfessoresAdmin } from "@/lib/admin-professores";
 import { lerLinhaConfiguracoes } from "@/lib/configuracoes";
 import { lerConfig } from "@/lib/email/config";
 import { destinatariosDaEquipe } from "@/lib/email/destinatarios";
@@ -16,24 +20,44 @@ import styles from "@/components/admin.module.css";
 
 export const metadata: Metadata = { title: "Configurações" };
 
-export default async function ConfiguracoesPage() {
-  const usuario = await exigirSessao();
+const ABAS = ["professores", "galeria", "contato", "usuarios"] as const;
+type Aba = (typeof ABAS)[number];
+
+export default async function ConfiguracoesPage({ searchParams }: PageProps<"/admin/configuracoes">) {
+  const [usuario, params] = await Promise.all([exigirSessao(), searchParams]);
+  const pedida = String(params.aba ?? "");
+  const aba: Aba = (ABAS as readonly string[]).includes(pedida) ? (pedida as Aba) : "professores";
   const admin = pode(usuario.papel, "usuario:gerir");
 
-  const [lista, linha, avisosPara] = admin
+  const [lista, linha, avisosPara, profs, galeria] = admin
     ? await Promise.all([
-        db.select({ id: usuarios.id, nome: usuarios.nome, email: usuarios.email, papel: usuarios.papel, ativo: usuarios.ativo }).from(usuarios).orderBy(asc(usuarios.nome)),
-        lerLinhaConfiguracoes(),
-        destinatariosDaEquipe(),
+        aba === "usuarios" ? db.select({ id: usuarios.id, nome: usuarios.nome, email: usuarios.email, papel: usuarios.papel, ativo: usuarios.ativo }).from(usuarios).orderBy(asc(usuarios.nome)) : Promise.resolve([]),
+        aba === "contato" ? lerLinhaConfiguracoes() : Promise.resolve(null),
+        aba === "contato" ? destinatariosDaEquipe() : Promise.resolve([]),
+        listarProfessoresAdmin(),
+        listarGaleriaAdmin(),
       ])
-    : [[], null, []];
+    : [[], null, [], [], []];
   const cfg = lerConfig();
 
   return (
     <PaginaAdmin usuario={usuario} ativo="config" titulo="Configurações">
       <div className={styles.pilha}>
-        <TrocarSenhaForm acao={trocarMinhaSenha} />
-        {pode(usuario.papel, "configuracao:editar") && (
+        {!admin && <TrocarSenhaForm acao={trocarMinhaSenha} />}
+        {admin && (
+          <ConfiguracoesTabs
+            valor={aba}
+            items={[
+              { value: "professores", label: "Professores", count: profs.length },
+              { value: "galeria", label: "Galeria", count: galeria.length },
+              { value: "contato", label: "Contato do site" },
+              { value: "usuarios", label: "Usuários" },
+            ]}
+          />
+        )}
+        {admin && aba === "professores" && <ProfessoresAdmin professores={profs} />}
+        {admin && aba === "galeria" && <GaleriaAdmin fotos={galeria} />}
+        {admin && aba === "contato" && pode(usuario.papel, "configuracao:editar") && (
           <>
             <DadosClinicaForm
               acao={salvarConfiguracoes}
@@ -46,8 +70,6 @@ export default async function ConfiguracoesPage() {
                 enderecoLinha1: linha?.enderecoLinha1 ?? "",
                 enderecoLinha2: linha?.enderecoLinha2 ?? "",
                 horario: linha?.horario ?? "",
-                crm: linha?.crm ?? "",
-                rqe: linha?.rqe ?? "",
               }}
             />
             <EmailDeTeste
@@ -63,14 +85,17 @@ export default async function ConfiguracoesPage() {
             />
           </>
         )}
-        {admin && (
-          <UsuariosAdmin
-            usuarios={lista.map((u) => ({ ...u, souEu: u.id === usuario.id }))}
-            criar={criarUsuario}
-            redefinirSenha={redefinirSenhaUsuario}
-            alternarAtivo={alternarUsuarioAtivo}
-            alterarPapel={alterarPapelUsuario}
-          />
+        {admin && aba === "usuarios" && (
+          <>
+            <TrocarSenhaForm acao={trocarMinhaSenha} />
+            <UsuariosAdmin
+              usuarios={lista.map((u) => ({ ...u, souEu: u.id === usuario.id }))}
+              criar={criarUsuario}
+              redefinirSenha={redefinirSenhaUsuario}
+              alternarAtivo={alternarUsuarioAtivo}
+              alterarPapel={alterarPapelUsuario}
+            />
+          </>
         )}
       </div>
     </PaginaAdmin>

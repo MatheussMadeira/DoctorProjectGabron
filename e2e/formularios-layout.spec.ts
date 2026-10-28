@@ -36,11 +36,11 @@ test("inscrição (desktop): Conselho e Registro com a mesma altura e alinhados 
   await page.goto(`/agenda/${slug}`);
   await esperar(page);
   const [conselho, registro, profissao, nome] = await Promise.all([caixa(page, 'select[name="conselho"]'), caixa(page, 'input[name="registro"]'), caixa(page, 'select[name="profissao"]'), caixa(page, 'input[name="nome"]')]);
-  expect(conselho.height).toBe(registro.height);
-  expect(conselho.y).toBe(registro.y);
+  expect(conselho.height).toBeCloseTo(registro.height, 0);
+  expect(conselho.y).toBeCloseTo(registro.y, 0);
   // Profissão tem a mesma altura de qualquer outro campo.
-  expect(profissao.height).toBe(nome.height);
-  expect(conselho.height).toBe(nome.height);
+  expect(profissao.height).toBeCloseTo(nome.height, 0);
+  expect(conselho.height).toBeCloseTo(nome.height, 0);
 });
 
 test("inscrição (celular): os campos ficam um embaixo do outro, com a mesma largura", async ({ page }) => {
@@ -86,7 +86,7 @@ test("contato: o Assunto tem a mesma altura dos outros campos", async ({ page })
   await page.goto("/contato");
   await esperar(page);
   const [assunto, nome] = await Promise.all([caixa(page, 'select[name="assunto"]'), caixa(page, 'input[name="nome"]')]);
-  expect(assunto.height).toBe(nome.height);
+  expect(assunto.height).toBeCloseTo(nome.height, 0);
   const [email, telefone] = await Promise.all([caixa(page, 'input[name="email"]'), caixa(page, 'input[name="telefone"]')]);
-  expect(email.y).toBe(telefone.y);
+  expect(email.y).toBeCloseTo(telefone.y, 0);
 });

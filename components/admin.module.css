@@ -126,3 +126,29 @@
 .nomeCelula span { color: var(--ink-muted); font-size: 14px; line-height: 20px; }
 
 .situacaoCampo { min-width: 240px; }
+
+/* Configurações › Professores e Galeria */
+.professores { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start; }
+.professoresLista { flex: 2 1 560px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.professoresForm { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }
+.professoresForm > form { align-self: stretch; }
+.cartaoForm { background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+.fotoRetrato { display: flex; gap: var(--space-4); align-items: flex-end; }
+.fotoRetratoImg { width: 96px; aspect-ratio: 4 / 5; object-fit: cover; object-position: 70% 30%; box-shadow: var(--shadow-sm); flex: none; }
+.fotoRetratoVazia { display: flex; align-items: center; justify-content: center; background: var(--surface-sunken); color: var(--ink-muted); font-family: var(--font-display); font-size: 36px; }
+.acoesLinha { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-1); }
+.iconeBotao { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: var(--radius-control); color: var(--ink); background: transparent; border: 0; cursor: pointer; }
+.iconeBotao:hover:not(:disabled) { background: var(--surface-sunken); }
+.iconeBotao:focus-visible { box-shadow: var(--focus-ring); outline: none; }
+.iconeBotao:disabled { opacity: .35; cursor: default; }
+.listaAvisos { margin: 0; padding-left: var(--space-5); }
+.galeriaGrade { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: var(--space-5); }
+.galeriaItem { background: var(--surface-raised); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+.galeriaImg { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; }
+.galeriaCorpo { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+.galeriaPosicao { font-size: 12px; line-height: 18px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); }
+
+/* Editar turma › Professores desta turma */
+.profTurma { display: flex; flex-direction: column; gap: var(--space-3); }
+.profTurmaLinha { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); justify-content: space-between; }
+.profTurmaLinha > :first-child { flex: 1 1 260px; min-width: 0; }

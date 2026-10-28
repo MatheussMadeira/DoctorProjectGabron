@@ -21,7 +21,7 @@ test("site fora do ar: o sitemap existe mas está vazio", async ({ request }) =>
 });
 
 test("site fora do ar: toda página manda noindex, no HTML e no cabeçalho", async ({ request }) => {
-  for (const caminho of ["/", "/sobre", "/clinica", "/agenda", "/contato", "/politica-de-privacidade", "/agenda/modulo-essencial-nov-2026"]) {
+  for (const caminho of ["/", "/sobre-o-curso", "/agenda", "/contato", "/politica-de-privacidade", "/agenda/modulo-essencial-nov-2026"]) {
     const r = await request.get(caminho);
     expect(r.headers()["x-robots-tag"], caminho).toContain("noindex");
     expect(await r.text(), caminho).toMatch(/<meta name="robots" content="noindex, nofollow"/);
@@ -36,7 +36,7 @@ test("o painel é sempre noindex", async ({ request }) => {
 
 test("metadados: título, descrição, canonical, Open Graph com imagem absoluta", async ({ request }) => {
   const html = await (await request.get("/agenda/modulo-essencial-nov-2026")).text();
-  expect(html).toMatch(/<title>[^<]*módulo essencial[^<]*· Dra\. Ana Paula Fonseca<\/title>/i);
+  expect(html).toMatch(/<title>[^<]*módulo essencial[^<]*· ReabToxin<\/title>/i);
   expect(html).toMatch(/<meta name="description" content="[^"]+"/);
   expect(html).toMatch(/<link rel="canonical" href="https?:\/\/[^"]+\/agenda\/modulo-essencial-nov-2026"/);
   expect(html).toMatch(/<meta property="og:image" content="https?:\/\/[^"]+\/og\.png"/);
@@ -48,11 +48,14 @@ test("metadados: título, descrição, canonical, Open Graph com imagem absoluta
   expect(og.headers()["content-type"]).toContain("image/png");
 });
 
-test("dados estruturados: Physician na clínica e Event nas turmas, sem nenhum placeholder", async ({ request }) => {
-  const clinica = await jsonLd(request, "/clinica");
-  expect(clinica.map((d) => d["@type"])).toContain("Physician");
+test("dados estruturados: Organization (ReabToxin) no início e Course + EducationEvent nas turmas, sem nenhum placeholder", async ({ request }) => {
+  const clinica = await jsonLd(request, "/");
+  expect(clinica.map((d) => d["@type"])).toContain("Organization");
+  expect(JSON.stringify(clinica)).not.toContain("Physician");
+  expect(clinica.find((d) => d["@type"] === "Organization")!.name).toBe("ReabToxin");
   const turma = await jsonLd(request, "/agenda/modulo-essencial-nov-2026");
-  const evento = turma.find((d) => d["@type"] === "Event");
+  expect(turma.map((d) => d["@type"])).toContain("Course");
+  const evento = turma.find((d) => d["@type"] === "EducationEvent");
   expect(evento).toBeTruthy();
   expect(evento!.startDate).toBe("2026-11-21");
   expect(evento!.eventAttendanceMode).toBe("https://schema.org/OfflineEventAttendanceMode");

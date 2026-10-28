@@ -18,3 +18,4 @@ export * from "./AdminCard";
 export * from "./AgendaTabs";
 export * from "./ProgramacaoEditor";
 export * from "./FaqEditor";
+export * from "./ConfiguracoesTabs";

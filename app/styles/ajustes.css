@@ -51,3 +51,21 @@ main:focus { outline: none; }
 .ap-hero-media-paisagem { aspect-ratio: 16 / 10; }
 .ap-hero-media-paisagem img { object-position: center; }
 @media (max-width: 1023px) { .ap-hero-grid-paisagem { grid-template-columns: 1fr; gap: var(--space-6); } .ap-hero-media-paisagem { aspect-ratio: 16 / 10; } }
+
+/* Cartão de professor (design ProfessorCard.dc.html). */
+.ap-prof { margin: 0; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden; background: var(--surface-raised); box-shadow: var(--shadow-sm); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 26px; }
+.ap-prof-foto { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 70% 30%; }
+.ap-prof-vazia { display: flex; align-items: center; justify-content: center; background: var(--surface-sunken); color: var(--ink-muted); font-family: var(--font-display); font-size: 48px; line-height: 1; }
+.ap-prof-corpo { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-5); min-width: 0; flex: 1 1 auto; }
+.ap-prof-titulo { margin: 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink); }
+.ap-prof-nome { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em; color: var(--ink); }
+.ap-prof-registro { margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-muted); }
+.ap-prof-bio { margin: var(--space-2) 0 0; color: var(--ink); }
+.ap-prof-h { flex-direction: row; align-items: stretch; }
+.ap-prof-h .ap-prof-foto { flex: none; width: 128px; height: auto; align-self: flex-start; }
+@media (max-width: 480px) { .ap-prof-h .ap-prof-foto { width: 96px; } .ap-prof-h .ap-prof-corpo { padding: var(--space-4); } }
+.ap-prof-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: var(--space-6); }
+.ap-prof-lista { display: flex; flex-direction: column; gap: var(--space-4); }
+
+/* Sobre o curso: cartões de professor um pouco mais largos (design Sobre.dc.html: minmax 300px). */
+.ap-prof-grade-larga { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Cartão de professor — ReabToxin</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ap-tokens.css">
+<link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
+<script src="ds/apfonseca/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&amp;family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<article style="{{rootStyle}}">
+<sc-if value="{{temFoto}}" hint-placeholder-val="{{yes}}">
+<img src="{{fotoSrc}}" alt="{{fotoAlt}}" style="{{fotoStyle}}">
+</sc-if>
+<sc-if value="{{semFoto}}" hint-placeholder-val="{{no}}">
+<div aria-hidden="true" style="{{fotoVaziaStyle}}">{{inicial}}</div>
+</sc-if>
+<div style="display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-5); min-width: 0; flex: 1 1 auto;">
+<p style="margin: 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink);">{{titulo}}</p>
+<h3 style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 28px; letter-spacing: 0.04em; color: var(--ink);">{{nome}}</h3>
+<p style="margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-muted);">{{registro}}</p>
+<sc-if value="{{temBio}}" hint-placeholder-val="{{yes}}">
+<p style="margin: var(--space-2) 0 0; color: var(--ink);">{{bio}}</p>
+</sc-if>
+</div>
+</article>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"nome":{"editor":null,"default":"Nome do professor"},"titulo":{"editor":null,"default":"Especialidade a confirmar"},"registro":{"editor":null,"default":"Conselho e registro 00000"},"bio":{"editor":null,"default":"Mini bio do professor: formação e o que ensina no curso."},"foto":{"editor":null,"default":""},"layout":{"editor":"enum","options":["vertical","horizontal"],"default":"vertical"},"$preview":{"width":360,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const nome = p.nome || 'Nome do professor';
+    const horizontal = p.layout === 'horizontal';
+    const foto = p.foto || '';
+    const base = 'margin: 0; font-family: var(--font-sans); font-size: 16px; line-height: 26px; color: var(--ink); background: var(--surface-raised); box-shadow: var(--shadow-sm); display: flex; overflow: hidden; height: 100%; box-sizing: border-box;';
+    const rootStyle = base + (horizontal ? ' flex-direction: row; align-items: stretch;' : ' flex-direction: column;');
+    const fotoBox = horizontal
+      ? 'flex: none; width: 128px; aspect-ratio: 4 / 5; align-self: flex-start;'
+      : 'width: 100%; aspect-ratio: 4 / 5;';
+    const semPrefixo = nome.replace(/^(Dra?\.|Prof\.?|Profa\.?)\s+/i, '');
+    return {
+      yes: true, no: false,
+      rootStyle: rootStyle,
+      temFoto: !!foto, semFoto: !foto,
+      fotoSrc: foto, fotoAlt: 'Foto de ' + nome,
+      fotoStyle: fotoBox + ' object-fit: cover; object-position: 70% 30%; display: block;',
+      fotoVaziaStyle: fotoBox + ' display: flex; align-items: center; justify-content: center; background: var(--surface-sunken); color: var(--ink-muted); font-family: var(--font-display); font-size: 48px;',
+      inicial: (semPrefixo.trim()[0] || '?').toUpperCase(),
+      nome: nome,
+      titulo: p.titulo || 'Especialidade a confirmar',
+      registro: p.registro || 'Conselho e registro 00000',
+      bio: p.bio || '',
+      temBio: !!p.bio
+    };
+  }
+}
+</script>
+</body>
+</html>

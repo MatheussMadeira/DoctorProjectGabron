@@ -28,7 +28,7 @@ export function AdminShell({ active = "agenda", title, actions, nav = ADMIN_NAV,
   return (
     <div className="ap-admin">
       <aside className="ap-admin-side" data-theme="escuro">
-        <Logo variant="horizontal" width={150} />
+        <Logo variant="compacta" width={150} />
         <nav aria-label="Administração">
           {nav.map((n) => {
             const I = n.icon || BookOpen;

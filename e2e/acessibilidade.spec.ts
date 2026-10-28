@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test";
    O axe pega o que dá para medir (contraste, rótulos, nomes de botões, ordem de títulos, landmarks). Teclado e leitor
    de tela continuam precisando de um teste manual: ver "Acessibilidade" na especificação. */
 
-const PAGINAS = ["/", "/sobre", "/clinica", "/agenda", "/agenda/modulo-essencial-nov-2026", "/agenda/anatomia-nov-2026", "/contato", "/politica-de-privacidade", "/admin/login"];
+const PAGINAS = ["/", "/sobre-o-curso", "/agenda", "/agenda/modulo-essencial-nov-2026", "/agenda/anatomia-nov-2026", "/contato", "/politica-de-privacidade", "/admin/login"];
 
 for (const [nome, viewport] of [["desktop", { width: 1440, height: 900 }], ["celular", { width: 390, height: 844 }]] as const) {
   test.describe(nome, () => {
@@ -23,7 +23,7 @@ for (const [nome, viewport] of [["desktop", { width: 1440, height: 900 }], ["cel
 }
 
 test("teclado: o primeiro Tab leva ao 'Pular para o conteúdo', que pula o cabeçalho", async ({ page }) => {
-  await page.goto("/sobre");
+  await page.goto("/sobre-o-curso");
   await page.waitForLoadState("networkidle");
   await page.keyboard.press("Tab");
   const pular = page.getByRole("link", { name: "Pular para o conteúdo" });

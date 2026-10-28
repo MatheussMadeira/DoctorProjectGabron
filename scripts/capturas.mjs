@@ -9,8 +9,7 @@ const base = process.argv[3] ?? "http://localhost:3107";
 
 const rotas = [
   ["inicio", "/"],
-  ["sobre", "/sobre"],
-  ["clinica", "/clinica"],
+  ["sobre-o-curso", "/sobre-o-curso"],
   ["agenda", "/agenda"],
   ["turma-aberta", "/agenda/modulo-essencial-nov-2026"],
   ["turma-esgotada", "/agenda/anatomia-nov-2026"],

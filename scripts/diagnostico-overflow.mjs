@@ -1,7 +1,7 @@
 // Lista os elementos que passam da largura do celular. Uso: node scripts/diagnostico-overflow.mjs <rota> [url-base]
 import { chromium } from "@playwright/test";
 
-const rota = process.argv[2] ?? "/clinica";
+const rota = process.argv[2] ?? "/sobre-o-curso";
 const base = process.argv[3] ?? "http://localhost:3107";
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });

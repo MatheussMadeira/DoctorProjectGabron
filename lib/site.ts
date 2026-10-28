@@ -1,18 +1,17 @@
-/* Dados do site. Navegação e textos fixos ficam aqui; os dados de contato e o registro (CRM/RQE) são editados pela
+/* Dados do site. Navegação e textos fixos ficam aqui; os dados de contato são editados pela
    Dra. em Configurações, ficam no banco (tabela `configuracoes`) e chegam por lib/configuracoes.ts.
    O que ainda não foi preenchido continua como placeholder explícito (ver CLAUDE.md). */
 
 export const NAV_LINKS = [
   { label: "Início", href: "/" },
-  { label: "Sobre a Dra.", href: "/sobre" },
-  { label: "Clínica", href: "/clinica" },
+  { label: "Sobre o curso", href: "/sobre-o-curso" },
   { label: "Agenda de cursos", href: "/agenda" },
   { label: "Contato", href: "/contato" },
 ];
 
 export const HEADER_CTA = { label: "Próximas turmas", href: "/agenda" };
 
-export const NOME_DA_MEDICA = "Dra. Ana Paula Fonseca";
+export const NOME_DO_CURSO = "ReabToxin";
 
 /** Valores de partida: o que aparece enquanto a Dra. não preenche Configurações. */
 export const SITE_PADRAO = {
@@ -23,8 +22,6 @@ export const SITE_PADRAO = {
   enderecoLinha1: "Rua, número, sala · Bairro",
   enderecoLinha2: "Belo Horizonte — MG · CEP 00000-000",
   horario: "Segunda a sexta, 00h às 00h",
-  crm: "CRM-MG 00000",
-  rqe: "RQE 00000",
 };
 
 export type CamposSite = keyof typeof SITE_PADRAO;
@@ -42,10 +39,6 @@ export interface DadosSite {
   enderecoLinhas: [string, string];
   enderecoCurto: string;
   horario: string;
-  crm: string;
-  rqe: string;
-  /** "CRM-MG 12345 · RQE 6789": sempre junto ao nome da Dra. (CFM). */
-  registro: string;
   /** Linha legal do rodapé. */
   legal: string;
 }
@@ -60,8 +53,6 @@ export function montarSite(linha: LinhaConfiguracao | null, ano = new Date().get
   const l1 = v("enderecoLinha1");
   const l2 = v("enderecoLinha2");
   const padrao = l1 === SITE_PADRAO.enderecoLinha1 && l2 === SITE_PADRAO.enderecoLinha2;
-  const crm = v("crm");
-  const rqe = v("rqe");
   return {
     telefone,
     telefoneHref: `tel:${telefone.replace(/[^\d+]/g, "")}`,
@@ -70,19 +61,16 @@ export function montarSite(linha: LinhaConfiguracao | null, ano = new Date().get
     instagramUrl: `https://instagram.com/${instagram.slice(1)}`,
     email: v("email"),
     enderecoLinhas: [l1, l2],
-    enderecoCurto: padrao ? "Endereço da clínica, Belo Horizonte — MG" : `${l1}, ${l2}`,
+    enderecoCurto: padrao ? "Local das turmas, Belo Horizonte — MG" : `${l1}, ${l2}`,
     horario: v("horario"),
-    crm,
-    rqe,
-    registro: `${crm} · ${rqe}`,
-    legal: `© ${ano} ${NOME_DA_MEDICA} · Médica Fisiatra · ${crm} · ${rqe}`,
+    legal: `© ${ano} ${NOME_DO_CURSO} · Formação em toxina botulínica · Belo Horizonte, MG`,
   };
 }
 
 /** Texto que ainda é placeholder (grupo só de zeros como "00000", "a confirmar", domínio de exemplo): nunca vai para dados estruturados nem para o Google.
     Um número real que apenas contém zeros ("30000-000", "99000-0000") não conta. */
 export const ehPlaceholder = (texto: string | null | undefined) =>
-  !texto || /(?<![\d-])0{3,}(?!\d)|a confirmar|dominio\.com\.br|exemplo\.invalid|^@perfil$|^Rua, número/i.test(texto);
+  !texto || /(?<![\d-])0{3,}(?!\d)|a confirmar|dominio\.com\.br|exemplo\.invalid|^@perfil$|^Rua, número|^Nome d[oa] (professor|professora|aluno|aluna)/i.test(texto);
 
 export function footerDe(site: DadosSite) {
   return {

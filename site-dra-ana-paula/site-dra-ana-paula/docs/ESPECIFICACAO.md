@@ -1,19 +1,21 @@
-# Especificação — site da Dra. Ana Paula Fonseca
+# Especificação — site do curso ReabToxin
+
+> **Mudança de escopo (outubro de 2026):** o site passou a ser do **curso ReabToxin**, não mais da Dra. Ana Paula Fonseca. A identidade visual continua a mesma. Três professores iguais conduzem o curso juntos (a Dra. Ana Paula Fonseca é uma delas), todos no mesmo `ProfessorCard`, na ordem do admin. Saíram a página da clínica e a parte "paciente / agende uma consulta"; entraram professores, galeria e a página "Sobre o curso". As telas de referência ficam em `design/` (Main, Sobre, ProfessorCard, Turma, Contato e Admin, com as abas Professores e Galeria e a seção "Professores desta turma"). O que está abaixo já reflete isso; onde um trecho antigo ainda fala de "clínica", vale esta nota e a seção 11.
 
 ## 1. Públicos e objetivo
 
-- **Pacientes:** conhecem a clínica de fisiatria e agendam uma consulta pelo WhatsApp ou pelo formulário de contato.
 - **Profissionais da saúde** (médicos, dentistas, biomédicos e outros, lista a confirmar): veem as turmas de toxina botulínica e se inscrevem.
 - **Ação principal do site:** levar à agenda de turmas e à inscrição.
-- **Dra. e equipe:** cadastram datas e acompanham as inscrições no admin.
+- **Equipe:** cadastram datas, professores e galeria e acompanham as inscrições no admin.
 
 ## 2. Rotas
 
 | Rota | Página | Telas de referência em `design/` |
 |---|---|---|
 | `/` | Início | `Main.dc.html` (desktop), `Celular.dc.html` (390px) |
-| `/sobre` | Sobre a Dra. | `Sobre.dc.html`, `SobreCelular.dc.html` |
-| `/clinica` | Clínica | `Clinica.dc.html`, `ClinicaCelular.dc.html` |
+| `/sobre-o-curso` | Sobre o curso (proposta, professores, galeria) | `Sobre.dc.html`, `SobreCelular.dc.html`, `ProfessorCard.dc.html` |
+| `/sobre` | redireciona (301) para `/sobre-o-curso` | n/a |
+| `/clinica` | redireciona (301) para `/` (a página saiu do site; `Clinica.dc.html` e `ClinicaCelular.dc.html` não valem mais) | n/a |
 | `/agenda` | Agenda de cursos | `Agenda.dc.html`, `AgendaCelular.dc.html`, `AgendaVazia.dc.html` (sem datas) |
 | `/agenda/[slug]` | Página da turma | `Turma.dc.html` (inclui `TurmaInscricao.dc.html`), `TurmaCelular.dc.html`, `TurmaEsgotada.dc.html`, `TurmaErro.dc.html`, `TurmaEnviada.dc.html` |
 | `/contato` | Contato | `Contato.dc.html`, `ContatoCelular.dc.html` |
@@ -21,14 +23,14 @@
 | `/admin/login` | Login do admin | `AdminLogin.dc.html`, `AdminLoginErro.dc.html`, `AdminLoginCelular.dc.html` |
 | `/admin` | Painel | `AdminPainel.dc.html` (tela `painel` de `Admin.dc.html`) |
 | `/admin/agenda` | Lista de datas | `Admin.dc.html` (tela `agenda`), `AdminExcluir.dc.html` (diálogo de exclusão), `AdminCelular.dc.html` |
-| `/admin/agenda/nova` e `/admin/agenda/[id]` | Criar e editar data | `AdminEditar.dc.html` (tela `editar`), `AdminFoto.dc.html` (diálogo de foto) |
+| `/admin/agenda/nova` e `/admin/agenda/[id]` | Criar e editar data (com "Professores desta turma") | `AdminEditar.dc.html` (tela `editar`), `AdminFoto.dc.html` (diálogo de foto) |
 | `/admin/inscricoes` | Inscrições, com `?turma=` | `AdminInscricoes.dc.html` (tela `inscricoes`) |
-| `/admin/configuracoes` | Configurações | sem tela; dados de contato, WhatsApp, CRM/RQE e usuários |
+| `/admin/configuracoes` | Configurações, com abas (`?aba=`): Professores, Galeria, Contato do site e Usuários | `Admin.dc.html` (tela `config`), `AdminProfessores.dc.html`, `AdminGaleria.dc.html`; Contato do site e Usuários já existiam |
 
 ### Elementos comuns
 
 - **Header e Footer:** iguais em todas as páginas públicas.
-  - O Header tem o logo, o menu (Início, Sobre a Dra., Clínica, Agenda de cursos, Contato) e a chamada "Próximas turmas".
+  - O Header tem o logo, o menu (Início, Sobre o curso, Agenda de cursos, Contato) e a chamada "Próximas turmas". O rodapé legal é "© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG" (sem CRM nem RQE).
 - **WhatsAppButton flutuante:** em todas as páginas públicas, menos em `/contato`, onde ele aparece dentro da página.
   - Na página da turma, no celular, ele sobe para não cobrir a barra de inscrição. A regra `.ap-com-barra` está em `ap-tokens.css`.
 - **Tema:** só o claro. Não há botão de troca de tema nem tema escuro para a pessoa escolher (decisão do cliente, fora do que o design system previa com o `ThemeToggle`). As seções escuras da marca (Hero, faixas de chamada e Footer) seguem escuras, forçadas por `data-theme="escuro"` no próprio elemento.
@@ -61,6 +63,21 @@ Inscricao
 
 MensagemContato
   id, nome, email, telefone?, assunto, mensagem, aceitePrivacidadeEm, createdAt
+
+Professor
+  id, nome, funcao ("Médica Fisiatra"), registro ("CRM-MG 00000 · RQE 00000"), bio
+  fotoUrl?, fotoAlt?, visivel (bool), ordem (int), createdAt, updatedAt   // todos iguais; a ordem é a do admin
+  // Professor médico sempre mostra CRM e RQE (CFM): quem tem CRM no registro precisa ter RQE (lib/professor-form.ts)
+
+TurmaProfessor                    // tabela turma_professores
+  turmaId, professorId (pk composta, cascata), ordem
+
+FotoGaleria                       // tabela fotos_galeria
+  id, url, alt (obrigatório), ordem, createdAt, updatedAt   // a primeira foto aparece maior
+
+Configuracao (linha única)        // contato do site: telefone, WhatsApp, Instagram, e-mail, endereço e horário (sem CRM/RQE)
+
+FormularioDescarte                // tabela formularios_descartes: dia, formulario, motivo, contagem (envios barrados, sem dado pessoal)
 
 Usuario (admin)
   id, nome, email, senhaHash, papel (ADMIN | EQUIPE), ativo, createdAt, updatedAt
@@ -105,9 +122,9 @@ senão                               -> "aberto"
 
 ### Contato
 
-- **Campos:** nome, e-mail, telefone, assunto (Consulta na clínica, Turmas de toxina botulínica ou Outro assunto), mensagem e aceite.
+- **Campos:** nome, e-mail, telefone, assunto (Inscrições e turmas, Pagamento, Turma para grupo ou instituição ou Outro assunto), mensagem e aceite.
 - **Aviso no campo de mensagem:** "Não envie informações de saúde por aqui."
-- **Ao enviar:** a mensagem é gravada, um e-mail vai para a clínica e o `Alert` de sucesso aparece no lugar do formulário.
+- **Ao enviar:** a mensagem é gravada, um e-mail vai para a equipe e o `Alert` de sucesso aparece no lugar do formulário.
 
 ### Admin
 
@@ -126,10 +143,18 @@ senão                               -> "aberto"
 - **Editar ou criar data:** os campos do modelo `Turma`.
   - Ao lado, uma pré-visualização ao vivo com o `EventCard` e o `EventSummary`.
   - Botões "Salvar rascunho" e "Salvar e publicar".
-- **Foto:** diálogo de `AdminFoto.dc.html`.
-  - Envio por arrastar ou clicar, só JPG ou WebP, formato 16:10, a partir de 1600 px e até 5 MB.
-  - Opção de escolher da biblioteca da marca (`public/images/`).
+- **Foto:** diálogo de `AdminFoto.dc.html`, com preparo no navegador.
+  - Aceita JPG, PNG, WebP e HEIC/HEIF (iPhone), até 25 MB no original. A pessoa enquadra num recorte de moldura fixa (16:10 na turma, 4:5 no professor), arrastável, com zoom e teclado.
+  - O navegador recorta, reduz (2000 px de largura na turma, 1200 no retrato), converte para WebP (qualidade 0,82) e remove EXIF e GPS. Só esse arquivo vai para o Blob, com limite de 2 MB (o servidor confere tipo e tamanho e só grava URL do nosso Blob).
+  - Recorte com menos de 1200 px (800 no retrato) mostra um aviso que não bloqueia ("Usar mesmo assim?").
+  - Opção de escolher da biblioteca da marca (`public/images/`), só na foto da turma.
   - Texto alternativo obrigatório e lembrete das regras do CFM.
+- **Configurações (abas, `?aba=`; só ADMIN):**
+  - **Professores:** lista com ordem (sobe/desce), editar, excluir e "Novo professor". Campos: nome, função, registro (médico: CRM e RQE, obrigatórios), mini bio, foto em retrato 4:5 e "Mostrar no site". A ordem da lista é a ordem no site; todos aparecem iguais.
+  - **Galeria:** envio de várias fotos de uma vez (cada uma preparada no navegador, sem recorte), descrição obrigatória em cada foto, reordenar, remover e aviso do CFM (sem pacientes, antes e depois ou resultados). "Salvar galeria" fica desabilitado enquanto faltar descrição.
+  - **Contato do site** (telefone, WhatsApp, Instagram, e-mail, endereço e horário; e-mail de teste) e **Usuários**.
+- **Editar turma › Professores desta turma:** marca quem conduz e a ordem (sobe/desce). Aparecem na página da turma em "Quem conduz esta turma".
+- **Tags:** salvar professor ou galeria expira `professores` e `galeria` (`updateTag`); as páginas da turma também dependem de `professores`.
 - **Inscrições:** filtro por turma, tabela e situação editável.
   - Exportar a lista em CSV.
   - Lembrete para conferir o registro no conselho antes de confirmar.
@@ -170,7 +195,7 @@ O projeto usa `cacheComponents`. A contagem de vagas nunca pode ficar desatualiz
 
 ## Publicação (até a Fase 6)
 
-- Nada vai para o domínio público antes da Fase 6. `app/robots.ts` bloqueia tudo e o layout manda `noindex`; a Fase 7 troca os dois.
+- Nada vai para o domínio público antes da Fase 6 (hoje: enquanto `SITE_PUBLICO` não for `true`). `app/robots.ts` bloqueia tudo e o layout manda `noindex`; a Fase 7 troca os dois.
 - **Preview** (Vercel) só com proteção por senha ligada (Deployment Protection). Esta configuração fica na Vercel, não no repositório: confira antes do primeiro deploy.
 - O banco de desenvolvimento recebe o seed (inscrições fictícias, e-mail `@exemplo.invalid`). O seed só roda com `SEED_PERMITIDO=1` e nunca no banco de produção.
 - **Fase 3 (dados fixos):** as mesmas funções existem, lendo `lib/dados-exemplo.ts`, com as mesmas tags. Na fase 4 só a origem dos dados muda.
@@ -211,7 +236,7 @@ O projeto usa `cacheComponents`. A contagem de vagas nunca pode ficar desatualiz
 6. **Inscrição e contato pelo site:** *(feita; ver seção 8)* a inscrição é feita no site e gravada no banco (com lista de espera e corrida pela última vaga), mais o formulário de contato, e-mails, validação e proteção contra spam. Junto, a tela de **inscrições do admin** (filtro por turma, situação editável, CSV). Cada inscrição criada ou alterada invalida as tags da turma.
 7. **Acabamento:**
    - SEO: metadata, Open Graph com o logo, `sitemap.xml` e `robots.txt` (o admin com noindex);
-   - dados estruturados `Event` nas turmas e `Physician` na clínica;
+   - dados estruturados: `Organization` (ReabToxin) no início e em Sobre o curso, sem fundador; `Course` e `EducationEvent` nas turmas (com os professores de verdade); nada de `Physician`;
    - acessibilidade, testada com teclado e com leitor de tela;
    - Lighthouse;
    - deploy na Vercel.
@@ -220,7 +245,7 @@ O projeto usa `cacheComponents`. A contagem de vagas nunca pode ficar desatualiz
 
 | Arquivo em `public/images/` | Uso |
 |---|---|
-| `retrato-dra-ana-paula.webp` | Hero da home, Sobre, AboutDoctor (4:5) |
+| `retrato-dra-ana-paula.webp` | Foto da Dra. no seed (um dos professores, 4:5) |
 | `maos.webp` | Página da turma e cartão do módulo essencial (16:10) |
 | `luvas.webp` | Cartão da turma avançada |
 | `anatomia-quadril.webp` | Cartão em breve, Clínica · Como funciona |
@@ -230,3 +255,14 @@ O projeto usa `cacheComponents`. A contagem de vagas nunca pode ficar desatualiz
 | `textura-areia.webp` | Fundo opcional de seções grandes no tema claro |
 
 Nas telas de `design/`, os endereços de imagem já apontam para `/images/…`.
+
+## 11. Marca e escopo ReabToxin
+
+- **Nome:** o site, o título (`ReabToxin — Curso de toxina botulínica para profissionais da saúde`, modelo `%s · ReabToxin`), o Open Graph (`siteName`), a descrição e o remetente dos e-mails ("ReabToxin") usam o nome do curso. `lib/site.ts`: `NOME_DO_CURSO`.
+- **Rotas:** `/sobre` → `/sobre-o-curso` e `/clinica` → `/`, ambas com **301** (`next.config.ts`, `statusCode: 301`; o `permanent: true` do Next devolveria 308). Menu, rodapé, sitemap e links foram atualizados.
+- **Início:** hero "ReabToxin", "Como é a formação", próximas turmas, **Professores** (visíveis, na ordem), números do curso, depoimentos e a faixa da próxima turma.
+- **Sobre o curso:** proposta e pilares, **grade de professores** (`ProfessorCard` vertical, todos iguais, na ordem do admin; sem destaque), **Gallery** e a faixa de valores.
+- **Turma:** "Quem conduz esta turma" com `ProfessorCard` horizontal (só professores visíveis, na ordem escolhida no admin).
+- **Professor médico sempre mostra CRM e RQE:** o cartão mostra o `registro` inteiro, e o admin recusa um registro com CRM sem RQE. O CRM e o RQE do rodapé e de "Contato do site" foram removidos.
+- **Logo:** o do ReabToxin, do kit em `public/logos/` (versões horizontal, compacta, vertical, selo e símbolo; `web/` em camadas, `cores/` com claro e escuro, favicon e ícones de app). `Logo.tsx` desenha `logo-geo.json` e recolore pelo tema; para trocar, veja o `CLAUDE.md`.
+- **Migrations desta mudança:** `0005` (professores, turma_professores, fotos_galeria) e `0006` (remove a coluna que distinguia um professor dos outros e as colunas `configuracoes.crm` e `rqe`).

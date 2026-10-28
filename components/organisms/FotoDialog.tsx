@@ -6,7 +6,7 @@ import Cropper from "react-easy-crop";
 import { upload } from "@vercel/blob/client";
 import { Upload } from "lucide-react";
 import { ICON } from "@/lib/icon";
-import { BIBLIOTECA_FOTOS, FOTO_REGRAS, MENSAGENS_FOTO, recorteEhPequeno, tipoAceito } from "@/lib/fotos";
+import { BIBLIOTECA_FOTOS, FOTO_REGRAS, FORMATOS_FOTO, MENSAGENS_FOTO, recorteEhPequeno, tipoAceito, type FormatoFoto } from "@/lib/fotos";
 import { abrirFoto, ErroDeFoto, prepararFoto, type AreaDoRecorte, type FotoPreparada } from "@/lib/foto-cliente";
 import { Button } from "../atoms/Button";
 import { Alert } from "../molecules/Alert";
@@ -20,6 +20,13 @@ export interface FotoDialogProps {
   onUsar: (foto: { url: string; alt: string }) => void;
   /** Endereço do Route Handler que gera o token de envio (Vercel Blob). */
   enviarPara?: string;
+  /** "paisagem" (16:10, turma) ou "retrato" (4:5, professor). */
+  formato?: Exclude<FormatoFoto, "livre">;
+  /** Mostra a biblioteca da marca (só faz sentido para a foto da turma). */
+  biblioteca?: boolean;
+  /** Pede o texto alternativo no diálogo (a foto do professor usa "Foto de <nome>"). */
+  pedirDescricao?: boolean;
+  titulo?: string;
 }
 
 type Etapa = "escolher" | "ajustar";
@@ -32,7 +39,7 @@ interface Aberta {
 
 /* Fluxo: escolher a foto (ou da biblioteca) → ajustar o enquadramento (moldura fixa, arrastável, com zoom e teclado)
    → o navegador recorta, reduz, converte para WebP e tira os metadados → só esse arquivo final vai para o Blob. */
-export function FotoDialog({ aberto, atual, onFechar, onUsar, enviarPara = "/api/admin/foto" }: FotoDialogProps) {
+export function FotoDialog({ aberto, atual, onFechar, onUsar, enviarPara = "/api/admin/foto", formato = "paisagem", biblioteca = true, pedirDescricao = true, titulo = "Trocar foto" }: FotoDialogProps) {
   const dialogo = useRef<HTMLDialogElement>(null);
   const [url, setUrl] = useState(atual.url);
   const [alt, setAlt] = useState(atual.alt);
@@ -93,7 +100,7 @@ export function FotoDialog({ aberto, atual, onFechar, onUsar, enviarPara = "/api
   async function enviarPreparada(foto: FotoPreparada) {
     setEnviando(true);
     try {
-      const blob = await upload(`turma-${Date.now()}.webp`, foto.blob, { access: "public", handleUploadUrl: enviarPara, contentType: FOTO_REGRAS.tipoFinal });
+      const blob = await upload(`${formato === "retrato" ? "professor" : "turma"}-${Date.now()}.webp`, foto.blob, { access: "public", handleUploadUrl: enviarPara, contentType: FOTO_REGRAS.tipoFinal });
       setUrl(blob.url);
       descartarAberta();
       setEtapa("escolher");
@@ -112,8 +119,8 @@ export function FotoDialog({ aberto, atual, onFechar, onUsar, enviarPara = "/api
     setErro(null);
     setEnviando(true);
     try {
-      const foto = await prepararFoto(aberta.imagem, area);
-      if (recorteEhPequeno(foto.larguraDoRecorte)) {
+      const foto = await prepararFoto(aberta.imagem, area, formato);
+      if (recorteEhPequeno(foto.larguraDoRecorte, formato)) {
         setPequena(foto);
         setEnviando(false);
         return;
@@ -126,7 +133,7 @@ export function FotoDialog({ aberto, atual, onFechar, onUsar, enviarPara = "/api
   }
 
   const ocupado = enviando || abrindo;
-  const podeUsar = !!url && alt.trim().length > 0 && !ocupado;
+  const podeUsar = !!url && (!pedirDescricao || alt.trim().length > 0) && !ocupado;
 
   return (
     <dialog ref={dialogo} className={`${styles.dialogo} ${styles.dialogoLargo}`} aria-labelledby="dlg-foto-titulo" onClose={onFechar}>
@@ -134,7 +141,7 @@ export function FotoDialog({ aberto, atual, onFechar, onUsar, enviarPara = "/api
         <div className={styles.loginCabeca}>
           <p className="ap-eyebrow">Foto da turma</p>
           <h2 id="dlg-foto-titulo" className={styles.dialogoTitulo}>
-            Trocar foto
+            {titulo}
           </h2>
           <p className={styles.muted}>Escolha uma foto e ajuste o enquadramento.</p>
         </div>
@@ -169,6 +176,7 @@ export function FotoDialog({ aberto, atual, onFechar, onUsar, enviarPara = "/api
               />
             </label>
 
+            {biblioteca && (
             <div className={styles.pilhaCurta}>
               <p className="ap-eyebrow">Ou escolha da biblioteca da marca</p>
               <div className={styles.biblioteca}>
@@ -190,16 +198,17 @@ export function FotoDialog({ aberto, atual, onFechar, onUsar, enviarPara = "/api
                 ))}
               </div>
             </div>
+            )}
 
             {url && !BIBLIOTECA_FOTOS.some((f) => f.src === url) && (
               <div className={styles.pilhaCurta}>
                 <p className="ap-eyebrow">Foto enviada</p>
                 {/* eslint-disable-next-line @next/next/no-img-element -- prévia direta do arquivo recém-enviado */}
-                <img src={url} alt="Prévia da foto enviada" className={styles.previaFoto} />
+                <img src={url} alt="Prévia da foto enviada" className={styles.previaFoto} style={{ aspectRatio: formato === "retrato" ? "4 / 5" : undefined, maxWidth: formato === "retrato" ? 240 : undefined }} />
               </div>
             )}
 
-            <TextField label="Texto alternativo" required value={alt} onChange={(e) => setAlt(e.target.value)} hint="Descreva a foto para quem usa leitor de tela." />
+            {pedirDescricao && <TextField label="Texto alternativo" required value={alt} onChange={(e) => setAlt(e.target.value)} hint="Descreva a foto para quem usa leitor de tela." />}
             <Alert tone="info" title="Regras de publicidade médica">
               Sem fotos de pacientes, de antes e depois ou de resultados de procedimentos.
             </Alert>
@@ -224,7 +233,7 @@ export function FotoDialog({ aberto, atual, onFechar, onUsar, enviarPara = "/api
                 zoom={zoom}
                 minZoom={1}
                 maxZoom={4}
-                aspect={FOTO_REGRAS.proporcao}
+                aspect={FORMATOS_FOTO[formato].proporcao}
                 keyboardStep={10}
                 onCropChange={setPosicao}
                 onZoomChange={setZoom}

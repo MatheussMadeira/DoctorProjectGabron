@@ -80,7 +80,7 @@ test("ADMIN vê Excluir e Usuários; EQUIPE não", async ({ page, browser }) => 
   await page.goto("/admin/agenda");
   await page.getByRole("button", { name: /^Excluir:/ }).first().click();
   await expect(page.getByRole("button", { name: "Excluir data" })).toBeVisible();
-  await page.goto("/admin/configuracoes");
+  await page.goto("/admin/configuracoes?aba=usuarios");
   await expect(page.getByRole("heading", { name: "Usuários" })).toBeVisible();
 
   const contexto = await browser.newContext();

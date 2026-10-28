@@ -57,28 +57,26 @@ test.afterAll(async () => {
 
 test("ADMIN salva os dados da clínica e o site público muda na hora (rodapé, WhatsApp, contato)", async ({ page }) => {
   await entrar(page, emailAdmin);
-  await page.goto("/admin/configuracoes");
+  await page.goto("/admin/configuracoes?aba=contato");
   await page.waitForLoadState("networkidle");
 
   await digitar(page, 'input[name="telefone"]', "(31) 91234-5678");
   await digitar(page, 'input[name="whatsapp"]', "5531912345678");
   await digitar(page, 'input[name="instagram"]', "@dra.teste");
-  await digitar(page, 'input[name="crm"]', "CRM-MG 54321");
-  await digitar(page, 'input[name="rqe"]', "RQE 9876");
   await page.getByRole("button", { name: "Salvar dados" }).click();
   await expect(page.getByText("O site já mostra os novos dados.")).toBeVisible();
 
   await page.goto("/contato");
   const rodape = page.locator("footer");
   await expect(rodape).toContainText("(31) 91234-5678");
-  await expect(rodape).toContainText("CRM-MG 54321");
-  await expect(rodape).toContainText("RQE 9876");
+  await expect(rodape).toContainText("© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG");
+  await expect(rodape).not.toContainText(/CRM|RQE/);
   await expect(page.locator('a[href^="https://wa.me/5531912345678"]').first()).toBeAttached();
 });
 
 test("campo inválido volta com erro e não grava", async ({ page }) => {
   await entrar(page, emailAdmin);
-  await page.goto("/admin/configuracoes");
+  await page.goto("/admin/configuracoes?aba=contato");
   await page.waitForLoadState("networkidle");
   await digitar(page, 'input[name="whatsapp"]', "abc");
   await page.getByRole("button", { name: "Salvar dados" }).click();
@@ -89,14 +87,14 @@ test("campo inválido volta com erro e não grava", async ({ page }) => {
 
 test("EQUIPE não vê nem usa os dados da clínica", async ({ page }) => {
   await entrar(page, emailEquipe);
-  await page.goto("/admin/configuracoes");
+  await page.goto("/admin/configuracoes?aba=contato");
   await expect(page.getByRole("button", { name: "Salvar dados" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: /Enviar e-mail de teste/ })).toHaveCount(0);
 });
 
 test("botão de e-mail de teste manda para o ADMIN logado e registra o resultado na tela", async ({ page }) => {
   await entrar(page, emailAdmin);
-  await page.goto("/admin/configuracoes");
+  await page.goto("/admin/configuracoes?aba=contato");
   await page.waitForLoadState("networkidle");
   await page.getByRole("button", { name: `Enviar e-mail de teste para ${emailAdmin}` }).click();
   await expect(page.getByText("Teste enviado", { exact: true })).toBeVisible();

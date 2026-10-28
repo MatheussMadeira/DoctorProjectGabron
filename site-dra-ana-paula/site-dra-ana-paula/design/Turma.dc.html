@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>Toxina botulínica — módulo essencial · Dra. Ana Paula Fonseca</title>
+<title>Toxina botulínica — módulo essencial · ReabToxin</title>
 <script src="./support.js"></script>
 <link rel="stylesheet" href="ap-tokens.css">
 <link rel="stylesheet" href="ds/apfonseca/components/bundle.css">
@@ -79,13 +79,20 @@ body{margin:0}
 <x-import component-from-global-scope="ApFonseca.Schedule" title="Dia 2 · Domingo, 15 de março" items="{{dia2}}"></x-import>
 </section>
 
-<section id="quem-conduz" style="display: flex; flex-direction: column; gap: var(--space-6);">
+<section id="professores" style="display: flex; flex-direction: column; gap: var(--space-6);">
 <x-import component-from-global-scope="ApFonseca.Reveal">
-<x-import component-from-global-scope="ApFonseca.SectionHeading" number="05" eyebrow="Professora" title="Quem conduz"></x-import>
+<x-import component-from-global-scope="ApFonseca.SectionHeading" number="05" eyebrow="Professores" title="Quem conduz esta turma"></x-import>
 </x-import>
-<x-import component-from-global-scope="ApFonseca.Reveal" delay="120">
-<x-import component-from-global-scope="ApFonseca.AboutDoctor" photo="/images/retrato-dra-ana-paula.webp" photo-alt="Dra. Ana Paula Fonseca" name="Dra. Ana Paula Fonseca" role="Médica Fisiatra" registry="CRM-MG 00000 · RQE 00000" bio="Texto curto sobre a Dra. Ana Paula Fonseca: formação em fisiatria e experiência com toxina botulínica e com o ensino." credentials="{{credentials}}" action="{{aboutAction}}"></x-import>
+<div style="display: flex; flex-direction: column; gap: var(--space-4);">
+<sc-for list="{{professores}}" as="p" hint-placeholder-count="2">
+<x-import component-from-global-scope="ApFonseca.Reveal" delay="{{p.delay}}">
+<dc-import name="ProfessorCard" nome="{{p.nome}}" titulo="{{p.titulo}}" registro="{{p.registro}}" bio="{{p.bio}}" foto="{{p.foto}}" layout="horizontal" hint-size="100%,170px"></dc-import>
 </x-import>
+</sc-for>
+</div>
+<div>
+<x-import component-from-global-scope="ApFonseca.Button" variant="link" href="/sobre-o-curso#professores" arrow="{{yes}}">Conheça todos os professores</x-import>
+</div>
 </section>
 
 <section id="duvidas" style="display: flex; flex-direction: column; gap: var(--space-6);">
@@ -129,7 +136,7 @@ body{margin:0}
 
 </main>
 
-<x-import component-from-global-scope="ApFonseca.Footer" phone="+55 31 0000-0000" email="contato@dominio.com.br" instagram="@perfil" address="Endereço da clínica, Belo Horizonte — MG" links="{{footerLinks}}" legal="© 2026 Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG 00000 · RQE 00000"></x-import>
+<x-import component-from-global-scope="ApFonseca.Footer" phone="+55 31 0000-0000" email="contato@dominio.com.br" instagram="@perfil" address="Local das turmas, Belo Horizonte — MG" links="{{footerLinks}}" legal="© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG"></x-import>
 
 <x-import component-from-global-scope="ApFonseca.WhatsAppButton" phone="5531000000000" message="Olá! Tenho uma dúvida sobre a turma do módulo essencial de 14 e 15 de março." label="Fale conosco no WhatsApp"></x-import>
 
@@ -142,8 +149,7 @@ class Component extends DCLogic {
     const esgotada = (this.props.estado || 'normal') === 'esgotada';
     const nav = [
       { label: 'Início', href: '/' },
-      { label: 'Sobre a Dra.', href: '/sobre' },
-      { label: 'Clínica', href: '/clinica' },
+      { label: 'Sobre o curso', href: '/sobre-o-curso' },
       { label: 'Agenda de cursos', href: '/agenda' },
       { label: 'Contato', href: '/contato' }
     ];
@@ -180,7 +186,11 @@ class Component extends DCLogic {
         'Título ou formação complementar',
         'Sociedade ou associação de que faz parte'
       ],
-      aboutAction: { label: 'Conheça a Dra.', href: '/sobre' },
+      professores: [
+        { nome: 'Dra. Ana Paula Fonseca', titulo: 'Médica Fisiatra', registro: 'CRM-MG 00000 · RQE 00000', bio: 'Conduz as aulas teóricas e acompanha a prática supervisionada.', foto: '/images/retrato-dra-ana-paula.webp', delay: 0 },
+        { nome: 'Nome do professor', titulo: 'Especialidade a confirmar', registro: 'Conselho e registro 00000', bio: 'O que ensina nesta turma.', foto: '', delay: 120 },
+        { nome: 'Nome da professora', titulo: 'Especialidade a confirmar', registro: 'Conselho e registro 00000', bio: 'O que ensina nesta turma.', foto: '', delay: 240 }
+      ],
       faq: [
         { q: 'Recebo certificado?', a: 'Resposta a confirmar: tipo de certificado, carga horária (00 horas) e quando é entregue.' },
         { q: 'O material está incluso?', a: 'Resposta a confirmar: o que está incluso no valor (produto para a prática, apostila, alimentação) e o que você precisa levar.' },

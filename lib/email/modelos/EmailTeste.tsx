@@ -11,7 +11,7 @@ export interface EmailTesteProps {
 /** Enviado pelo botão "Enviar e-mail de teste" em Configurações: confirma que o envio funciona e mostra com que configuração. */
 export function EmailTeste({ quemPediu, provedor, remetente, contexto }: EmailTesteProps) {
   return (
-    <Base contexto={contexto} previa="Teste de envio do site da clínica">
+    <Base contexto={contexto} previa="Teste de envio do site do ReabToxin">
       <Text style={estilos.eyebrow}>Configurações</Text>
       <Text style={estilos.titulo}>E-mail de teste</Text>
       <Text style={estilos.paragrafo}>Se você está lendo esta mensagem, o envio de e-mails do site está funcionando.</Text>

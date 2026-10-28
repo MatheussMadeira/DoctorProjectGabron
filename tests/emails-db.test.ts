@@ -121,17 +121,16 @@ test("vaga confirmada: e-mail para a pessoa inscrita, registrado", opcoes, async
 test("Configurações: o que a Dra. salva aparece nos dados do site; vazio volta ao placeholder", opcoes, async () => {
   const antes = await db.select().from(configuracoes);
   try {
-    await db.insert(configuracoes).values({ id: 1, telefone: "(31) 99999-9999", whatsapp: "5531999999999", crm: "CRM-MG 12345", rqe: "RQE 6789" }).onConflictDoUpdate({
+    await db.insert(configuracoes).values({ id: 1, telefone: "(31) 99999-9999", whatsapp: "5531999999999" }).onConflictDoUpdate({
       target: configuracoes.id,
-      set: { telefone: "(31) 99999-9999", whatsapp: "5531999999999", crm: "CRM-MG 12345", rqe: "RQE 6789", enderecoLinha1: null },
+      set: { telefone: "(31) 99999-9999", whatsapp: "5531999999999", enderecoLinha1: null },
     });
     const site = await obterSiteAtual();
     assert.equal(site.telefone, "(31) 99999-9999");
     assert.equal(site.telefoneHref, "tel:31999999999");
     assert.equal(site.whatsapp, "5531999999999");
-    assert.equal(site.registro, "CRM-MG 12345 · RQE 6789");
-    assert.match(site.legal, /CRM-MG 12345 · RQE 6789$/);
-    assert.equal(site.enderecoCurto, "Endereço da clínica, Belo Horizonte — MG", "sem endereço salvo, placeholder");
+    assert.equal(site.legal, "© {ANO} ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG".replace("{ANO}", String(new Date().getFullYear())));
+    assert.equal(site.enderecoCurto, "Local das turmas, Belo Horizonte — MG", "sem endereço salvo, placeholder");
   } finally {
     await db.delete(configuracoes);
     if (antes.length) await db.insert(configuracoes).values(antes);

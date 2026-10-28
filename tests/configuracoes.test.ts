@@ -6,17 +6,17 @@ import { ehPlaceholder, montarSite, SITE_PADRAO } from "../lib/site";
 test("sem nada salvo, o site usa os placeholders explícitos", () => {
   const s = montarSite(null, 2026);
   assert.equal(s.telefone, SITE_PADRAO.telefone);
-  assert.equal(s.registro, "CRM-MG 00000 · RQE 00000");
-  assert.equal(s.legal, "© 2026 Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG 00000 · RQE 00000");
+  assert.equal(s.legal, "© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG");
+  assert.ok(!/CRM|RQE/i.test(s.legal), "o rodapé legal não leva CRM nem RQE");
+  assert.equal("crm" in s || "rqe" in s || "registro" in s, false, "CRM e RQE saíram dos dados do site");
 });
 
 test("o que foi salvo vence o placeholder, campo a campo", () => {
-  const s = montarSite({ telefone: "(31) 99999-9999", instagram: "dra.ana", crm: "CRM-MG 12345", rqe: null }, 2026);
+  const s = montarSite({ telefone: "(31) 99999-9999", instagram: "dra.ana" }, 2026);
   assert.equal(s.telefone, "(31) 99999-9999");
   assert.equal(s.telefoneHref, "tel:31999999999");
   assert.equal(s.instagram, "@dra.ana");
   assert.equal(s.instagramUrl, "https://instagram.com/dra.ana");
-  assert.equal(s.registro, "CRM-MG 12345 · RQE 00000");
 });
 
 test("placeholders são reconhecidos (para nunca irem a dados estruturados)", () => {
@@ -25,10 +25,10 @@ test("placeholders são reconhecidos (para nunca irem a dados estruturados)", ()
 });
 
 test("validação das Configurações: mensagens que dizem o que fazer, vazio vira nulo", () => {
-  const vazio = configuracoesSchema.parse({ telefone: "", whatsapp: "", instagram: "", email: "", enderecoLinha1: "", enderecoLinha2: "", horario: "", crm: "", rqe: "" });
-  assert.deepEqual(Object.values(vazio), [null, null, null, null, null, null, null, null, null]);
+  const vazio = configuracoesSchema.parse({ telefone: "", whatsapp: "", instagram: "", email: "", enderecoLinha1: "", enderecoLinha2: "", horario: "" });
+  assert.deepEqual(Object.values(vazio), [null, null, null, null, null, null, null]);
 
-  const ruim = configuracoesSchema.safeParse({ telefone: "123", whatsapp: "31999999999", instagram: "dra ana!", email: "nao-e-email", enderecoLinha1: "", enderecoLinha2: "", horario: "", crm: "", rqe: "" });
+  const ruim = configuracoesSchema.safeParse({ telefone: "123", whatsapp: "31999999999", instagram: "dra ana!", email: "nao-e-email", enderecoLinha1: "", enderecoLinha2: "", horario: "" });
   assert.equal(ruim.success, false);
   if (!ruim.success) {
     const e = Object.fromEntries(ruim.error.issues.map((i) => [String(i.path[0]), i.message]));
@@ -38,8 +38,7 @@ test("validação das Configurações: mensagens que dizem o que fazer, vazio vi
     assert.match(e.email, /nome@dominio\.com\.br/);
   }
 
-  const bom = configuracoesSchema.parse({ telefone: "(31) 99999-9999", whatsapp: "+55 (31) 99999-9999", instagram: "dra.ana", email: "contato@clinica.com.br", enderecoLinha1: "", enderecoLinha2: "", horario: "", crm: " CRM-MG 12345 ", rqe: "" });
+  const bom = configuracoesSchema.parse({ telefone: "(31) 99999-9999", whatsapp: "+55 (31) 99999-9999", instagram: "dra.ana", email: "contato@clinica.com.br", enderecoLinha1: "", enderecoLinha2: "", horario: "" });
   assert.equal(bom.whatsapp, "5531999999999");
   assert.equal(bom.instagram, "@dra.ana");
-  assert.equal(bom.crm, "CRM-MG 12345");
 });

@@ -22,11 +22,9 @@ export interface DadosClinicaValores {
   enderecoLinha1: string;
   enderecoLinha2: string;
   horario: string;
-  crm: string;
-  rqe: string;
 }
 
-/** Dados de contato e registro da clínica. Só o ADMIN vê; a Server Action confere a permissão de novo. */
+/** Dados de contato do site. Só o ADMIN vê; a Server Action confere a permissão de novo. */
 export function DadosClinicaForm({
   valores,
   padroes,
@@ -42,10 +40,10 @@ export function DadosClinicaForm({
     <TextField label={rotulo} name={nome} defaultValue={valores[nome]} placeholder={padroes[nome]} error={erros[nome]} hint={hint} />
   );
   return (
-    <AdminCard titulo="Dados da clínica">
+    <AdminCard titulo="Dados de contato">
       <form action={enviar} className={styles.pilha} noValidate>
         <p className={styles.muted}>
-          Aparecem no menu do celular, no rodapé, no botão de WhatsApp, na página de contato e nos e-mails. Campo vazio mostra o placeholder no site.
+          Aparecem no menu do celular, no rodapé, no botão de WhatsApp, na página de contato e nos e-mails. O registro de cada professor fica no cadastro dele (aba Professores). Campo vazio mostra o placeholder no site.
         </p>
         {estado.erro && (
           <Alert tone="danger" title="Não foi possível salvar">
@@ -69,10 +67,6 @@ export function DadosClinicaForm({
         <div className={styles.linha}>
           {campo("enderecoLinha1", "Endereço", "Rua, número, sala · Bairro")}
           {campo("enderecoLinha2", "Cidade e CEP", "Belo Horizonte — MG · CEP 00000-000")}
-        </div>
-        <div className={styles.linha}>
-          {campo("crm", "CRM", "Ex.: CRM-MG 12345. Aparece junto ao nome da Dra.")}
-          {campo("rqe", "RQE", "Ex.: RQE 6789.")}
         </div>
         <div>
           <Button type="submit" disabled={pendente}>
