@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { FOOTER, SITE } from "@/lib/site";
+import { obterSite } from "@/lib/configuracoes";
+import { footerDe } from "@/lib/site";
 import { WhatsAppButton } from "../atoms/WhatsAppButton";
 import { Footer } from "../organisms/Footer";
 import { SiteHeader } from "./SiteHeader";
@@ -14,14 +15,20 @@ export interface PublicTemplateProps {
   children: ReactNode;
 }
 
-/** Moldura das páginas públicas: Header, conteúdo, Footer e WhatsApp flutuante. */
-export function PublicTemplate({ hideWhatsApp = false, withBar = false, whatsAppMessage, children }: PublicTemplateProps) {
+/** Moldura das páginas públicas: Header, conteúdo, Footer e WhatsApp flutuante. Os dados de contato vêm de Configurações. */
+export async function PublicTemplate({ hideWhatsApp = false, withBar = false, whatsAppMessage, children }: PublicTemplateProps) {
+  const site = await obterSite();
   return (
     <div className={withBar ? "ap-com-barra" : undefined}>
-      <SiteHeader />
-      <main>{children}</main>
-      <Footer {...FOOTER} />
-      {!hideWhatsApp && <WhatsAppButton phone={SITE.whatsapp} message={whatsAppMessage} />}
+      <a className="ap-skip" href="#conteudo">
+        Pular para o conteúdo
+      </a>
+      <SiteHeader contato={{ telefone: site.telefone, telefoneHref: site.telefoneHref, whatsapp: site.whatsapp }} />
+      <main id="conteudo" tabIndex={-1}>
+        {children}
+      </main>
+      <Footer {...footerDe(site)} />
+      {!hideWhatsApp && <WhatsAppButton phone={site.whatsapp} message={whatsAppMessage} />}
     </div>
   );
 }

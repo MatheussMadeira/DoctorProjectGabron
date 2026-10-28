@@ -15,7 +15,7 @@ export function AdminSidebarFooter({ nome, papel, sair }: AdminSidebarFooterProp
     <>
       <div className={styles.quem}>
         <strong>{nome}</strong>
-        <span>{papel === "ADMIN" ? "Administradora" : "Equipe"}</span>
+        <span>{papel === "ADMIN" ? "Administração" : "Equipe"}</span>
       </div>
       <form action={sair}>
         <Button type="submit" variant="ghost" size="sm" icon={<LogOut {...ICON} size={18} />}>

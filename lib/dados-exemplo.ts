@@ -239,8 +239,6 @@ export const CREDENCIAIS = [
   "Sociedade ou associação de que faz parte",
 ];
 
-export const REGISTRO = "CRM-MG 00000 · RQE 00000";
-
 export const NUMEROS_TRAJETORIA = [
   { value: "00", label: "Anos de experiência" },
   { value: "00", label: "Turmas realizadas" },

@@ -58,6 +58,10 @@ export function agendaEvent(t: Turma): AgendaEvent {
 /** "Belo Horizonte, MG" → "Belo Horizonte" (para linhas como "Presencial · Belo Horizonte"). */
 export const cidadeSemUF = (cidade: string) => cidade.split(",")[0];
 
+/** Onde a turma acontece, para sobretítulos: a cidade só aparece em turma presencial ("Presencial · Belo Horizonte"; "Online · Ao vivo"). */
+export const localDaTurma = (t: Pick<Turma, "modalidade" | "cidade">) => (t.modalidade === "Online" ? "Ao vivo" : cidadeSemUF(t.cidade));
+export const sobretituloDaTurma = (t: Pick<Turma, "modalidade" | "cidade">) => `${t.modalidade} · ${localDaTurma(t)}`;
+
 /** Texto da faixa de chamada para a próxima turma com inscrições abertas. */
 export function chamadaProxima(t: Turma) {
   const duracao = duracaoPorExtenso(t.inicio, t.fim);

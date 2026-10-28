@@ -7,6 +7,7 @@ import styles from "../paginas.module.css";
 export const metadata: Metadata = {
   title: "Política de privacidade",
   description: "Como a clínica trata os dados enviados pelo site.",
+  alternates: { canonical: "/politica-de-privacidade" },
 };
 
 /* Sem tela de referência: Section estreita com texto placeholder, a ser substituído pelo texto jurídico aprovado. */

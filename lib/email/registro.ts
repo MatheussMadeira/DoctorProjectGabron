@@ -31,7 +31,7 @@ async function executar(emailId: string): Promise<ResultadoRegistro> {
       status: resultado.ok ? "ENVIADO" : "FALHOU",
       erro: resultado.ok ? null : resultado.erro,
       provedor: resultado.provedor,
-      destinatario: mensagem?.para ?? reg.destinatario,
+      destinatario: mensagem ? mensagem.para.join(", ") : reg.destinatario,
       assunto: mensagem?.assunto ?? reg.assunto,
       enviadoEm: resultado.ok ? new Date() : reg.enviadoEm,
       tentativas: sql`${emailsEnvios.tentativas} + 1`,
@@ -49,7 +49,7 @@ export async function enviarERegistrar(tipo: TipoEmail, origem: OrigemEmail): Pr
     if (!mensagem) return { emailId: null, ok: false, erro: "Origem do e-mail não encontrada." };
     const [reg] = await db
       .insert(emailsEnvios)
-      .values({ tipo, destinatario: mensagem.para, assunto: mensagem.assunto, inscricaoId: origem.inscricaoId ?? null, mensagemId: origem.mensagemId ?? null })
+      .values({ tipo, destinatario: mensagem.para.join(", "), assunto: mensagem.assunto, inscricaoId: origem.inscricaoId ?? null, mensagemId: origem.mensagemId ?? null })
       .returning({ id: emailsEnvios.id });
     return await executar(reg.id);
   } catch (e) {

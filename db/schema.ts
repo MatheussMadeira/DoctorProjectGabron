@@ -8,6 +8,7 @@ import {
   jsonb,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uuid,
@@ -26,7 +27,9 @@ export const situacaoEnum = pgEnum("situacao_inscricao", [
   "CANCELADA",
 ]);
 export const papelEnum = pgEnum("papel_usuario", ["ADMIN", "EQUIPE"]);
-export const tipoEmailEnum = pgEnum("tipo_email", ["INSCRICAO_CONFIRMACAO", "INSCRICAO_AVISO", "CONTATO_AVISO"]);
+export const tipoEmailEnum = pgEnum("tipo_email", ["INSCRICAO_CONFIRMACAO", "INSCRICAO_AVISO", "CONTATO_AVISO", "INSCRICAO_VAGA_CONFIRMADA"]);
+/** Por que um envio dos formulários públicos foi barrado. */
+export const motivoDescarteEnum = pgEnum("motivo_descarte", ["ARMADILHA", "TEMPO", "CARIMBO", "LIMITE", "VALIDACAO"]);
 export const statusEmailEnum = pgEnum("status_email", ["PENDENTE", "ENVIADO", "FALHOU"]);
 
 export type Modalidade = (typeof modalidadeEnum.enumValues)[number];
@@ -191,3 +194,43 @@ export const limitesTaxa = pgTable("limites_taxa", {
   contagem: integer("contagem").notNull().default(0),
   janelaFim: timestamp("janela_fim", { withTimezone: true }).notNull(),
 });
+
+/** Envios barrados nos formulários, contados por dia, formulário e motivo (sem dados pessoais e sem crescer a cada tentativa).
+    O painel mostra estes números: se "Tempo" ou "Limite" subir sem motivo, pessoas reais podem estar sendo barradas. */
+export const formulariosDescartes = pgTable(
+  "formularios_descartes",
+  {
+    dia: date("dia", { mode: "string" }).notNull(),
+    formulario: text("formulario").notNull(),
+    motivo: motivoDescarteEnum("motivo").notNull(),
+    contagem: integer("contagem").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.dia, t.formulario, t.motivo] })],
+);
+export type MotivoDescarte = (typeof motivoDescarteEnum.enumValues)[number];
+
+/** Dados de contato e registro da clínica, editados em Configurações. Uma única linha (id = 1).
+    Coluna vazia = o site usa o placeholder de lib/site.ts. */
+export const configuracoes = pgTable(
+  "configuracoes",
+  {
+    id: integer("id").primaryKey().default(1),
+    /** Como aparece: "(31) 99999-9999". */
+    telefone: text("telefone"),
+    /** Só dígitos com o código do país: "5531999999999". */
+    whatsapp: text("whatsapp"),
+    /** "@perfil" */
+    instagram: text("instagram"),
+    /** E-mail público (rodapé e página de contato). Não é o e-mail que envia. */
+    email: text("email"),
+    enderecoLinha1: text("endereco_linha1"),
+    enderecoLinha2: text("endereco_linha2"),
+    horario: text("horario"),
+    /** "CRM-MG 12345" */
+    crm: text("crm"),
+    /** "RQE 6789" */
+    rqe: text("rqe"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [check("configuracoes_linha_unica", sql`${t.id} = 1`)],
+);

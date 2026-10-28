@@ -67,7 +67,7 @@ export default async function InscricoesAdminPage({ searchParams }: PageProps<"/
                 { key: "profissao", label: "Profissão" },
                 { key: "registro", label: "Registro", render: (i) => `${i.conselho} ${i.registro}` },
                 { key: "telefone", label: "Contato" },
-                { key: "createdAt", label: "Inscrição", render: (i) => dataHora.format(i.createdAt) },
+                { key: "createdAt", label: "Inscrição", render: (i) => (<div className={styles.nomeCelula}><strong>{dataHora.format(i.createdAt)}</strong><span>Aceite da política: {dataHora.format(i.aceitePrivacidadeEm)}</span></div>) },
                 {
                   key: "situacao",
                   label: "Situação",

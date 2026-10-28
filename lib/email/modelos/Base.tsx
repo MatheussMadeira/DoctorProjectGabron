@@ -1,10 +1,10 @@
 import type { CSSProperties, ReactNode } from "react";
-import { Body, Container, Head, Heading, Hr, Html, Preview, Section, Text } from "@react-email/components";
+import { Body, Container, Head, Heading, Hr, Html, Img, Preview, Section, Text } from "@react-email/components";
 
 /* Identidade do design system, adaptada ao que os leitores de e-mail aceitam: cores e proporções dos tokens
    (azul-escuro, creme, azul-claro), cantos retos, títulos em caixa alta com espaçamento. Marcellus e Source Sans 3
-   não são fontes de e-mail, então entram Georgia e Arial. O logo não vai como imagem: ainda não há domínio para
-   hospedá-la, e SVG não funciona no Gmail. */
+   não são fontes de e-mail, então entram Georgia e Arial. O logo vai como PNG (SVG não funciona no Gmail), com
+   endereço absoluto: public/logos/logo-horizontal-negativo-2x.png, gerado por scripts/gerar-logo-email.mjs. */
 
 export const cores = {
   azulEscuro: "#28334f",
@@ -39,7 +39,15 @@ export const estilos: Record<string, CSSProperties> = {
   rodape: { padding: "20px 32px", fontSize: 12, lineHeight: "18px", color: cores.azulPedra },
 };
 
-export function Base({ previa, children }: { previa: string; children: ReactNode }) {
+/** Dados que todo e-mail precisa e que vêm de fora (endereço do site e Configurações). */
+export interface ContextoEmail {
+  /** Endereço ABSOLUTO do logo em PNG (SITE_URL + /logos/...). Leitores de e-mail não abrem caminhos relativos. */
+  logoUrl: string;
+  /** "Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG … · RQE …" */
+  legal: string;
+}
+
+export function Base({ previa, contexto, children }: { previa: string; contexto: ContextoEmail; children: ReactNode }) {
   return (
     <Html lang="pt-BR">
       <Head />
@@ -47,12 +55,11 @@ export function Base({ previa, children }: { previa: string; children: ReactNode
       <Body style={estilos.corpo}>
         <Container style={estilos.recipiente}>
           <Section style={estilos.topo}>
-            <Text style={estilos.marca}>Dra. Ana Paula Fonseca</Text>
-            <Text style={estilos.marcaSub}>Médica Fisiatra</Text>
+            <Img src={contexto.logoUrl} width="168" alt="Dra. Ana Paula Fonseca — Médica Fisiatra" style={{ display: "block", border: 0, color: cores.creme, fontFamily: SERIFA, fontSize: 18, textTransform: "uppercase" }} />
           </Section>
           <Section style={estilos.cartao}>{children}</Section>
           <Section style={estilos.rodape}>
-            <Text style={{ margin: 0 }}>Dra. Ana Paula Fonseca · Médica Fisiatra · CRM-MG 00000 · RQE 00000</Text>
+            <Text style={{ margin: 0 }}>{contexto.legal}</Text>
             <Text style={{ margin: "6px 0 0" }}>Esta é uma mensagem automática enviada pelo site da clínica.</Text>
           </Section>
         </Container>

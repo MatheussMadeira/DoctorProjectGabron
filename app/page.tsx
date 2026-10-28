@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Activity, ClipboardList, Users } from "lucide-react";
-import { Button, Grid, Photo, Reveal, Stack } from "@/components/atoms";
+import { Button, Grid, JsonLd, Photo, Reveal, Stack } from "@/components/atoms";
 import { FeatureItem, ItemList, SectionHeading, Stats, Testimonial } from "@/components/molecules";
 import { AboutDoctor, CTABand, EventCard, Hero } from "@/components/organisms";
 import { PublicTemplate, Section, SplitLayout } from "@/components/templates";
-import { CREDENCIAIS, DEPOIMENTOS, NUMEROS_TRAJETORIA, REGISTRO } from "@/lib/dados-exemplo";
-import { SITE } from "@/lib/site";
+import { obterSite } from "@/lib/configuracoes";
+import { medicoLd } from "@/lib/dados-estruturados";
+import { urlDoSite } from "@/lib/seo";
+import { CREDENCIAIS, DEPOIMENTOS, NUMEROS_TRAJETORIA } from "@/lib/dados-exemplo";
 import { listarProximas, proximaComInscricoesAbertas } from "@/lib/turmas";
 import { cardProps, chamadaProxima } from "@/lib/turmas-view";
 import styles from "./paginas.module.css";
@@ -13,14 +15,16 @@ import styles from "./paginas.module.css";
 export const metadata: Metadata = {
   title: { absolute: "Dra. Ana Paula Fonseca — Médica Fisiatra em Belo Horizonte" },
   description: "Medicina física e reabilitação em Belo Horizonte e turmas de toxina botulínica para profissionais da saúde.",
+  alternates: { canonical: "/" },
 };
 
 export default async function Home() {
-  const [destaques, proxima] = await Promise.all([listarProximas(3), proximaComInscricoesAbertas()]);
+  const [destaques, proxima, site] = await Promise.all([listarProximas(3), proximaComInscricoesAbertas(), obterSite()]);
   const chamada = proxima && chamadaProxima(proxima);
 
   return (
     <PublicTemplate>
+      <JsonLd dados={medicoLd(site, urlDoSite())} />
       <Hero
         eyebrow="Médica Fisiatra"
         title="Movimento com equilíbrio"
@@ -57,7 +61,7 @@ export default async function Home() {
               <Button variant="secondary" href="/contato" arrow>
                 Agendar consulta
               </Button>
-              <span className={styles.nota}>{SITE.enderecoCurto}</span>
+              <span className={styles.nota}>{site.enderecoCurto}</span>
             </Stack>
           </Stack>
           <Reveal delay={120}>
@@ -95,7 +99,7 @@ export default async function Home() {
         <Reveal>
           <AboutDoctor
             photo="/images/retrato-dra-ana-paula.webp"
-            registry={REGISTRO}
+            registry={site.registro}
             bio="Texto de apresentação da Dra. Ana Paula Fonseca: formação, trajetória em fisiatria e como chegou ao ensino da toxina botulínica."
             credentials={CREDENCIAIS}
             action={{ label: "Conheça a Dra.", href: "/sobre" }}

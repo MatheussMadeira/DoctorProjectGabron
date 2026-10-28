@@ -23,6 +23,8 @@ export interface InscricaoAdmin {
   querAvisos: boolean;
   situacao: Situacao;
   createdAt: Date;
+  /** Data e hora em que a pessoa marcou o aceite da Política de Privacidade. */
+  aceitePrivacidadeEm: Date;
   emails: EmailDaLinha[];
 }
 
@@ -59,6 +61,7 @@ export async function listarInscricoes(turmaId: string): Promise<InscricaoAdmin[
     querAvisos: l.querAvisos,
     situacao: l.situacao,
     createdAt: l.createdAt,
+    aceitePrivacidadeEm: l.aceitePrivacidadeEm,
     emails: emails.get(l.id) ?? [],
   }));
 }

@@ -4,22 +4,21 @@ import { after } from "next/server";
 import { db } from "@/db";
 import { mensagensContato } from "@/db/schema";
 import { enviarERegistrar } from "@/lib/email/registro";
-import { CAMPO_ARMADILHA, type EstadoFormulario } from "@/lib/formularios-tipos";
+import type { EstadoFormulario } from "@/lib/formularios-tipos";
 import { contatoSchema, errosPorCampo, valoresDigitados } from "@/lib/formularios";
-import { dentroDoLimite } from "@/lib/limite-taxa";
+import { registrarDescarte } from "@/lib/descartes";
+import { barrarEnvio } from "@/lib/protecao-formulario";
 
 const plural = (n: number) => (n === 1 ? "1 campo" : `${n} campos`);
 
 /** Mensagem do formulário de contato: grava, e só depois avisa a clínica por e-mail. */
 export async function enviarContato(_anterior: EstadoFormulario, formData: FormData): Promise<EstadoFormulario> {
-  if (String(formData.get(CAMPO_ARMADILHA) ?? "").trim()) return { ok: true };
-
-  if (!(await dentroDoLimite("contato"))) {
-    return { erroGeral: "Muitas mensagens em pouco tempo. Aguarde alguns minutos e tente de novo.", valores: valoresDigitados(formData) };
-  }
+  const barrado = await barrarEnvio("contato", formData, "contato");
+  if (barrado) return barrado;
 
   const parsed = contatoSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) {
+    await registrarDescarte("contato", "VALIDACAO");
     const erros = errosPorCampo(parsed.error);
     return { erros, erroGeral: `Revise ${plural(Object.keys(erros).length)} antes de enviar`, valores: valoresDigitados(formData) };
   }

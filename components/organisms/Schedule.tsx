@@ -34,7 +34,7 @@ export function Schedule({ items = [], title }: ScheduleProps) {
               <span className="ap-schedule-dot" aria-hidden="true" />
               <span className="ap-schedule-when">{m.time || String(i + 1).padStart(2, "0")}</span>
               <div>
-                <h4 className="ap-schedule-name">{m.title}</h4>
+                <h3 className="ap-schedule-name">{m.title}</h3>
                 {m.description && <p className="ap-schedule-desc">{m.description}</p>}
               </div>
               {m.duration && (

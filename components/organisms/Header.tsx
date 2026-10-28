@@ -15,10 +15,12 @@ export interface HeaderProps {
   links?: Link[];
   current?: string;
   cta?: Link;
+  /** Telefone e WhatsApp, mostrados no menu do celular (vêm de Configurações). */
+  contato?: { telefone: string; telefoneHref: string; whatsapp: string };
   sticky?: boolean;
 }
 
-export function Header({ links = [], current, cta, sticky = true }: HeaderProps) {
+export function Header({ links = [], current, cta, contato, sticky = true }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -76,6 +78,14 @@ export function Header({ links = [], current, cta, sticky = true }: HeaderProps)
             <Button full href={cta.href} arrow>
               {cta.label}
             </Button>
+          )}
+          {contato && (
+            <p className="ap-drawer-contato">
+              <a href={contato.telefoneHref}>{contato.telefone}</a>
+              <a href={`https://wa.me/${contato.whatsapp}`} target="_blank" rel="noopener noreferrer">
+                WhatsApp
+              </a>
+            </p>
           )}
         </div>
       </div>

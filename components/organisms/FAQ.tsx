@@ -19,12 +19,12 @@ export function FAQ({ items = [], defaultOpen = 0 }: FAQProps) {
         const on = open === i;
         return (
           <div key={i} className={cx("ap-faq-item", on && "is-open")}>
-            <h4 className="ap-faq-q">
+            <h3 className="ap-faq-q">
               <button type="button" aria-expanded={on} aria-controls={`${base}-${i}`} onClick={() => setOpen(on ? -1 : i)}>
                 <span>{it.q}</span>
                 <ChevronDown {...ICON} />
               </button>
-            </h4>
+            </h3>
             <div id={`${base}-${i}`} className="ap-faq-a" role="region">
               <div>
                 <p>{it.a}</p>

@@ -9,6 +9,7 @@ export const PERMISSOES = {
   "turma:excluir": ["ADMIN"],
   "inscricao:gerir": ["ADMIN", "EQUIPE"],
   "usuario:gerir": ["ADMIN"],
+  "configuracao:editar": ["ADMIN"],
 } as const satisfies Record<string, readonly Papel[]>;
 
 export type Permissao = keyof typeof PERMISSOES;

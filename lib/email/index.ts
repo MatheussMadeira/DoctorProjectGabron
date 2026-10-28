@@ -7,7 +7,7 @@ import { criarProvedor } from "./provedores";
    desta pasta. Nunca lança erro: devolve { ok: false, erro } para quem chamou registrar a falha. */
 
 export interface MensagemEmail {
-  para: string;
+  para: string[];
   assunto: string;
   /** Modelo em React Email. */
   react: ReactElement;
@@ -26,7 +26,7 @@ function descrever(e: unknown, segredos: Array<string | undefined>): string {
 export async function enviarEmail(mensagem: MensagemEmail): Promise<ResultadoEnvio> {
   const cfg = lerConfig();
   if (!cfg.ok) return { ok: false, provedor: cfg.provedor, erro: cfg.erro };
-  if (!mensagem.para) return { ok: false, provedor: cfg.provedor, erro: "Destinatário não configurado." };
+  if (!mensagem.para.length) return { ok: false, provedor: cfg.provedor, erro: "Destinatário não configurado." };
 
   try {
     const [html, texto] = await Promise.all([render(mensagem.react), render(mensagem.react, { plainText: true })]);
@@ -42,12 +42,6 @@ export async function enviarEmail(mensagem: MensagemEmail): Promise<ResultadoEnv
   } catch (e) {
     return { ok: false, provedor: cfg.provedor, erro: descrever(e, [cfg.smtp?.senha, cfg.resendApiKey]) };
   }
-}
-
-/** Caixa que recebe os avisos internos. Vazia se o e-mail ainda não foi configurado. */
-export function destinoDaEquipe(): string {
-  const cfg = lerConfig();
-  return cfg.ok ? cfg.equipe : "";
 }
 
 export { lerConfig } from "./config";

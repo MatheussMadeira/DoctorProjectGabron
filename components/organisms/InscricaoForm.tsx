@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import { CAMPO_ARMADILHA, type EstadoFormulario } from "@/lib/formularios-tipos";
+import { CAMPO_ARMADILHA, CAMPO_CARIMBO, type EstadoFormulario } from "@/lib/formularios-tipos";
+import { useCarimbo } from "@/lib/use-carimbo";
 import { Alert } from "../molecules/Alert";
 import { Select } from "../molecules/Select";
 import { TextField } from "../molecules/TextField";
@@ -30,6 +31,8 @@ const semAcao = async (anterior: EstadoFormulario) => anterior;
 
 export function InscricaoForm({ acao = semAcao, esgotada = false, eyebrow, profissoes, conselhos, estadoInicial = {} }: InscricaoFormProps) {
   const [estado, enviar, pendente] = useActionState(acao, estadoInicial);
+  const { carimbo, formRef, renovando, falhou } = useCarimbo(estado);
+  const erroGeral = estado.erroGeral ?? (falhou ? "Não foi possível validar o envio. Recarregue a página e tente de novo." : undefined);
   const erros = estado.erros ?? {};
   const v = estado.valores ?? {};
   const temErros = Object.keys(erros).length > 0;
@@ -61,9 +64,9 @@ export function InscricaoForm({ acao = semAcao, esgotada = false, eyebrow, profi
       </Reveal>
 
       <Reveal delay={120}>
-        <form action={enviar} className={`${styles.card} ${styles.form}`} noValidate>
-          {estado.erroGeral && (
-            <Alert tone="danger" title={estado.erroGeral}>
+        <form ref={formRef} action={enviar} className={`${styles.card} ${styles.form}`} noValidate>
+          {erroGeral && (
+            <Alert tone="danger" title={erroGeral}>
               {temErros ? "Confira os campos marcados abaixo." : "Se o problema continuar, fale com a equipe pelo WhatsApp."}
             </Alert>
           )}
@@ -71,19 +74,21 @@ export function InscricaoForm({ acao = semAcao, esgotada = false, eyebrow, profi
           {/* Armadilha para robôs: fora da tela, sem foco e sem leitura por leitor de tela. Pessoas não preenchem. */}
           <div className={styles.armadilha} aria-hidden="true">
             <label>
-              Não preencha este campo
-              <input type="text" name={CAMPO_ARMADILHA} tabIndex={-1} autoComplete="off" />
+              Deixe este campo em branco
+              <input type="text" name={CAMPO_ARMADILHA} tabIndex={-1} autoComplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other" />
             </label>
           </div>
+          <input type="hidden" name={CAMPO_CARIMBO} value={carimbo} />
 
           <TextField floating label="Nome completo" name="nome" autoComplete="name" required defaultValue={v.nome} error={erros.nome} />
           <div className={styles.pair}>
             <TextField floating label="E-mail" type="email" name="email" autoComplete="email" required defaultValue={v.email} error={erros.email} />
             <TextField floating label="Telefone ou WhatsApp" type="tel" name="telefone" autoComplete="tel" required defaultValue={v.telefone} error={erros.telefone} />
           </div>
-          <Select label="Profissão" name="profissao" required options={profissoes} defaultValue={v.profissao ?? ""} error={erros.profissao} />
+          {/* key: o React não atualiza o defaultValue de um <select> já montado; sem ela a escolha sumia depois de um erro. */}
+          <Select key={`profissao-${v.profissao ?? ""}`} label="Profissão" floating name="profissao" required options={profissoes} defaultValue={v.profissao ?? ""} error={erros.profissao} />
           <div className={styles.conselho}>
-            <Select label="Conselho" name="conselho" required options={conselhos} defaultValue={v.conselho ?? ""} error={erros.conselho} />
+            <Select key={`conselho-${v.conselho ?? ""}`} label="Conselho" floating name="conselho" required options={conselhos} defaultValue={v.conselho ?? ""} error={erros.conselho} />
             <TextField
               floating
               label="Número do registro e UF"
@@ -102,8 +107,8 @@ export function InscricaoForm({ acao = semAcao, esgotada = false, eyebrow, profi
             <Checkbox name="avisos" label="Quero receber avisos de novas turmas por e-mail." hint="Opcional. Você pode cancelar quando quiser." defaultChecked={v.avisos === "on"} />
           </div>
           <div>
-            <Button type="submit" size="lg" arrow disabled={pendente}>
-              {pendente ? "Enviando…" : esgotada ? "Entrar na lista de espera" : "Enviar inscrição"}
+            <Button type="submit" size="lg" arrow disabled={pendente || renovando}>
+              {pendente || renovando ? "Enviando…" : esgotada ? "Entrar na lista de espera" : "Enviar inscrição"}
             </Button>
           </div>
         </form>

@@ -3,28 +3,26 @@
 import { after } from "next/server";
 import { updateTag } from "next/cache";
 import { enviarERegistrar } from "@/lib/email/registro";
-import { CAMPO_ARMADILHA, type EstadoFormulario } from "@/lib/formularios-tipos";
+import type { EstadoFormulario } from "@/lib/formularios-tipos";
 import { errosPorCampo, inscricaoSchema, valoresDigitados } from "@/lib/formularios";
 import { criarInscricao, InscricaoDuplicadaError, TurmaIndisponivelError } from "@/lib/inscricoes";
-import { dentroDoLimite } from "@/lib/limite-taxa";
+import { registrarDescarte } from "@/lib/descartes";
+import { barrarEnvio } from "@/lib/protecao-formulario";
 import { TAG_TURMAS, tagTurma } from "@/lib/turmas";
 
 const plural = (n: number) => (n === 1 ? "1 campo" : `${n} campos`);
 
 /**
- * Inscrição pelo site. Ordem: armadilha de robô → limite por visitante → validação → transação no banco
+ * Inscrição pelo site. Ordem: barreiras contra robô (campo escondido, carimbo de tempo, limite por visitante; lib/protecao-formulario.ts) → validação → transação no banco
  * (com a turma travada) → invalidação do cache → e-mails (depois de gravar, sem atrasar a resposta).
  */
 export async function inscrever(slug: string, _anterior: EstadoFormulario, formData: FormData): Promise<EstadoFormulario> {
-  // Campo escondido preenchido: é robô. Responde como se tivesse dado certo, sem gravar nada.
-  if (String(formData.get(CAMPO_ARMADILHA) ?? "").trim()) return { ok: true };
-
-  if (!(await dentroDoLimite("inscricao"))) {
-    return { erroGeral: "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente de novo.", valores: valoresDigitados(formData) };
-  }
+  const barrado = await barrarEnvio("inscricao", formData, "inscricao");
+  if (barrado) return barrado;
 
   const parsed = inscricaoSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) {
+    await registrarDescarte("inscricao", "VALIDACAO");
     const erros = errosPorCampo(parsed.error);
     return { erros, erroGeral: `Revise ${plural(Object.keys(erros).length)} antes de enviar`, valores: valoresDigitados(formData) };
   }

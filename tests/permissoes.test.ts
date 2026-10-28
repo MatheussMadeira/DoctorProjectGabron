@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { pode } from "../lib/permissoes";
 
 test("ADMIN pode tudo", () => {
-  for (const p of ["turma:criar", "turma:editar", "turma:excluir", "inscricao:gerir", "usuario:gerir"] as const) assert.equal(pode("ADMIN", p), true, p);
+  for (const p of ["turma:criar", "turma:editar", "turma:excluir", "inscricao:gerir", "usuario:gerir", "configuracao:editar"] as const) assert.equal(pode("ADMIN", p), true, p);
 });
 
 test("EQUIPE cria e edita turmas e cuida das inscrições, mas não exclui nem gerencia usuários", () => {
@@ -12,6 +12,7 @@ test("EQUIPE cria e edita turmas e cuida das inscrições, mas não exclui nem g
   assert.equal(pode("EQUIPE", "inscricao:gerir"), true);
   assert.equal(pode("EQUIPE", "turma:excluir"), false);
   assert.equal(pode("EQUIPE", "usuario:gerir"), false);
+  assert.equal(pode("EQUIPE", "configuracao:editar"), false);
 });
 
 test("sem papel não pode nada", () => {

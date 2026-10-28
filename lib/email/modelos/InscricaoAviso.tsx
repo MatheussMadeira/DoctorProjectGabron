@@ -1,5 +1,5 @@
 import { Button, Hr, Text } from "@react-email/components";
-import { Base, Dado, cores, estilos } from "./Base";
+import { Base, Dado, cores, estilos, type ContextoEmail } from "./Base";
 
 export interface InscricaoAvisoProps {
   nome: string;
@@ -15,12 +15,13 @@ export interface InscricaoAvisoProps {
   vagas: string;
   /** Endereço absoluto da tela de inscrições da turma, no painel. */
   linkPainel: string;
+  contexto: ContextoEmail;
 }
 
 /** Aviso interno: chega na caixa da clínica quando alguém se inscreve. */
 export function InscricaoAviso(p: InscricaoAvisoProps) {
   return (
-    <Base previa={`Nova inscrição: ${p.nome} · ${p.turma.titulo}`}>
+    <Base contexto={p.contexto} previa={`Nova inscrição: ${p.nome} · ${p.turma.titulo}`}>
       <Text style={estilos.eyebrow}>Aviso interno</Text>
       <Text style={estilos.titulo}>Nova inscrição</Text>
       <Text style={estilos.paragrafo}>

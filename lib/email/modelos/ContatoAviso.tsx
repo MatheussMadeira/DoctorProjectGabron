@@ -1,5 +1,5 @@
 import { Hr, Text } from "@react-email/components";
-import { Base, Dado, estilos } from "./Base";
+import { Base, Dado, estilos, type ContextoEmail } from "./Base";
 
 export interface ContatoAvisoProps {
   nome: string;
@@ -7,12 +7,13 @@ export interface ContatoAvisoProps {
   telefone: string | null;
   assunto: string;
   mensagem: string | null;
+  contexto: ContextoEmail;
 }
 
 /** Aviso interno: alguém escreveu pelo formulário de contato. */
-export function ContatoAviso({ nome, email, telefone, assunto, mensagem }: ContatoAvisoProps) {
+export function ContatoAviso({ nome, email, telefone, assunto, mensagem, contexto }: ContatoAvisoProps) {
   return (
-    <Base previa={`Contato pelo site: ${assunto}`}>
+    <Base contexto={contexto} previa={`Contato pelo site: ${assunto}`}>
       <Text style={estilos.eyebrow}>Contato pelo site</Text>
       <Text style={estilos.titulo}>{assunto}</Text>
       <Dado rotulo="Nome">{nome}</Dado>

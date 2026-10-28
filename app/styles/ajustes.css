@@ -16,3 +16,38 @@
 /* `1fr` não deixa a coluna encolher abaixo do conteúdo: uma tabela larga empurrava o painel para fora da tela no celular. */
 .ap-admin { grid-template-columns: 248px minmax(0, 1fr); }
 @media (max-width: 1023px) { .ap-admin { grid-template-columns: minmax(0, 1fr); } }
+
+/* Link "Pular para o conteúdo": só aparece quando recebe o foco do teclado. */
+.ap-skip { position: absolute; left: var(--space-4); top: -100px; z-index: calc(var(--z-overlay, 80) + 10); padding: var(--space-3) var(--space-4); background: var(--surface-inverse); color: var(--ink-inverse); font-weight: 600; text-decoration: none; }
+.ap-skip:focus { top: var(--space-3); box-shadow: var(--focus-ring); }
+main:focus { outline: none; }
+
+/* Contato no menu do celular */
+.ap-drawer-contato { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); margin: var(--space-5) 0 0; font-size: 15px; line-height: 24px; }
+.ap-drawer-contato a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+/* Tabelas do painel no celular: cada linha vira um cartão, com o nome da coluna antes de cada valor (sem rolagem lateral). */
+@media (max-width: 720px) {
+  .ap-table-empilha { overflow-x: visible; background: none; box-shadow: none; }
+  .ap-table-empilha .ap-table, .ap-table-empilha tbody, .ap-table-empilha tr, .ap-table-empilha td { display: block; width: 100%; }
+  .ap-table-empilha thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .ap-table-empilha tbody tr { margin-bottom: var(--space-4); background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-2) 0; }
+  .ap-table-empilha td { display: grid; grid-template-columns: minmax(84px, 30%) 1fr; gap: var(--space-3); align-items: start; text-align: left !important; border-bottom: 1px solid var(--line); }
+  .ap-table-empilha td:last-child { border-bottom: 0; }
+  .ap-table-empilha td[data-rotulo]::before { content: attr(data-rotulo); font-size: 12px; line-height: 18px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); padding-top: 3px; }
+}
+
+/* Botões com texto longo (ex.: "Enviar e-mail de teste para …") quebram em vez de vazar do cartão. */
+.ap-btn.ap-btn-wrap { height: auto; white-space: normal; text-align: center; padding-block: var(--space-3); overflow-wrap: anywhere; }
+
+/* Foto do Hero: a entrada só dá um leve zoom. Começar em opacity 0 empurrava o LCP (maior elemento visível) para depois da animação. */
+@keyframes ap-settle-img { from { transform: scale(1.04); } to { transform: none; } }
+.ap-hero-media img { animation-name: ap-settle-img; }
+.ap-hero-intro .ap-hero-media img { animation-delay: 0ms; }
+
+/* Hero com foto em paisagem (foto da turma, 16:10, a mesma proporção do cartão da agenda: a foto cresce do cartão até o Hero sem mudar de formato).
+   Colunas iguais para a foto horizontal ficar equilibrada com o texto; o recorte é centralizado. */
+.ap-hero-grid-paisagem { grid-template-columns: 1fr 1fr; }
+.ap-hero-media-paisagem { aspect-ratio: 16 / 10; }
+.ap-hero-media-paisagem img { object-position: center; }
+@media (max-width: 1023px) { .ap-hero-grid-paisagem { grid-template-columns: 1fr; gap: var(--space-6); } .ap-hero-media-paisagem { aspect-ratio: 16 / 10; } }

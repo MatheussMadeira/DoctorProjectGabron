@@ -5,7 +5,8 @@ import { createHash } from "node:crypto";
 import { after, before, test } from "node:test";
 import { and, eq, inArray } from "drizzle-orm";
 import { db, pool } from "../db";
-import { emailsEnvios, inscricoes, limitesTaxa, turmas } from "../db/schema";
+import { configuracoes, emailsEnvios, inscricoes, limitesTaxa, turmas, usuarios } from "../db/schema";
+import { obterSiteAtual } from "../lib/configuracoes";
 import { enviarERegistrar, reenviar } from "../lib/email/registro";
 import { criarInscricao, InscricaoDuplicadaError } from "../lib/inscricoes";
 import { dentroDoLimite } from "../lib/limite-taxa";
@@ -81,13 +82,60 @@ test("e-mail que falha fica registrado como FALHOU, sem a senha, e o Reenviar re
   assert.ok(depois.enviadoEm);
 });
 
-test("o aviso à equipe vai para a caixa da clínica e responde para a pessoa inscrita", opcoes, async () => {
-  Object.assign(process.env, { EMAIL_PROVIDER: "console", EMAIL_TESTE: "clinica@exemplo.invalid" });
-  const r = await enviarERegistrar("INSCRICAO_AVISO", { inscricaoId });
+test("o aviso à equipe vai para os ADMIN ativos (e só para eles) e responde para a pessoa inscrita", opcoes, async () => {
+  Object.assign(process.env, { EMAIL_PROVIDER: "console", EMAIL_TESTE: "reserva@exemplo.invalid" });
+  const stamp = Date.now();
+  const adminAtivo = `teste-admin-ativo-${stamp}@exemplo.invalid`;
+  const adminInativo = `teste-admin-inativo-${stamp}@exemplo.invalid`;
+  const equipe = `teste-equipe-${stamp}@exemplo.invalid`;
+  await db.insert(usuarios).values([
+    { nome: "Admin ativo", email: adminAtivo, papel: "ADMIN", ativo: true },
+    { nome: "Admin inativo", email: adminInativo, papel: "ADMIN", ativo: false },
+    { nome: "Equipe", email: equipe, papel: "EQUIPE", ativo: true },
+  ]);
+  try {
+    const r = await enviarERegistrar("INSCRICAO_AVISO", { inscricaoId });
+    assert.equal(r.ok, true);
+    const [registro] = await db.select().from(emailsEnvios).where(and(eq(emailsEnvios.id, r.emailId!)));
+    const para = registro.destinatario.split(", ");
+    assert.ok(para.includes(adminAtivo), "ADMIN ativo recebe");
+    assert.ok(!para.includes(adminInativo), "ADMIN desativado não recebe");
+    assert.ok(!para.includes(equipe), "EQUIPE não recebe os avisos");
+    assert.ok(!para.includes("reserva@exemplo.invalid"), "a reserva só vale sem nenhum ADMIN ativo");
+    assert.match(registro.assunto, /Nova inscrição: Maria da Silva/);
+  } finally {
+    await db.delete(usuarios).where(inArray(usuarios.email, [adminAtivo, adminInativo, equipe]));
+  }
+});
+
+test("vaga confirmada: e-mail para a pessoa inscrita, registrado", opcoes, async () => {
+  Object.assign(process.env, { EMAIL_PROVIDER: "console" });
+  const r = await enviarERegistrar("INSCRICAO_VAGA_CONFIRMADA", { inscricaoId });
   assert.equal(r.ok, true);
-  const [registro] = await db.select().from(emailsEnvios).where(and(eq(emailsEnvios.inscricaoId, inscricaoId), eq(emailsEnvios.tipo, "INSCRICAO_AVISO")));
-  assert.equal(registro.destinatario, "clinica@exemplo.invalid");
-  assert.match(registro.assunto, /Nova inscrição: Maria da Silva/);
+  const [registro] = await db.select().from(emailsEnvios).where(eq(emailsEnvios.id, r.emailId!));
+  assert.equal(registro.destinatario, dados.email);
+  assert.equal(registro.tipo, "INSCRICAO_VAGA_CONFIRMADA");
+  assert.match(registro.assunto, /^Vaga confirmada: /);
+});
+
+test("Configurações: o que a Dra. salva aparece nos dados do site; vazio volta ao placeholder", opcoes, async () => {
+  const antes = await db.select().from(configuracoes);
+  try {
+    await db.insert(configuracoes).values({ id: 1, telefone: "(31) 99999-9999", whatsapp: "5531999999999", crm: "CRM-MG 12345", rqe: "RQE 6789" }).onConflictDoUpdate({
+      target: configuracoes.id,
+      set: { telefone: "(31) 99999-9999", whatsapp: "5531999999999", crm: "CRM-MG 12345", rqe: "RQE 6789", enderecoLinha1: null },
+    });
+    const site = await obterSiteAtual();
+    assert.equal(site.telefone, "(31) 99999-9999");
+    assert.equal(site.telefoneHref, "tel:31999999999");
+    assert.equal(site.whatsapp, "5531999999999");
+    assert.equal(site.registro, "CRM-MG 12345 · RQE 6789");
+    assert.match(site.legal, /CRM-MG 12345 · RQE 6789$/);
+    assert.equal(site.enderecoCurto, "Endereço da clínica, Belo Horizonte — MG", "sem endereço salvo, placeholder");
+  } finally {
+    await db.delete(configuracoes);
+    if (antes.length) await db.insert(configuracoes).values(antes);
+  }
 });
 
 test("e-mail de inscrição que não existe mais não quebra: devolve erro", opcoes, async () => {

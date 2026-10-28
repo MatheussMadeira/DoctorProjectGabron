@@ -28,7 +28,7 @@ export function AdminTable<T extends { id: string | number }>({ colunas, linhas,
       </div>
     );
   return (
-    <div className="ap-table-wrap">
+    <div className="ap-table-wrap ap-table-empilha">
       <table className="ap-table">
         <thead>
           <tr>
@@ -48,7 +48,7 @@ export function AdminTable<T extends { id: string | number }>({ colunas, linhas,
           {linhas.map((l) => (
             <tr key={l.id}>
               {colunas.map((c) => (
-                <td key={c.key} style={{ textAlign: c.align || "left" }}>
+                <td key={c.key} data-rotulo={c.label} style={{ textAlign: c.align || "left" }}>
                   {c.render ? c.render(l) : String((l as Record<string, unknown>)[c.key] ?? "")}
                 </td>
               ))}

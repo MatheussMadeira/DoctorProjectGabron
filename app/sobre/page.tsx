@@ -3,7 +3,7 @@ import { Button, Photo, Reveal, Stack } from "@/components/atoms";
 import { CTABand, Hero } from "@/components/organisms";
 import { FeatureItem, ItemList, SectionHeading, StepItem } from "@/components/molecules";
 import { PublicTemplate, Section, SplitLayout } from "@/components/templates";
-import { REGISTRO } from "@/lib/dados-exemplo";
+import { obterSite } from "@/lib/configuracoes";
 import { proximaComInscricoesAbertas } from "@/lib/turmas";
 import { chamadaProxima } from "@/lib/turmas-view";
 import styles from "../paginas.module.css";
@@ -11,10 +11,11 @@ import styles from "../paginas.module.css";
 export const metadata: Metadata = {
   title: "Sobre a Dra.",
   description: "Formação, trajetória e ensino da Dra. Ana Paula Fonseca, médica fisiatra em Belo Horizonte.",
+  alternates: { canonical: "/sobre" },
 };
 
 export default async function SobrePage() {
-  const proxima = await proximaComInscricoesAbertas();
+  const [proxima, site] = await Promise.all([proximaComInscricoesAbertas(), obterSite()]);
   const chamada = proxima && chamadaProxima(proxima);
 
   return (
@@ -35,7 +36,7 @@ export default async function SobrePage() {
             <Reveal>
               <SectionHeading number="01" eyebrow="Trajetória" title="Formação e caminho" />
             </Reveal>
-            <p className="ap-eyebrow">{REGISTRO}</p>
+            <p className="ap-eyebrow">{site.registro}</p>
             <p className={`ap-body-l ${styles.corpo}`}>
               Texto de apresentação da Dra. Ana Paula Fonseca: onde se formou, por que escolheu a Medicina Física e Reabilitação e como é o cuidado que oferece na clínica.
             </p>

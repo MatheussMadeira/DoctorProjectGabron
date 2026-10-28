@@ -392,7 +392,9 @@ textarea.ap-input { resize: vertical; line-height: 26px; }
 .ap-float .ap-input { padding: 22px var(--space-4) 8px; min-height: 56px; }
 .ap-field-float.is-multi .ap-input { padding-top: 28px; }
 .ap-float-label { position: absolute; left: var(--space-4); top: 16px; font-size: 16px; line-height: 24px; color: var(--ink-muted); pointer-events: none; transform-origin: left top; transition: transform var(--duration-base, 280ms) var(--ease-out, ease-out), color var(--duration-base, 280ms); }
-.ap-float .ap-input:focus + .ap-float-label, .ap-float .ap-input:not(:placeholder-shown) + .ap-float-label { transform: translateY(-10px) scale(.78); color: var(--ink); font-weight: 600; letter-spacing: 0.02em; }
+.ap-float .ap-input:focus + .ap-float-label, .ap-float :is(input, textarea).ap-input:not(:placeholder-shown) + .ap-float-label { transform: translateY(-10px) scale(.78); color: var(--ink); font-weight: 600; letter-spacing: 0.02em; }
+.ap-float.ap-select select.ap-input { padding-right: 44px; cursor: pointer; }
+.ap-float select:focus + .ap-float-label, .ap-float select:has(option:checked:not([value=""])) + .ap-float-label { transform: translateY(-10px) scale(.78); color: var(--ink); font-weight: 600; letter-spacing: 0.02em; }
 .ap-float-line { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform var(--duration-base, 280ms) var(--ease-out, ease-out); }
 .ap-float .ap-input:focus ~ .ap-float-line { transform: scaleX(1); }
 .ap-field-error .ap-float-line { background: var(--danger); transform: scaleX(1); }

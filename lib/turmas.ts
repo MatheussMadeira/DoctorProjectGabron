@@ -37,6 +37,10 @@ export interface Turma {
   vagasLivres: number;
   /** Texto de exibição do preço. */
   preco: string;
+  /** Valor real em centavos; nulo enquanto for o placeholder (não vai para dados estruturados). */
+  precoCentavos: number | null;
+  /** Última alteração (ISO), para o sitemap. */
+  atualizadaEm: string;
   parcelamento?: string;
   fotoUrl: string;
   fotoAlt: string;
@@ -91,6 +95,8 @@ async function consultar(slug?: string): Promise<Turma[]> {
       ocupadas: l.ocupadas,
       vagasLivres: Math.max(0, l.vagas - l.ocupadas),
       preco: formatarPreco(l.precoCentavos),
+      precoCentavos: l.precoCentavos,
+      atualizadaEm: l.updatedAt.toISOString(),
       parcelamento: l.parcelamento ?? undefined,
       fotoUrl: l.fotoUrl,
       fotoAlt: l.fotoAlt,

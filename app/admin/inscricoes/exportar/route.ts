@@ -19,8 +19,8 @@ export async function GET(request: Request) {
 
   const dados = await listarInscricoes(turma.id);
   const fmt = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" });
-  const cabecalho = ["Nome", "E-mail", "Telefone", "Profissão", "Conselho", "Registro", "Situação", "Quer avisos", "Inscrição em"];
-  const linhas = dados.map((i) => [i.nome, i.email, i.telefone, i.profissao, i.conselho, i.registro, ROTULO_SITUACAO[i.situacao], i.querAvisos ? "Sim" : "Não", fmt.format(i.createdAt)]);
+  const cabecalho = ["Nome", "E-mail", "Telefone", "Profissão", "Conselho", "Registro", "Situação", "Quer avisos", "Inscrição em", "Aceite da política em"];
+  const linhas = dados.map((i) => [i.nome, i.email, i.telefone, i.profissao, i.conselho, i.registro, ROTULO_SITUACAO[i.situacao], i.querAvisos ? "Sim" : "Não", fmt.format(i.createdAt), fmt.format(i.aceitePrivacidadeEm)]);
   const corpo = [cabecalho, ...linhas].map((l) => l.map(celula).join(";")).join("\r\n");
 
   return new Response("﻿" + corpo, {

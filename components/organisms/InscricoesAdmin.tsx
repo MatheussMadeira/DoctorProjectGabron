@@ -50,6 +50,7 @@ const ROTULO_EMAIL: Record<TipoEmail, string> = {
   INSCRICAO_CONFIRMACAO: "Confirmação",
   INSCRICAO_AVISO: "Aviso à equipe",
   CONTATO_AVISO: "Aviso à equipe",
+  INSCRICAO_VAGA_CONFIRMADA: "Vaga confirmada",
 };
 const TOM_EMAIL: Record<StatusEmail, "success" | "danger" | "neutral"> = { ENVIADO: "success", FALHOU: "danger", PENDENTE: "neutral" };
 const TEXTO_EMAIL: Record<StatusEmail, string> = { ENVIADO: "Enviado", FALHOU: "Falhou", PENDENTE: "Pendente" };

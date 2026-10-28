@@ -8,10 +8,11 @@
 }
 .form { display: flex; flex-direction: column; gap: var(--space-5); }
 
-.pair { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+/* Linhas com dois campos: alinhadas pelo topo, para a dica ou o erro de um não empurrar o outro. No celular, um embaixo do outro. */
+.pair { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-5); }
 .pair > * { flex: 1 1 240px; min-width: 0; }
 
-.conselho { display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: flex-end; }
+.conselho { display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: flex-start; }
 .conselho > :first-child { flex: 1 1 180px; min-width: 0; }
 .conselho > :last-child { flex: 2 1 280px; min-width: 0; }
 
@@ -32,4 +33,10 @@
 }
 
 /* Armadilha de robô: fora da tela (não use display:none, que alguns robôs ignoram). */
-.armadilha { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+/* Campo-armadilha: fora da tela, nunca display:none (alguns robôs ignoram campos escondidos assim). */
+.armadilha { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+@media (max-width: 640px) {
+  .pair, .conselho { flex-direction: column; flex-wrap: nowrap; align-items: stretch; }
+  .pair > *, .conselho > * { flex: 0 0 auto !important; width: 100%; }
+}

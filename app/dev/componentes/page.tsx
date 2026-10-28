@@ -14,7 +14,7 @@ import {
 } from "@/components/organisms";
 import { Section, SiteHeader } from "@/components/templates";
 import { ASSUNTOS_CONTATO, CONSELHOS, PROFISSOES } from "@/lib/dados-exemplo";
-import { FOOTER, HEADER_CTA, NAV_LINKS } from "@/lib/site";
+import { footerDe, HEADER_CTA, montarSite, NAV_LINKS } from "@/lib/site";
 import { KpiCard } from "@/components/molecules";
 import { AdminTable } from "@/components/organisms";
 import { DataTableDemo, ExcluirDialogDemo, LoginDemo, PlusIcon, TabsDemo } from "./Demos";
@@ -134,7 +134,9 @@ export default function ComponentesPage() {
             <TextField floating label="Nome (rótulo flutuante)" />
             <TextField floating multiline label="Mensagem" hint="Não envie informações de saúde por aqui." />
             <Select label="Profissão" required options={["Médica(o)", "Dentista", "Biomédica(o)", "Outra"]} />
+            <Select floating label="Profissão (rótulo dentro)" required options={["Médica(o)", "Dentista", "Biomédica(o)", "Outra"]} />
             <Select label="Conselho" error="Escolha um conselho." options={["CRM", "CRO", "CRBM", "CRF", "Outro"]} />
+            <Select floating label="Conselho (rótulo dentro)" error="Escolha um conselho." options={["CRM", "CRO", "CRBM", "CRF", "Outro"]} />
           </div>
         </Section>
         <Section>
@@ -279,7 +281,7 @@ export default function ComponentesPage() {
             <LoginDemo erro="bloqueada" />
           </div>
         </Section>
-        <Footer {...FOOTER} />
+        <Footer {...footerDe(montarSite(null))} />
       </main>
     </>
   );

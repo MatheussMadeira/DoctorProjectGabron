@@ -16,15 +16,15 @@ export async function POST(request: Request) {
         const auth = await autorizar("turma:editar");
         if (!auth.ok) throw new Error(auth.erro);
         return {
-          allowedContentTypes: [...FOTO_REGRAS.tipos],
-          maximumSizeInBytes: FOTO_REGRAS.maxBytes,
+          // Só o arquivo final (WebP já recortado e reduzido pelo navegador): qualquer outra coisa é recusada aqui.
+          allowedContentTypes: [FOTO_REGRAS.tipoFinal],
+          maximumSizeInBytes: FOTO_REGRAS.maxFinalBytes,
           addRandomSuffix: true,
           tokenPayload: JSON.stringify({ usuarioId: auth.usuario.id }),
         };
       },
-      onUploadCompleted: async () => {
-        // Nada a gravar aqui: a URL só entra no banco quando a turma é salva.
-      },
+      // Sem onUploadCompleted de propósito: a URL só entra no banco quando a turma é salva, e o callback exigiria
+      // uma URL pública (falha em localhost, "no callbackUrl could be determined").
     });
     return NextResponse.json(resposta);
   } catch (e) {

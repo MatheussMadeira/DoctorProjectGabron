@@ -4,7 +4,7 @@ import type { ConfigEmail } from "./config";
 /** O que todo provedor recebe: e-mail já pronto (HTML e texto). Quem chama não sabe qual provedor está por trás. */
 export interface EmailPronto {
   de: { nome: string; email: string };
-  para: string;
+  para: string[];
   assunto: string;
   html: string;
   texto: string;
@@ -30,7 +30,7 @@ function smtp(cfg: ConfigOk): Enviar {
     socketTimeout: 20_000,
   });
   return async (e) => {
-    const r = await transporte.sendMail({ from: formatarDe(e.de), to: e.para, subject: e.assunto, html: e.html, text: e.texto, replyTo: e.responderPara });
+    const r = await transporte.sendMail({ from: formatarDe(e.de), to: e.para.join(", "), subject: e.assunto, html: e.html, text: e.texto, replyTo: e.responderPara });
     return { idExterno: r.messageId };
   };
 }
@@ -41,7 +41,7 @@ function resend(cfg: ConfigOk): Enviar {
     const r = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${cfg.resendApiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: formatarDe(e.de), to: [e.para], subject: e.assunto, html: e.html, text: e.texto, reply_to: e.responderPara }),
+      body: JSON.stringify({ from: formatarDe(e.de), to: e.para, subject: e.assunto, html: e.html, text: e.texto, reply_to: e.responderPara }),
       signal: AbortSignal.timeout(15_000),
     });
     const corpo = (await r.json().catch(() => ({}))) as { id?: string; message?: string };
@@ -53,7 +53,7 @@ function resend(cfg: ConfigOk): Enviar {
 /** Não envia: imprime. Para desenvolvimento e testes automáticos. */
 function consola(): Enviar {
   return async (e) => {
-    console.log(`[e-mail:console] para=${e.para} assunto="${e.assunto}" (${e.texto.length} caracteres de texto)`);
+    console.log(`[e-mail:console] para=${e.para.join(",")} assunto="${e.assunto}" (${e.texto.length} caracteres de texto)`);
     return { idExterno: `console-${Date.now()}` };
   };
 }

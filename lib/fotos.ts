@@ -8,11 +8,46 @@ export const BIBLIOTECA_FOTOS = [
   { id: "mar", src: "/images/pedras-mar.webp", alt: "Pedras à beira-mar" },
 ] as const;
 
-/** Regras do envio de foto (spec): JPG ou WebP, 16:10, a partir de 1600 px, até 5 MB. */
+/** Regras do envio de foto. A pessoa escolhe qualquer foto razoável; o navegador recorta (16:10), reduz, converte para WebP
+    e tira os metadados (EXIF e localização) ANTES de enviar. Só o arquivo final vai para o Blob. */
 export const FOTO_REGRAS = {
-  tipos: ["image/jpeg", "image/webp"],
-  maxBytes: 5 * 1024 * 1024,
-  larguraMinima: 1600,
+  /** O que a pessoa pode escolher (o arquivo original, antes de preparar). */
+  tiposOriginais: ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"],
+  extensoesOriginais: /\.(jpe?g|png|webp|heic|heif)$/i,
+  maxOriginalBytes: 25 * 1024 * 1024,
+  /** O que vai para o Blob. O servidor só aceita isto. */
+  tipoFinal: "image/webp",
+  maxFinalBytes: 2 * 1024 * 1024,
+  larguraMaxima: 2000,
+  /** Recorte com menos que isto mostra um aviso que não bloqueia. */
+  larguraAviso: 1200,
+  qualidade: 0.82,
   proporcao: 16 / 10,
-  tolerancia: 0.02,
+} as const;
+
+type ArquivoLike = { type: string; name: string };
+
+export const ehHeic = (a: ArquivoLike) => /^image\/hei[cf]$/i.test(a.type) || /\.(heic|heif)$/i.test(a.name);
+
+/** Aceita pelo tipo ou, quando o sistema não informa o tipo (comum com HEIC no Windows), pela extensão. */
+export const tipoAceito = (a: ArquivoLike) => (FOTO_REGRAS.tiposOriginais as readonly string[]).includes(a.type.toLowerCase()) || ((!a.type || a.type === "application/octet-stream") && FOTO_REGRAS.extensoesOriginais.test(a.name));
+
+/** Tamanho do arquivo final a partir da largura (em pixels da foto original) do recorte: no máximo 2000 de largura, sempre 16:10. */
+export function tamanhoDeSaida(larguraDoRecorte: number): { largura: number; altura: number } {
+  const largura = Math.max(1, Math.min(FOTO_REGRAS.larguraMaxima, Math.round(larguraDoRecorte)));
+  return { largura, altura: Math.max(1, Math.round(largura / FOTO_REGRAS.proporcao)) };
+}
+
+export const recorteEhPequeno = (larguraDoRecorte: number) => larguraDoRecorte < FOTO_REGRAS.larguraAviso;
+
+/** Mensagens em linguagem simples (sem proporção, pixels ou megabytes quando dá para evitar). */
+export const MENSAGENS_FOTO = {
+  tipoInvalido: "Este tipo de arquivo não serve. Escolha uma foto do celular ou do computador (JPG, PNG ou HEIC).",
+  grandeDemais: "Este arquivo é grande demais. Escolha outra foto ou tire um print dela.",
+  naoAbriu: "Não foi possível abrir esta foto. Tente outra ou tire um print dela.",
+  naoPreparou: "Não foi possível preparar esta foto. Tente outra ou tire um print dela.",
+  semWebp: "Este navegador não consegue preparar a foto. Use o Chrome, o Edge ou o Safari atualizado.",
+  naoEnviou: "Não foi possível enviar a foto. Tente de novo.",
+  semArmazenamento: "O armazenamento de fotos ainda não está configurado (falta o BLOB_READ_WRITE_TOKEN na Vercel). Por enquanto, escolha uma foto da biblioteca.",
+  pequena: "Esta foto é pequena e pode ficar borrada em telas grandes. Usar mesmo assim?",
 } as const;

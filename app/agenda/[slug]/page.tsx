@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Button, Grid, Reveal, Stack } from "@/components/atoms";
+import { Suspense } from "react";
+import { Button, Grid, JsonLd, Reveal, Stack } from "@/components/atoms";
 import { Alert, BulletItem, ItemList, SectionHeading, Testimonial } from "@/components/molecules";
 import { AboutDoctor, EventSummary, FAQ, Hero, InscricaoForm, Schedule } from "@/components/organisms";
 import { MainAside, PublicTemplate, Section } from "@/components/templates";
-import { CONSELHOS, CREDENCIAIS, DEPOIMENTOS, PROFISSOES, REGISTRO } from "@/lib/dados-exemplo";
+import { obterSite } from "@/lib/configuracoes";
+import { eventoLd } from "@/lib/dados-estruturados";
+import { openGraphDoSite, urlDoSite } from "@/lib/seo";
+import { CONSELHOS, CREDENCIAIS, DEPOIMENTOS, PROFISSOES } from "@/lib/dados-exemplo";
 import { duracaoPorExtenso, formatPeriodo } from "@/lib/datas";
-import { SITE } from "@/lib/site";
 import { listarSlugs, obterTurma, type Turma } from "@/lib/turmas";
-import { cidadeSemUF } from "@/lib/turmas-view";
+import { localDaTurma, sobretituloDaTurma } from "@/lib/turmas-view";
 import { inscrever } from "./acoes";
 import styles from "../../paginas.module.css";
 
@@ -25,26 +28,44 @@ export async function generateMetadata({ params }: PageProps<"/agenda/[slug]">):
   const { slug } = await params;
   const turma = await obterTurma(slug);
   if (!turma) return {};
-  return { title: turma.titulo, description: turma.resumo };
+  return {
+    title: turma.titulo,
+    description: turma.resumo,
+    alternates: { canonical: `/agenda/${turma.slug}` },
+    openGraph: openGraphDoSite({ title: turma.titulo, description: turma.resumo, url: `/agenda/${turma.slug}` }),
+  };
 }
 
-export default async function TurmaPage({ params }: PageProps<"/agenda/[slug]">) {
+/* Os params ficam dentro de um <Suspense>: se o cache da página expirar por uma tag que não é da turma (ex.: o ADMIN salvou
+   Configurações), o Next refaz o shell com params ainda desconhecidos, e ler `params` fora do Suspense derrubava a rota com 500. */
+export default function TurmaPage({ params }: PageProps<"/agenda/[slug]">) {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh" }} aria-busy="true" />}>
+      <Turma params={params} />
+    </Suspense>
+  );
+}
+
+async function Turma({ params }: Pick<PageProps<"/agenda/[slug]">, "params">) {
   const { slug } = await params;
   const turma = await obterTurma(slug);
   // Antes de qualquer trecho da página ser enviado: a resposta sai com status 404 de verdade.
   if (!turma) notFound();
 
+  const site = await obterSite();
   const periodo = formatPeriodo(turma.inicio, turma.fim);
   const dias = turma.programacao.length;
 
   return (
     <PublicTemplate withBar whatsAppMessage={`Olá! Tenho uma dúvida sobre a turma ${turma.titulo} de ${periodo}.`}>
+      <JsonLd dados={eventoLd(turma, site, urlDoSite())} />
       <Hero
-        eyebrow={`${turma.modalidade} · ${cidadeSemUF(turma.cidade)}`}
+        eyebrow={sobretituloDaTurma(turma)}
         title={turma.titulo}
         lead={turma.resumo}
         image={turma.fotoUrl}
         imageAlt={turma.fotoAlt}
+        imageRatio="paisagem"
         transitionName={turma.slug}
       />
 
@@ -118,7 +139,7 @@ export default async function TurmaPage({ params }: PageProps<"/agenda/[slug]">)
                 <Reveal delay={120}>
                   <AboutDoctor
                     photo="/images/retrato-dra-ana-paula.webp"
-                    registry={REGISTRO}
+                    registry={site.registro}
                     bio="Texto curto sobre a Dra. Ana Paula Fonseca: formação em fisiatria e experiência com toxina botulínica e com o ensino."
                     credentials={CREDENCIAIS}
                     action={{ label: "Conheça a Dra.", href: "/sobre" }}
@@ -157,7 +178,7 @@ export default async function TurmaPage({ params }: PageProps<"/agenda/[slug]">)
                 }
               />
               <Stack row justify="center">
-                <Button variant="link" href={`https://wa.me/${SITE.whatsapp}`} arrow>
+                <Button variant="link" href={`https://wa.me/${site.whatsapp}`} arrow>
                   Tirar dúvidas no WhatsApp
                 </Button>
               </Stack>
@@ -214,7 +235,7 @@ function Inscricao({ turma, periodo }: { turma: Turma; periodo: string }) {
     <InscricaoForm
       acao={inscrever.bind(null, turma.slug)}
       esgotada={turma.status === "esgotado"}
-      eyebrow={`${periodo} · ${cidadeSemUF(turma.cidade)}`}
+      eyebrow={`${periodo} · ${localDaTurma(turma)}`}
       profissoes={PROFISSOES}
       conselhos={CONSELHOS}
     />

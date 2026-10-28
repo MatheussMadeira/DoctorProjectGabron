@@ -10,6 +10,7 @@ import styles from "../paginas.module.css";
 export const metadata: Metadata = {
   title: "Agenda de cursos",
   description: "Turmas de toxina botulínica para médicos, dentistas, biomédicos e outros profissionais da saúde. Veja datas, local e programação.",
+  alternates: { canonical: "/agenda" },
 };
 
 export default async function AgendaPage() {

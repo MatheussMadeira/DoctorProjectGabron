@@ -79,7 +79,7 @@ export function AgendaList({ events = [], filterBy = "modality", allLabel = "Tod
           {!list.length && <p className="ap-agenda-empty">{emptyText}</p>}
           {groups.map((g) => (
             <section key={g.k} className="ap-agenda-month">
-              <h3 className="ap-agenda-month-title">{g.label}</h3>
+              <h2 className="ap-agenda-month-title">{g.label}</h2>
               {g.items.map((e, i) => {
                 const s = STATUS[e.status as EventStatus] || STATUS.aberto;
                 const d = n++;

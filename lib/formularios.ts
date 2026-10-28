@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ASSUNTOS_CONTATO, CONSELHOS, PROFISSOES } from "./dados-exemplo";
-import { CAMPO_ARMADILHA } from "./formularios-tipos";
+import { CAMPO_ARMADILHA, CAMPO_CARIMBO } from "./formularios-tipos";
 
 /* Validação no servidor dos formulários públicos. As mensagens dizem o que fazer. */
 
@@ -22,6 +22,7 @@ export const inscricaoSchema = z.object({
   privacidade: z.literal("on", "Marque esta opção para enviar a inscrição."),
   avisos: z.string().optional(),
   [CAMPO_ARMADILHA]: z.string().optional(),
+  [CAMPO_CARIMBO]: z.string().optional(),
 });
 
 export const contatoSchema = z.object({
@@ -36,6 +37,7 @@ export const contatoSchema = z.object({
   mensagem: z.string().trim().max(2000, "Use no máximo 2000 caracteres.").transform((v) => v || null),
   privacidade: z.literal("on", "Marque esta opção para enviar a mensagem."),
   [CAMPO_ARMADILHA]: z.string().optional(),
+  [CAMPO_CARIMBO]: z.string().optional(),
 });
 
 /** Zod → { campo: primeira mensagem }. */
@@ -48,6 +50,6 @@ export function errosPorCampo(erro: z.ZodError): Record<string, string> {
 /** Só texto: o que volta para o formulário depois de um erro (nunca arquivos nem objetos). */
 export function valoresDigitados(formData: FormData): Record<string, string> {
   const v: Record<string, string> = {};
-  for (const [k, valor] of formData.entries()) if (typeof valor === "string" && k !== CAMPO_ARMADILHA) v[k] = valor;
+  for (const [k, valor] of formData.entries()) if (typeof valor === "string" && k !== CAMPO_ARMADILHA && k !== CAMPO_CARIMBO) v[k] = valor;
   return v;
 }

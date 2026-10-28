@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Marcellus, Source_Sans_3 } from "next/font/google";
+import { openGraphDoSite, robotsDaPagina, sitePublico, urlDoSite } from "@/lib/seo";
 import "./styles/ap-tokens.css";
 import "./styles/bundle.css";
 import "./styles/ajustes.css";
@@ -19,15 +20,19 @@ const sans = Source_Sans_3({
   display: "swap",
 });
 
+/* Indexação controlada por SITE_PUBLICO (lib/seo.ts): sem "true", todas as páginas saem com noindex. */
 export const metadata: Metadata = {
+  metadataBase: new URL(urlDoSite()),
   title: {
-    default: "Dra. Ana Paula Fonseca — Médica Fisiatra",
+    default: "Dra. Ana Paula Fonseca — Médica Fisiatra em Belo Horizonte",
     template: "%s · Dra. Ana Paula Fonseca",
   },
   description: "Médica fisiatra em Belo Horizonte e turmas de toxina botulínica para profissionais da saúde.",
+  applicationName: "Dra. Ana Paula Fonseca",
   icons: { icon: "/favicon.svg" },
-  // Fora do ar para o público até a Fase 6; a Fase 7 troca por index/follow.
-  robots: { index: false, follow: false },
+  robots: robotsDaPagina(sitePublico()),
+  openGraph: openGraphDoSite(),
+  twitter: { card: "summary_large_image", images: ["/og.png"] },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -1,11 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { updateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
+import { after } from "next/server";
 import { and, count, eq, inArray, ne } from "drizzle-orm";
 import { db } from "@/db";
 import { inscricoes, SITUACOES_QUE_OCUPAM, situacaoEnum, turmas, type Situacao } from "@/db/schema";
-import { reenviar } from "@/lib/email/registro";
+import { enviarERegistrar, reenviar } from "@/lib/email/registro";
 import { autorizar } from "@/lib/sessao";
 import { TAG_TURMAS, tagTurma } from "@/lib/turmas";
 
@@ -37,7 +37,7 @@ export async function alterarSituacao(inscricaoId: string, _anterior: EstadoAcao
     }
 
     await tx.update(inscricoes).set({ situacao: nova }).where(eq(inscricoes.id, ins.id));
-    return { slug: turma.slug } as const;
+    return { slug: turma.slug, mudouParaConfirmada: nova === "CONFIRMADA" && ins.situacao !== "CONFIRMADA" } as const;
   });
 
   if ("erro" in resultado) return { erro: resultado.erro };
@@ -46,6 +46,13 @@ export async function alterarSituacao(inscricaoId: string, _anterior: EstadoAcao
   updateTag(tagTurma(resultado.slug));
   updateTag(TAG_TURMAS);
   revalidatePath("/admin/inscricoes");
+
+  // Situação mudou para CONFIRMADA: avisa a pessoa por e-mail (depois de gravar; falha fica registrada, com Reenviar).
+  if (resultado.mudouParaConfirmada) {
+    after(async () => {
+      await enviarERegistrar("INSCRICAO_VAGA_CONFIRMADA", { inscricaoId });
+    });
+  }
   return { ok: true };
 }
 

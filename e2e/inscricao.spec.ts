@@ -57,9 +57,16 @@ async function preencherInscricao(page: Page, email: string, nome = "Maria da Si
   await page.getByLabel(/Li e aceito a Política de Privacidade/).check({ force: true });
 }
 
+/** O servidor recusa envio com menos de 2 s de página aberta (carimbo de tempo assinado): espera o carimbo chegar e o mínimo passar. */
+async function aguardarCarimbo(page: Page) {
+  await expect(page.locator('input[name="carimbo_form"]')).not.toHaveValue("", { timeout: 15_000 });
+  await page.waitForTimeout(2200);
+}
+
 async function abrirTurma(page: Page, slug: string) {
   await page.goto(`/agenda/${slug}`);
   await page.waitForLoadState("networkidle");
+  await aguardarCarimbo(page);
 }
 
 test.beforeAll(async () => {
@@ -126,7 +133,7 @@ test("o campo escondido de robô: parece que deu certo, mas nada é gravado", as
   await abrirTurma(page, slug);
   const email = emailDoTeste("robo");
   await preencherInscricao(page, email);
-  await page.locator('input[name="website"]').evaluate((el: HTMLInputElement) => (el.value = "http://spam.invalid"));
+  await page.locator('input[name="campo_hp_7k"]').evaluate((el: HTMLInputElement) => (el.value = "http://spam.invalid"));
   await page.getByRole("button", { name: "Enviar inscrição" }).click();
   await expect(page.getByText("Enviamos os próximos passos para o seu e-mail")).toBeVisible();
   expect(await db.select().from(inscricoes).where(eq(inscricoes.email, email))).toHaveLength(0);
@@ -141,7 +148,7 @@ test("limite por visitante: depois de 5 envios em 10 minutos, o sexto é barrado
     await expect(page.getByText("Revise 7 campos antes de enviar")).toBeVisible();
   }
   await page.getByRole("button", { name: "Enviar inscrição" }).click();
-  await expect(page.getByText("Muitas tentativas em pouco tempo")).toBeVisible();
+  await expect(page.getByText("Muitas tentativas, tente de novo em alguns minutos.")).toBeVisible();
 });
 
 test("a mesma pessoa não se inscreve duas vezes na mesma turma", async ({ page }) => {
@@ -174,6 +181,7 @@ test("contato: grava a mensagem e registra o aviso à clínica", async ({ page }
   await comIp(page, 7);
   await page.goto("/contato");
   await page.waitForLoadState("networkidle");
+  await aguardarCarimbo(page);
   const email = emailDoTeste("contato");
   await digitar(page, 'input[name="nome"]', "Maria da Silva");
   await digitar(page, 'input[name="email"]', email);

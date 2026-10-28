@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { CAMPO_ARMADILHA, type EstadoFormulario } from "@/lib/formularios-tipos";
+import { CAMPO_ARMADILHA, CAMPO_CARIMBO, type EstadoFormulario } from "@/lib/formularios-tipos";
+import { useCarimbo } from "@/lib/use-carimbo";
 import { Alert } from "../molecules/Alert";
 import { Select } from "../molecules/Select";
 import { TextField } from "../molecules/TextField";
@@ -21,6 +22,8 @@ const semAcao = async (anterior: EstadoFormulario) => anterior;
 
 export function ContatoForm({ assuntos, acao = semAcao, estadoInicial = {} }: ContatoFormProps) {
   const [estado, enviar, pendente] = useActionState(acao, estadoInicial);
+  const { carimbo, formRef, renovando, falhou } = useCarimbo(estado);
+  const erroGeral = estado.erroGeral ?? (falhou ? "Não foi possível validar o envio. Recarregue a página e tente de novo." : undefined);
   // "Enviar outra mensagem" esconde a tela de sucesso daquele resultado; o próximo envio gera um estado novo.
   const [descartado, setDescartado] = useState<EstadoFormulario | null>(null);
   const erros = estado.erros ?? {};
@@ -30,28 +33,30 @@ export function ContatoForm({ assuntos, acao = semAcao, estadoInicial = {} }: Co
   return (
     <div className={styles.card}>
       {!enviada ? (
-        <form action={enviar} className={styles.form} noValidate>
+        <form ref={formRef} action={enviar} className={styles.form} noValidate>
           <div className={styles.head}>
             <h2 className={styles.heading}>Envie uma mensagem</h2>
             <p className={styles.muted}>Campos com * são obrigatórios.</p>
           </div>
-          {estado.erroGeral && (
-            <Alert tone="danger" title={estado.erroGeral}>
+          {erroGeral && (
+            <Alert tone="danger" title={erroGeral}>
               {Object.keys(erros).length ? "Confira os campos marcados abaixo." : "Se o problema continuar, fale com a equipe pelo WhatsApp."}
             </Alert>
           )}
           <div className={styles.armadilha} aria-hidden="true">
             <label>
-              Não preencha este campo
-              <input type="text" name={CAMPO_ARMADILHA} tabIndex={-1} autoComplete="off" />
+              Deixe este campo em branco
+              <input type="text" name={CAMPO_ARMADILHA} tabIndex={-1} autoComplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other" />
             </label>
           </div>
+          <input type="hidden" name={CAMPO_CARIMBO} value={carimbo} />
           <TextField floating label="Nome completo" name="nome" autoComplete="name" required defaultValue={v.nome} error={erros.nome} />
           <div className={styles.pair}>
             <TextField floating label="E-mail" type="email" name="email" autoComplete="email" required defaultValue={v.email} error={erros.email} />
             <TextField floating label="Telefone ou WhatsApp" type="tel" name="telefone" autoComplete="tel" defaultValue={v.telefone} error={erros.telefone} />
           </div>
-          <Select label="Assunto" name="assunto" required options={assuntos} defaultValue={v.assunto ?? ""} error={erros.assunto} />
+          {/* key: o React não atualiza o defaultValue de um <select> já montado; sem ela a escolha sumia depois de um erro. */}
+          <Select key={`assunto-${v.assunto ?? ""}`} label="Assunto" floating name="assunto" required options={assuntos} defaultValue={v.assunto ?? ""} error={erros.assunto} />
           <TextField
             floating
             multiline
@@ -67,8 +72,8 @@ export function ContatoForm({ assuntos, acao = semAcao, estadoInicial = {} }: Co
             {erros.privacidade && <p className={`ap-hint ap-hint-error ${styles.checkError}`}>{erros.privacidade}</p>}
           </div>
           <div>
-            <Button type="submit" size="lg" arrow disabled={pendente}>
-              {pendente ? "Enviando…" : "Enviar mensagem"}
+            <Button type="submit" size="lg" arrow disabled={pendente || renovando}>
+              {pendente || renovando ? "Enviando…" : "Enviar mensagem"}
             </Button>
           </div>
         </form>

@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import { Clock, CreditCard, MapPin } from "lucide-react";
-import { Button, Grid, Photo, Reveal, Stack } from "@/components/atoms";
+import { Button, Grid, JsonLd, Photo, Reveal, Stack } from "@/components/atoms";
 import { BulletItem, InfoCard, ItemList, SectionHeading, StepItem } from "@/components/molecules";
 import { FAQ, Hero } from "@/components/organisms";
 import { PublicTemplate, Section, SplitLayout } from "@/components/templates";
 import { FAQ_CLINICA } from "@/lib/dados-exemplo";
-import { SITE } from "@/lib/site";
+import { obterSite } from "@/lib/configuracoes";
+import { medicoLd } from "@/lib/dados-estruturados";
+import { urlDoSite } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Clínica",
   description: "Fisiatria em Belo Horizonte: avaliação e tratamento da dor e das limitações de movimento, com um plano feito para cada pessoa.",
+  alternates: { canonical: "/clinica" },
 };
 
 const QUANDO_PROCURAR = [
@@ -21,9 +24,11 @@ const QUANDO_PROCURAR = [
   "Limitações do movimento no dia a dia",
 ];
 
-export default function ClinicaPage() {
+export default async function ClinicaPage() {
+  const site = await obterSite();
   return (
     <PublicTemplate whatsAppMessage="Olá! Gostaria de agendar uma consulta.">
+      <JsonLd dados={medicoLd(site, urlDoSite())} />
       <Hero
         eyebrow="Clínica"
         title="Fisiatria em Belo Horizonte"
@@ -87,14 +92,14 @@ export default function ClinicaPage() {
           <Grid minWidth={300}>
             <Reveal>
               <InfoCard icon={<MapPin size={24} strokeWidth={1.5} aria-hidden />} title="Endereço">
-                {SITE.enderecoLinhas[0]}
+                {site.enderecoLinhas[0]}
                 <br />
-                {SITE.enderecoLinhas[1]}
+                {site.enderecoLinhas[1]}
               </InfoCard>
             </Reveal>
             <Reveal delay={120}>
               <InfoCard icon={<Clock size={24} strokeWidth={1.5} aria-hidden />} title="Horário">
-                {SITE.horario}
+                {site.horario}
                 <br />
                 Consultas com hora marcada
               </InfoCard>

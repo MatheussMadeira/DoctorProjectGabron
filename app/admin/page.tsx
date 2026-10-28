@@ -8,6 +8,7 @@ import { AdminTable } from "@/components/organisms";
 import { inscricoesRecentes, listarTurmasAdmin, totalARConferir } from "@/lib/admin-turmas";
 import { STATUS } from "@/lib/agenda";
 import { formatarDataCurta } from "@/lib/datas";
+import { resumoDeDescartes } from "@/lib/descartes";
 import { exigirSessao } from "@/lib/sessao";
 import { PaginaAdmin } from "./pagina";
 import styles from "@/components/admin.module.css";
@@ -18,7 +19,9 @@ const dataBR = (d: Date) => new Intl.DateTimeFormat("pt-BR", { day: "2-digit", m
 
 export default async function PainelPage({ searchParams }: PageProps<"/admin">) {
   const [usuario, params] = await Promise.all([exigirSessao(), searchParams]);
-  const [turmas, recentes, aConferir] = await Promise.all([listarTurmasAdmin(), inscricoesRecentes(4), totalARConferir()]);
+  const souAdmin = usuario.papel === "ADMIN";
+  const [turmas, recentes, aConferir, descartes] = await Promise.all([listarTurmasAdmin(), inscricoesRecentes(4), totalARConferir(), souAdmin ? resumoDeDescartes(7) : Promise.resolve([])]);
+  const descartados = (motivo: string) => descartes.filter((d) => d.motivo === motivo).reduce((n, d) => n + d.total, 0);
 
   const proximas = turmas.filter((t) => t.status !== "rascunho" && t.status !== "encerrado");
   const inscritos = proximas.reduce((n, t) => n + t.ocupadas, 0);
@@ -50,6 +53,21 @@ export default async function PainelPage({ searchParams }: PageProps<"/admin">) 
           <KpiCard rotulo="Vagas livres" valor={vagasLivres} nota="Somando as turmas com inscrições abertas" />
           <KpiCard rotulo="A conferir" valor={aConferir} nota="Registros no conselho" />
         </div>
+
+        {souAdmin && (
+          <div className={styles.pilha}>
+            <h2 className={styles.titulo}>Envios barrados nos formulários (7 dias)</h2>
+            <div className={styles.kpis}>
+              <KpiCard rotulo="Parecem robô" valor={descartados("ARMADILHA")} nota="Campo escondido preenchido" />
+              <KpiCard rotulo="Rápido demais" valor={descartados("TEMPO")} nota="Enviado em menos de 2 segundos" />
+              <KpiCard rotulo="Sem carimbo" valor={descartados("CARIMBO")} nota="Envio direto ou página aberta há mais de 12 horas" />
+              <KpiCard rotulo="Limite de envios" valor={descartados("LIMITE")} nota="Muitas tentativas do mesmo visitante" />
+            </div>
+            <p className={styles.nota}>
+              Se “Rápido demais”, “Sem carimbo” ou “Limite de envios” subirem sem explicação, pessoas reais podem estar sendo barradas: avise quem cuida do site. Erros de preenchimento (campo vazio ou inválido) não entram nesta conta; somaram {descartados("VALIDACAO")}.
+            </p>
+          </div>
+        )}
 
         <div className={styles.colunas}>
           <div className={styles.colunaGrande}>

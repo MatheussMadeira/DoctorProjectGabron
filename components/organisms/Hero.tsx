@@ -14,17 +14,20 @@ export interface HeroProps {
   secondary?: Link;
   image?: string;
   imageAlt?: string;
+  /** "retrato" (4:5, a foto da Dra. na home e no Sobre) ou "paisagem" (16:10, a foto da turma). */
+  imageRatio?: "retrato" | "paisagem";
   theme?: "claro" | "escuro";
   intro?: boolean;
   /** Mesmo nome do EventCard da turma, para a foto "crescer" na View Transition. */
   transitionName?: string;
 }
 
-export function Hero({ eyebrow = "Médica Fisiatra", title, lead, primary, secondary, image, imageAlt = "", theme = "escuro", intro = true, transitionName }: HeroProps) {
+export function Hero({ eyebrow = "Médica Fisiatra", title, lead, primary, secondary, image, imageAlt = "", imageRatio = "retrato", theme = "escuro", intro = true, transitionName }: HeroProps) {
+  const paisagem = imageRatio === "paisagem";
   return (
     <section className={cx("ap-hero", intro && "ap-hero-intro")} data-theme={theme}>
       <PedrasFundo side="full" intro={intro} />
-      <div className="ap-container ap-hero-grid">
+      <div className={cx("ap-container ap-hero-grid", paisagem && "ap-hero-grid-paisagem")}>
         <div className="ap-hero-copy">
           {eyebrow && <p className="ap-eyebrow">{eyebrow}</p>}
           <h1 className="ap-hero-title">{title}</h1>
@@ -45,8 +48,8 @@ export function Hero({ eyebrow = "Médica Fisiatra", title, lead, primary, secon
           )}
         </div>
         {image && (
-          <figure className="ap-hero-media" style={transitionName ? ({ viewTransitionName: transitionName } as CSSProperties) : undefined}>
-            <Image src={image} alt={imageAlt} width={1200} height={1500} sizes="(max-width: 900px) 100vw, 560px" priority />
+          <figure className={cx("ap-hero-media", paisagem && "ap-hero-media-paisagem")} style={transitionName ? ({ viewTransitionName: transitionName } as CSSProperties) : undefined}>
+            <Image src={image} alt={imageAlt} width={paisagem ? 1600 : 1200} height={paisagem ? 1000 : 1500} sizes={paisagem ? "(max-width: 1023px) 100vw, 600px" : "(max-width: 900px) 100vw, 560px"} priority />
           </figure>
         )}
       </div>

@@ -1,5 +1,5 @@
 import { Button, Hr, Text } from "@react-email/components";
-import { Base, Dado, cores, estilos } from "./Base";
+import { Base, Dado, cores, estilos, type ContextoEmail } from "./Base";
 import { PAGAMENTO_PLACEHOLDER } from "../textos";
 
 export interface InscricaoConfirmacaoProps {
@@ -10,12 +10,13 @@ export interface InscricaoConfirmacaoProps {
   listaEspera: boolean;
   /** Endereço absoluto da página da turma. */
   link: string;
+  contexto: ContextoEmail;
 }
 
-export function InscricaoConfirmacao({ nome, turma, conselho, registro, listaEspera, link }: InscricaoConfirmacaoProps) {
+export function InscricaoConfirmacao({ nome, turma, conselho, registro, listaEspera, link, contexto }: InscricaoConfirmacaoProps) {
   const primeiroNome = nome.trim().split(/\s+/)[0];
   return (
-    <Base previa={listaEspera ? `Você está na lista de espera: ${turma.titulo}` : `Recebemos a sua inscrição: ${turma.titulo}`}>
+    <Base contexto={contexto} previa={listaEspera ? `Você está na lista de espera: ${turma.titulo}` : `Recebemos a sua inscrição: ${turma.titulo}`}>
       <Text style={estilos.eyebrow}>{listaEspera ? "Lista de espera" : "Inscrição"}</Text>
       <Text style={estilos.titulo}>{listaEspera ? "Você está na lista de espera" : "Inscrição recebida"}</Text>
 
