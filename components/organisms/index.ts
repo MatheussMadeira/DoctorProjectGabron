@@ -24,3 +24,6 @@ export * from "./InscricoesAdmin";
 export * from "./ConfiguracoesClinica";
 export * from "./ProfessorCard";
 export * from "./ProfessoresDaTurma";
+export * from "./SeletorDeIdioma";
+export * from "./SugestaoDeIdioma";
+export * from "./AvisoDeTraducao";

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 import { cabecalhosDeIndexacao, sitePublico } from "./lib/seo";
 
 const nextConfig: NextConfig = {
@@ -14,6 +15,9 @@ const nextConfig: NextConfig = {
     return [
       { source: "/sobre", destination: "/sobre-o-curso", statusCode: 301 },
       { source: "/clinica", destination: "/", statusCode: 301 },
+      // Os mesmos redirecionamentos nas versões com prefixo de idioma.
+      { source: "/:locale(en|es|fr|it|de|zh)/sobre", destination: "/:locale/sobre-o-curso", statusCode: 301 },
+      { source: "/:locale(en|es|fr|it|de|zh)/clinica", destination: "/:locale", statusCode: 301 },
     ];
   },
   async headers() {
@@ -26,4 +30,6 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+
+export default withNextIntl(nextConfig);

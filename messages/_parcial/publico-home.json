@@ -1,0 +1,34 @@
+{
+  "Home": {
+    "cursoEyebrow": "O curso",
+    "cursoTitulo": "Como é a formação",
+    "fotoCursoAlt": "Modelo anatômico usado nas aulas",
+    "turmasEyebrow": "Agenda de cursos",
+    "turmasTitulo": "Próximas turmas",
+    "turmasLead": "Veja datas, local e programação de cada turma, e faça sua inscrição.",
+    "verAgendaCompleta": "Ver agenda completa",
+    "professoresEyebrow": "Professores",
+    "professoresTitulo": "Quem ensina",
+    "conhecaProfessores": "Conheça os professores",
+    "numerosEyebrow": "ReabToxin",
+    "numerosTitulo": "O curso em números",
+    "depoimentosEyebrow": "Depoimentos",
+    "depoimentosTitulo": "Quem já fez a formação"
+  },
+  "Sobre": {
+    "metaTitulo": "Sobre o curso",
+    "metaDescricao": "Como é o ReabToxin: a proposta, os professores e as turmas de toxina botulínica para profissionais da saúde.",
+    "heroEyebrow": "Sobre o curso",
+    "heroLead": "Formação em toxina botulínica construída sobre anatomia aplicada, critério de indicação e prática acompanhada de perto.",
+    "heroImagemAlt": "Boneco articulado de madeira em pose de movimento",
+    "falarEquipe": "Falar com a equipe",
+    "propostaEyebrow": "A proposta",
+    "propostaTitulo": "Por que ReabToxin",
+    "professoresEyebrow": "Professores",
+    "professoresTitulo": "Quem ensina",
+    "galeriaEyebrow": "Galeria",
+    "galeriaTitulo": "Nas turmas",
+    "galeriaLead": "Momentos das aulas teóricas e práticas.",
+    "valoresEyebrow": "O que guia o curso"
+  }
+}

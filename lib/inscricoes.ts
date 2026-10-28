@@ -12,6 +12,8 @@ export interface NovaInscricao {
   conselho: Conselho;
   registro: string;
   querAvisos: boolean;
+  /** Idioma em que a pessoa usou o site; os e-mails para ela saem nele. Padrão pt-BR. */
+  idioma?: string;
 }
 
 export class TurmaIndisponivelError extends Error {
@@ -77,6 +79,7 @@ export async function criarInscricao(dados: NovaInscricao): Promise<InscricaoCri
         registro: dados.registro,
         aceitePrivacidadeEm: new Date(),
         querAvisos: dados.querAvisos,
+        idioma: dados.idioma ?? "pt-BR",
         situacao,
       })
       .returning({ id: inscricoes.id });

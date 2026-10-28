@@ -5,7 +5,9 @@ import { createHash } from "node:crypto";
 import { after, before, test } from "node:test";
 import { and, eq, inArray } from "drizzle-orm";
 import { db, pool } from "../db";
-import { configuracoes, emailsEnvios, inscricoes, limitesTaxa, turmas, usuarios } from "../db/schema";
+import { configuracoes, emailsEnvios, inscricoes, limitesTaxa, turmas, turmasTraducoes, usuarios } from "../db/schema";
+import { montarEmail } from "../lib/email/montar";
+import { criarTradutor } from "../lib/i18n/mensagens";
 import { obterSiteAtual } from "../lib/configuracoes";
 import { enviarERegistrar, reenviar } from "../lib/email/registro";
 import { criarInscricao, InscricaoDuplicadaError } from "../lib/inscricoes";
@@ -116,6 +118,44 @@ test("vaga confirmada: e-mail para a pessoa inscrita, registrado", opcoes, async
   assert.equal(registro.destinatario, dados.email);
   assert.equal(registro.tipo, "INSCRICAO_VAGA_CONFIRMADA");
   assert.match(registro.assunto, /^Vaga confirmada: /);
+});
+
+test("e-mail para a pessoa sai no idioma guardado na inscrição (turma traduzida, link com prefixo); Reenviar mantém; aviso interno fica em português", opcoes, async () => {
+  Object.assign(process.env, { EMAIL_PROVIDER: "console" });
+  await db.insert(turmasTraducoes).values({ turmaId, locale: "de", conteudo: { titulo: "Titel auf Deutsch" } });
+  const em = `maria-de-${Date.now()}@exemplo.invalid`;
+  const ins = await criarInscricao({ ...dados, email: em, idioma: "de" });
+  const [gravada] = await db.select().from(inscricoes).where(eq(inscricoes.id, ins.id));
+  assert.equal(gravada.idioma, "de");
+
+  const tDe = criarTradutor("de", "Emails");
+  const confirmacao = await enviarERegistrar("INSCRICAO_CONFIRMACAO", { inscricaoId: ins.id });
+  assert.equal(confirmacao.ok, true);
+  const [reg] = await db.select().from(emailsEnvios).where(eq(emailsEnvios.id, confirmacao.emailId!));
+  assert.equal(reg.destinatario, em);
+  assert.equal(reg.assunto, tDe("confirmacao.assunto", { turma: "Titel auf Deutsch" }), "assunto no idioma da inscrição, com o título traduzido da turma");
+
+  const montado = await montarEmail("INSCRICAO_CONFIRMACAO", { inscricaoId: ins.id });
+  const props = (montado!.react as { props: { contexto: { locale: string }; link: string } }).props;
+  assert.equal(props.contexto.locale, "de");
+  assert.ok(props.link.endsWith(`/de/agenda/${SLUG}`), props.link);
+
+  // Reenviar remonta no mesmo idioma.
+  const refeito = await reenviar(confirmacao.emailId!);
+  assert.equal(refeito.ok, true);
+  const [depois] = await db.select().from(emailsEnvios).where(eq(emailsEnvios.id, confirmacao.emailId!));
+  assert.equal(depois.assunto, reg.assunto);
+
+  // Aviso interno: português, com o título em português.
+  const aviso = await enviarERegistrar("INSCRICAO_AVISO", { inscricaoId: ins.id });
+  const [regAviso] = await db.select().from(emailsEnvios).where(eq(emailsEnvios.id, aviso.emailId!));
+  assert.match(regAviso.assunto, /^Nova inscrição: Maria da Silva/);
+  assert.ok(!regAviso.assunto.includes("Titel auf Deutsch"));
+
+  // Idioma desconhecido no banco cai no português.
+  await db.update(inscricoes).set({ idioma: "xx" }).where(eq(inscricoes.id, ins.id));
+  const cai = await montarEmail("INSCRICAO_CONFIRMACAO", { inscricaoId: ins.id });
+  assert.equal((cai!.react as { props: { contexto: { locale: string } } }).props.contexto.locale, "pt-BR");
 });
 
 test("Configurações: o que a Dra. salva aparece nos dados do site; vazio volta ao placeholder", opcoes, async () => {

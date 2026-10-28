@@ -15,7 +15,7 @@ test("site fora do ar: robots.txt bloqueia tudo e não anuncia o sitemap", async
 });
 
 test("site fora do ar: o sitemap existe mas está vazio", async ({ request }) => {
-  const resposta = await request.get("/sitemap.xml");
+  const resposta = await request.get("/sitemap/0.xml");
   expect(resposta.status()).toBe(200);
   expect(await resposta.text()).not.toContain("<url>");
 });

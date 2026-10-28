@@ -77,3 +77,42 @@ main:focus { outline: none; }
 /* Hero sem imagem (pedras só à direita): no celular o texto ocupa a largura toda, então as pedras vão para o canto de baixo, à direita,
    fora do caminho do título. */
 @media (max-width: 767px) { .ap-pedras-right .ap-pedras-svg { height: 95%; top: auto; bottom: -30%; left: 60%; } }
+
+/* ---------- Idiomas ---------- */
+/* Seletor de idioma (Header e menu lateral): cantos retos, shadow-lg, foco visível. */
+.ap-lang { position: relative; flex: none; }
+.ap-lang-btn { min-width: 44px; height: 40px; padding: 0 var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-control); background: transparent; color: var(--ink); font-family: var(--font-sans); font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: border-color var(--duration-fast, 160ms), background var(--duration-fast, 160ms); }
+.ap-lang-btn:hover, .ap-lang-btn[aria-expanded="true"] { border-color: var(--ink); background: var(--surface-sunken); }
+.ap-lang-btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.ap-lang-painel { position: absolute; right: 0; top: calc(100% + 8px); min-width: 188px; z-index: 60; background: var(--surface-raised); border: 1px solid var(--line); box-shadow: var(--shadow-lg); border-radius: 0; }
+.ap-lang-lista { list-style: none; margin: 0; padding: var(--space-2) 0; }
+.ap-lang-item { display: block; font-family: var(--font-sans); padding: var(--space-3) var(--space-4); color: var(--ink); font-size: 16px; line-height: 24px; text-decoration: none; text-transform: none; letter-spacing: 0; }
+.ap-lang-item:hover { background: var(--surface-sunken); }
+.ap-lang-item:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--ink); }
+.ap-lang-item.is-atual { font-weight: 600; box-shadow: inset 3px 0 0 var(--accent); }
+.ap-lang-aberta .ap-lang-lista { display: flex; flex-wrap: wrap; gap: var(--space-2); padding: 0; }
+.ap-lang-aberta .ap-lang-item { padding: var(--space-2) var(--space-3); border: 1px solid var(--line-strong); }
+.ap-lang-aberta .ap-lang-item.is-atual { border-color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
+.ap-drawer-idioma { margin-top: var(--space-5); }
+
+/* Sugestão de idioma (primeira visita): discreta, no canto, e não redireciona nada. */
+.ap-sugestao-idioma { position: fixed; left: var(--space-4); bottom: var(--space-4); z-index: 55; max-width: min(360px, calc(100vw - var(--space-4) * 2)); display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); background: var(--surface-raised); box-shadow: var(--shadow-lg); border: 1px solid var(--line); font-size: 14px; line-height: 22px; color: var(--ink); }
+.ap-sugestao-idioma p { margin: 0; }
+.ap-sugestao-idioma > div { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.ap-sugestao-fechar { width: 36px; height: 36px; border: 0; background: transparent; color: var(--ink-muted); font-size: 24px; line-height: 1; cursor: pointer; }
+.ap-sugestao-fechar:hover { color: var(--ink); }
+.ap-sugestao-fechar:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+@media (max-width: 1023px) { .ap-com-barra ~ .ap-sugestao-idioma, .ap-sugestao-idioma { bottom: calc(var(--space-4) + 72px); } }
+
+/* Aviso de tradução automática no rodapé (fr, it, de, zh). */
+.ap-aviso-traducao { margin: var(--space-3) 0 0; font-size: 13px; line-height: 20px; color: var(--ink-muted); }
+
+/* Chinês (zh): Noto Sans SC no lugar da Marcellus e da Source Sans (que não têm ideogramas), aplicada pelo atributo lang.
+   Sem caixa alta e sem espaçamento entre letras: ideogramas não têm maiúscula e o espaço entre letras só atrapalha a leitura. */
+:lang(zh) { --font-display: var(--nf-sc), "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; --font-sans: var(--nf-sc), "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+:lang(zh) *, :lang(zh) *::before, :lang(zh) *::after { text-transform: none !important; letter-spacing: 0 !important; }
+:lang(zh) .ap-hero-title, :lang(zh) .ap-sh-title { font-weight: 600; }
+
+/* Seletor de idioma no Header: ao lado da chamada no desktop; no celular fica dentro do menu lateral (.ap-drawer-idioma). */
+.ap-header-idioma { display: flex; align-items: center; margin-right: var(--space-3); }
+@media (max-width: 1023px) { .ap-header-idioma { display: none; } }

@@ -30,6 +30,9 @@ export const papelEnum = pgEnum("papel_usuario", ["ADMIN", "EQUIPE"]);
 export const tipoEmailEnum = pgEnum("tipo_email", ["INSCRICAO_CONFIRMACAO", "INSCRICAO_AVISO", "CONTATO_AVISO", "INSCRICAO_VAGA_CONFIRMADA"]);
 /** Por que um envio dos formulários públicos foi barrado. */
 export const motivoDescarteEnum = pgEnum("motivo_descarte", ["ARMADILHA", "TEMPO", "CARIMBO", "LIMITE", "VALIDACAO"]);
+/** Situação de uma tradução: sai da DeepL como rascunho_automatico e vira revisada quando alguém confere e marca. */
+export const statusTraducaoEnum = pgEnum("status_traducao", ["rascunho_automatico", "revisada"]);
+export type StatusTraducao = (typeof statusTraducaoEnum.enumValues)[number];
 export const statusEmailEnum = pgEnum("status_email", ["PENDENTE", "ENVIADO", "FALHOU"]);
 
 export type Modalidade = (typeof modalidadeEnum.enumValues)[number];
@@ -122,6 +125,8 @@ export const inscricoes = pgTable(
     /** "00000 / MG" */
     registro: text("registro").notNull(),
     aceitePrivacidadeEm: timestamp("aceite_privacidade_em", { withTimezone: true }).notNull(),
+    /** Idioma em que a pessoa usou o site (pt-BR, en, es, fr, it, de, zh): os e-mails para ela saem nesse idioma. */
+    idioma: text("idioma").notNull().default("pt-BR"),
     querAvisos: boolean("quer_avisos").notNull().default(false),
     situacao: situacaoEnum("situacao").notNull().default("AGUARDANDO_PAGAMENTO"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -137,6 +142,8 @@ export const mensagensContato = pgTable("mensagens_contato", {
   assunto: text("assunto").notNull(),
   mensagem: text("mensagem"),
   aceitePrivacidadeEm: timestamp("aceite_privacidade_em", { withTimezone: true }).notNull(),
+  /** Idioma em que a pessoa usou o site. */
+  idioma: text("idioma").notNull().default("pt-BR"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -278,4 +285,85 @@ export const configuracoes = pgTable(
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [check("configuracoes_linha_unica", sql`${t.id} = 1`)],
+);
+
+
+/* ---------------------------------------------------------------------------------------------------------------------
+   Idiomas. O português fica nas tabelas de sempre (turmas, professores, fotos_galeria, configuracoes, textos_curso, depoimentos);
+   cada tabela tem uma `<nome>_traducoes` com uma linha por idioma (en, es, fr, it, de, zh). O conteúdo traduzido vai num jsonb
+   `conteudo` ({ campo: valor }) e o hash do português de cada campo em `origem`: quando o português muda, o campo é traduzido de novo na
+   hora e a linha volta a `rascunho_automatico` com `precisa_revisar` (informação desatualizada é pior que tradução não revisada).
+   Sem linha (ou sem o campo), o site mostra o português. Aplicar a migration ANTES do deploy.
+   --------------------------------------------------------------------------------------------------------------------- */
+const colunasDeTraducao = {
+  locale: text("locale").notNull(),
+  conteudo: jsonb("conteudo").$type<Record<string, unknown>>().notNull().default(sql`'{}'::jsonb`),
+  origem: jsonb("origem").$type<Record<string, string>>().notNull().default(sql`'{}'::jsonb`),
+  status: statusTraducaoEnum("status").notNull().default("rascunho_automatico"),
+  /** O português mudou depois da última revisão: a tradução automática nova ocupou o lugar da revisada. */
+  precisaRevisar: boolean("precisa_revisar").notNull().default(false),
+  revisadaPor: uuid("revisada_por").references(() => usuarios.id, { onDelete: "set null" }),
+  revisadaEm: timestamp("revisada_em", { withTimezone: true }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+};
+
+export const turmasTraducoes = pgTable(
+  "turmas_traducoes",
+  { turmaId: uuid("turma_id").notNull().references(() => turmas.id, { onDelete: "cascade" }), ...colunasDeTraducao },
+  (t) => [primaryKey({ columns: [t.turmaId, t.locale] })],
+);
+
+export const professoresTraducoes = pgTable(
+  "professores_traducoes",
+  { professorId: uuid("professor_id").notNull().references(() => professores.id, { onDelete: "cascade" }), ...colunasDeTraducao },
+  (t) => [primaryKey({ columns: [t.professorId, t.locale] })],
+);
+
+export const fotosGaleriaTraducoes = pgTable(
+  "fotos_galeria_traducoes",
+  { fotoId: uuid("foto_id").notNull().references(() => fotosGaleria.id, { onDelete: "cascade" }), ...colunasDeTraducao },
+  (t) => [primaryKey({ columns: [t.fotoId, t.locale] })],
+);
+
+export const configuracoesTraducoes = pgTable(
+  "configuracoes_traducoes",
+  { configId: integer("config_id").notNull().default(1).references(() => configuracoes.id, { onDelete: "cascade" }), ...colunasDeTraducao },
+  (t) => [primaryKey({ columns: [t.configId, t.locale] })],
+);
+
+/** Textos do curso editáveis (Configurações › Curso), um bloco por linha: topo, proposta, pilares, numeros e valores.
+    `conteudo` é o português; a forma de cada bloco está em lib/textos-curso.ts. */
+export const textosCurso = pgTable("textos_curso", {
+  bloco: text("bloco").primaryKey(),
+  conteudo: jsonb("conteudo").$type<Record<string, unknown>>().notNull().default(sql`'{}'::jsonb`),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const textosCursoTraducoes = pgTable(
+  "textos_curso_traducoes",
+  { bloco: text("bloco").notNull().references(() => textosCurso.bloco, { onDelete: "cascade" }), ...colunasDeTraducao },
+  (t) => [primaryKey({ columns: [t.bloco, t.locale] })],
+);
+
+/** Depoimentos. Só aparece no site o que está visível E tem `autorizacaoRecebidaEm` (autorização por escrito, obrigatória). */
+export const depoimentos = pgTable(
+  "depoimentos",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    nome: text("nome").notNull(),
+    profissao: text("profissao").notNull(),
+    cidade: text("cidade").notNull(),
+    texto: text("texto").notNull(),
+    ordem: integer("ordem").notNull().default(0),
+    visivel: boolean("visivel").notNull().default(true),
+    autorizacaoRecebidaEm: date("autorizacao_recebida_em", { mode: "string" }),
+    ...timestamps,
+  },
+  (t) => [index("depoimentos_ordem_idx").on(t.ordem)],
+);
+
+export const depoimentosTraducoes = pgTable(
+  "depoimentos_traducoes",
+  { depoimentoId: uuid("depoimento_id").notNull().references(() => depoimentos.id, { onDelete: "cascade" }), ...colunasDeTraducao },
+  (t) => [primaryKey({ columns: [t.depoimentoId, t.locale] })],
 );

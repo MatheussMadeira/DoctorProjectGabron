@@ -4,12 +4,14 @@ import { useRef, useState, useTransition } from "react";
 import { upload } from "@vercel/blob/client";
 import { Upload } from "lucide-react";
 import { ICON } from "@/lib/icon";
-import { salvarGaleria } from "@/app/admin/acoes-professores";
+import { salvarGaleria } from "@/app/(painel)/admin/acoes-professores";
 import type { FotoGaleriaAdmin } from "@/lib/admin-professores";
 import { abrirFoto, ErroDeFoto, prepararFoto } from "@/lib/foto-cliente";
 import { FOTO_REGRAS, MENSAGENS_FOTO, tipoAceito } from "@/lib/fotos";
 import { Button } from "../atoms/Button";
+import type { DadosDeTraducao } from "@/lib/i18n/admin";
 import { Alert } from "../molecules/Alert";
+import { TraducoesAdmin } from "./TraducoesAdmin";
 import { TextField } from "../molecules/TextField";
 import styles from "../admin.module.css";
 
@@ -25,7 +27,9 @@ interface Item {
 let contador = 0;
 const novaChave = () => `f${Date.now()}-${++contador}`;
 
-export function GaleriaAdmin({ fotos: iniciais, enviarPara = "/api/admin/foto" }: { fotos: FotoGaleriaAdmin[]; enviarPara?: string }) {
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function GaleriaAdmin({ fotos: iniciais, enviarPara = "/api/admin/foto", traducoes = {} }: { fotos: FotoGaleriaAdmin[]; enviarPara?: string; traducoes?: Record<string, DadosDeTraducao> }) {
   const [itens, setItens] = useState<Item[]>(() => iniciais.map((f) => ({ chave: f.id, url: f.url, alt: f.alt })));
   const [enviando, setEnviando] = useState<string | null>(null);
   const [avisos, setAvisos] = useState<string[]>([]);
@@ -72,7 +76,7 @@ export function GaleriaAdmin({ fotos: iniciais, enviarPara = "/api/admin/foto" }
 
   function salvar() {
     iniciar(async () => {
-      setResultado(await salvarGaleria(itens.map((f) => ({ url: f.url, alt: f.alt }))));
+      setResultado(await salvarGaleria(itens.map((f) => ({ id: UUID.test(f.chave) ? f.chave : undefined, url: f.url, alt: f.alt }))));
     });
   }
 
@@ -135,6 +139,12 @@ export function GaleriaAdmin({ fotos: iniciais, enviarPara = "/api/admin/foto" }
                   error={resultado.erros?.[i]}
                   hint="Para quem usa leitor de tela."
                 />
+                {traducoes[f.chave] && (
+                  <details>
+                    <summary>Traduções da descrição</summary>
+                    <TraducoesAdmin dados={traducoes[f.chave]} />
+                  </details>
+                )}
                 <div className={styles.acoesLinha}>
                   <Button type="button" variant="ghost" size="sm" disabled={i === 0} onClick={() => mover(i, -1)}>
                     Subir

@@ -27,6 +27,19 @@
 | `/admin/inscricoes` | Inscrições, com `?turma=` | `AdminInscricoes.dc.html` (tela `inscricoes`) |
 | `/admin/configuracoes` | Configurações, com abas (`?aba=`): Professores, Galeria, Contato do site e Usuários | `Admin.dc.html` (tela `config`), `AdminProfessores.dc.html`, `AdminGaleria.dc.html`; Contato do site e Usuários já existiam |
 
+### Idiomas
+
+O site público existe em 7 idiomas: pt-BR (padrão, sem prefixo) e `/en`, `/es`, `/fr`, `/it`, `/de`, `/zh` (chinês simplificado; arquivo de textos `zh-CN`). Os caminhos são idênticos em todos os idiomas (`/en/agenda/<slug>`), e o admin segue só em português.
+
+- **Escolha do idioma**: seletor no Header (sigla do idioma atual; lista com o nome de cada idioma na própria língua), também no menu lateral do celular. Trocar mantém a página. A escolha vai para o cookie `NEXT_LOCALE`, usado só para redirecionar quem abre a raiz `/`. Link direto abre no idioma do link. O idioma do navegador nunca redireciona: só gera uma sugestão discreta.
+- **SEO**: `hreflang` em todas as páginas (`zh-Hans` para o chinês) e `x-default` no português; sitemap com as URLs de cada idioma; metadados traduzidos.
+- **Textos fixos**: `messages/<idioma>.json`, gerados uma vez pela DeepL (`yarn i18n:traduzir`) e listados em `messages/revisao.json` até alguém revisar.
+- **Conteúdo do banco**: tabelas `*_traducoes` (turmas, professores, galeria, textos do curso, depoimentos) com um rascunho automático por idioma. Ao salvar o português, a DeepL traduz o que mudou; o que foi revisado e depois teve o português alterado volta a rascunho com o aviso "precisa revisar de novo". Faltou tradução: cai no português.
+- **Configurações › Curso**: textos da home (topo, proposta, pilares, números, valores) editáveis, e depoimentos (nome, profissão, cidade, texto, ordem, visível). Depoimento só aparece com a data da autorização por escrito.
+- **Inscrição e contato** guardam o idioma; o e-mail ao participante sai nele. E-mails internos (para os ADMIN) em português.
+- **Aviso**: em fr, it, de e zh o rodapé diz que a tradução é automática e que, em dúvida, vale o português.
+- **Banco**: migration `0007_bent_green_goblin`, aditiva, **aplicar antes do deploy** (produção já está até a 0006).
+
 ### Elementos comuns
 
 - **Header e Footer:** iguais em todas as páginas públicas.

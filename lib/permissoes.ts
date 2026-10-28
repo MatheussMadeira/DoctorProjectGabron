@@ -12,6 +12,7 @@ export const PERMISSOES = {
   "configuracao:editar": ["ADMIN"],
   "professor:gerir": ["ADMIN"],
   "galeria:gerir": ["ADMIN"],
+  "curso:gerir": ["ADMIN"],
 } as const satisfies Record<string, readonly Papel[]>;
 
 export type Permissao = keyof typeof PERMISSOES;

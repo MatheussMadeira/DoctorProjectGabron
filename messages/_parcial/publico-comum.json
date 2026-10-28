@@ -1,0 +1,76 @@
+{
+  "Metadata": {
+    "titulo": "ReabToxin — Curso de toxina botulínica para profissionais da saúde",
+    "modelo": "%s · ReabToxin",
+    "descricao": "Curso prático de toxina botulínica para médicos, dentistas, biomédicos e outros profissionais da saúde, com base anatômica e prática supervisionada.",
+    "nome": "ReabToxin",
+    "ogAlt": "ReabToxin — Curso de toxina botulínica"
+  },
+  "Comum": {
+    "pularParaConteudo": "Pular para o conteúdo",
+    "verAgenda": "Ver agenda de cursos",
+    "voltarInicio": "Voltar ao início",
+    "conhecaCurso": "Conheça o curso",
+    "garantirVaga": "Garantir minha vaga",
+    "proximaTurma": "Próxima turma · Inscrições abertas",
+    "fotoDe": "Foto de {nome}",
+    "whatsappLabel": "Fale conosco no WhatsApp",
+    "whatsappMensagem": "Olá! Gostaria de saber mais sobre as próximas turmas.",
+    "leadProfessores": "{n, plural, =1 {O professor que conduz as aulas teóricas e acompanha a prática.} =2 {Dois professores que conduzem juntos as aulas teóricas e acompanham a prática.} =3 {Três professores que conduzem juntos as aulas teóricas e acompanham a prática.} =4 {Quatro professores que conduzem juntos as aulas teóricas e acompanham a prática.} =5 {Cinco professores que conduzem juntos as aulas teóricas e acompanham a prática.} =6 {Seis professores que conduzem juntos as aulas teóricas e acompanham a prática.} other {Os professores que conduzem juntos as aulas teóricas e acompanham a prática.}}"
+  },
+  "Header": {
+    "nav": {
+      "inicio": "Início",
+      "sobre": "Sobre o curso",
+      "agenda": "Agenda de cursos",
+      "contato": "Contato"
+    },
+    "cta": "Próximas turmas",
+    "inicioAria": "Início — ReabToxin",
+    "principal": "Principal",
+    "menuMobile": "Menu mobile",
+    "menu": "Menu",
+    "abrir": "Abrir menu",
+    "fechar": "Fechar menu",
+    "whatsapp": "WhatsApp"
+  },
+  "Footer": {
+    "navegacao": "Navegação",
+    "contato": "Contato",
+    "rodape": "Rodapé",
+    "privacidade": "Política de privacidade",
+    "enderecoPadrao": "Local das turmas, Belo Horizonte — MG",
+    "legal": "© {ano} ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG"
+  },
+  "Status": {
+    "aberto": "Inscrições abertas",
+    "ultimas": "Últimas vagas",
+    "esgotado": "Esgotado",
+    "emBreve": "Em breve",
+    "encerrado": "Realizado"
+  },
+  "Modalidade": {
+    "Presencial": "Presencial",
+    "Online": "Online",
+    "aoVivo": "Ao vivo"
+  },
+  "Datas": {
+    "dias": "{n, plural, =1 {Um dia} =2 {Dois dias} =3 {Três dias} =4 {Quatro dias} =5 {Cinco dias} other {# dias}}",
+    "semData": "Sem data"
+  },
+  "NaoEncontrada": {
+    "eyebrow": "Erro 404",
+    "titulo": "Página não encontrada",
+    "lead": "O endereço pode ter mudado ou a turma não está mais na agenda."
+  },
+  "Politica": {
+    "metaTitulo": "Política de privacidade",
+    "metaDescricao": "Como o ReabToxin trata os dados enviados pelo site.",
+    "eyebrow": "Privacidade",
+    "titulo": "Política de privacidade",
+    "lead": "Texto a confirmar com a equipe e com o responsável jurídico.",
+    "p1": "Quais dados coletamos: nome, e-mail, telefone, profissão e número de registro no conselho, informados nos formulários de inscrição e de contato. Texto a confirmar.",
+    "p2": "Para que usamos: responder ao contato, confirmar inscrições e enviar os próximos passos da turma. Texto a confirmar.",
+    "p3": "Seus direitos e como falar com o responsável pelos dados: texto a confirmar, com o e-mail de contato do ReabToxin."
+  }
+}

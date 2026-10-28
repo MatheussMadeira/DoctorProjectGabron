@@ -3,11 +3,14 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { cx } from "@/lib/cx";
 import { reducedMotion, useInView } from "@/lib/motion";
+import { IDIOMAS } from "@/lib/i18n/idiomas";
+import { useIdioma } from "../atoms/IdiomaProvider";
 
 const PARTS = /^(\D*)(\d[\d.]*)(.*)$/;
 
 /* Conta de 0 até o valor quando aparece. Mantém prefixo/sufixo ("+300", "15 anos") e zeros à esquerda ("00"). */
 function CountUp({ value, run, duration = 1600 }: { value: string; run: boolean; duration?: number }) {
+  const locale = useIdioma();
   const [k, setK] = useState(0); // progresso de 0 a 1, atualizado só dentro do requestAnimationFrame
   const m = value.match(PARTS);
 
@@ -30,7 +33,7 @@ function CountUp({ value, run, duration = 1600 }: { value: string; run: boolean;
   const [, pre, num, post] = m;
   const digits = num.replace(/\./g, "");
   const n = Math.round(parseInt(digits, 10) * k);
-  const text = n >= 1000 ? n.toLocaleString("pt-BR") : String(n).padStart(digits.length, "0");
+  const text = n >= 1000 ? n.toLocaleString(IDIOMAS[locale].intl) : String(n).padStart(digits.length, "0");
   return <>{pre + text + post}</>;
 }
 

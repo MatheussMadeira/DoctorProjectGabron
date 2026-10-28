@@ -10,18 +10,19 @@ export interface ContatoAvisoProps {
   contexto: ContextoEmail;
 }
 
-/** Aviso interno: alguém escreveu pelo formulário de contato. */
+/** Aviso interno: alguém escreveu pelo formulário de contato (sempre em português). */
 export function ContatoAviso({ nome, email, telefone, assunto, mensagem, contexto }: ContatoAvisoProps) {
+  const t = (chave: string, valores?: Record<string, string | number>) => contexto.ti(`contato.${chave}`, valores);
   return (
-    <Base contexto={contexto} previa={`Contato pelo site: ${assunto}`}>
-      <Text style={estilos.eyebrow}>Contato pelo site</Text>
+    <Base contexto={contexto} previa={t("previa", { assunto })}>
+      <Text style={estilos.eyebrow}>{t("eyebrow")}</Text>
       <Text style={estilos.titulo}>{assunto}</Text>
-      <Dado rotulo="Nome">{nome}</Dado>
-      <Dado rotulo="E-mail">{email}</Dado>
-      <Dado rotulo="Telefone ou WhatsApp">{telefone || "Não informado"}</Dado>
-      <Dado rotulo="Mensagem">{mensagem || "Sem mensagem. A pessoa pediu retorno pelo assunto acima."}</Dado>
+      <Dado rotulo={t("nome")}>{nome}</Dado>
+      <Dado rotulo={t("email")}>{email}</Dado>
+      <Dado rotulo={t("telefone")}>{telefone || t("naoInformado")}</Dado>
+      <Dado rotulo={t("mensagem")}>{mensagem || t("semMensagem")}</Dado>
       <Hr style={estilos.linha} />
-      <Text style={estilos.suave}>Responder este e-mail escreve direto para {nome}. Lembre que o formulário pede para não enviar informações de saúde.</Text>
+      <Text style={estilos.suave}>{t("responder", { nome })}</Text>
     </Base>
   );
 }

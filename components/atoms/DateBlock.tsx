@@ -1,5 +1,9 @@
+"use client";
+
 import { cx } from "@/lib/cx";
-import { MESES, parseDate } from "@/lib/agenda";
+import { parseDate } from "@/lib/agenda";
+import { mesCurto } from "@/lib/datas";
+import { useIdioma } from "./IdiomaProvider";
 
 export interface DateBlockProps {
   start?: string;
@@ -8,8 +12,9 @@ export interface DateBlockProps {
   className?: string;
 }
 
-/* A data é o destaque: dia, mês e ano em Source Sans 3, nunca em Marcellus. */
+/* A data é o destaque: dia, mês e ano em Source Sans 3, nunca em Marcellus. O mês vem do idioma da página. */
 export function DateBlock({ start, end, size = "md", className }: DateBlockProps) {
+  const locale = useIdioma();
   const a = parseDate(start);
   const b = parseDate(end);
   if (!a) return null;
@@ -21,8 +26,8 @@ export function DateBlock({ start, end, size = "md", className }: DateBlockProps
         {b && sameMonth ? `–${String(b.d).padStart(2, "0")}` : ""}
       </span>
       <span className="ap-date-month">
-        {MESES[a.m]}
-        {b && !sameMonth ? ` – ${String(b.d).padStart(2, "0")} ${MESES[b.m]}` : ""}
+        {mesCurto(a.m, locale)}
+        {b && !sameMonth ? ` – ${String(b.d).padStart(2, "0")} ${mesCurto(b.m, locale)}` : ""}
       </span>
       <span className="ap-date-year">{a.y}</span>
     </span>

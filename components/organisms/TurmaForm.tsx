@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/atoms/ImagemSegura";
 import { Alert } from "../molecules/Alert";
 import { FaqEditor } from "../molecules/FaqEditor";
 import { ProgramacaoEditor } from "../molecules/ProgramacaoEditor";

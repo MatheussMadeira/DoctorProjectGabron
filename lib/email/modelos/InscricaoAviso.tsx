@@ -18,36 +18,35 @@ export interface InscricaoAvisoProps {
   contexto: ContextoEmail;
 }
 
-/** Aviso interno: chega na caixa da equipe quando alguém se inscreve. */
+/** Aviso interno: chega na caixa da equipe quando alguém se inscreve (sempre em português). */
 export function InscricaoAviso(p: InscricaoAvisoProps) {
+  const t = (chave: string, valores?: Record<string, string | number>) => p.contexto.ti(`inscricao.${chave}`, valores);
   return (
-    <Base contexto={p.contexto} previa={`Nova inscrição: ${p.nome} · ${p.turma.titulo}`}>
-      <Text style={estilos.eyebrow}>Aviso interno</Text>
-      <Text style={estilos.titulo}>Nova inscrição</Text>
-      <Text style={estilos.paragrafo}>
-        {p.nome} se inscreveu em {p.turma.titulo} ({p.turma.periodo}).
-      </Text>
+    <Base contexto={p.contexto} previa={t("previa", { nome: p.nome, turma: p.turma.titulo })}>
+      <Text style={estilos.eyebrow}>{t("eyebrow")}</Text>
+      <Text style={estilos.titulo}>{t("titulo")}</Text>
+      <Text style={estilos.paragrafo}>{t("resumo", { nome: p.nome, turma: p.turma.titulo, periodo: p.turma.periodo })}</Text>
 
       <div style={estilos.caixa}>
-        <Dado rotulo="Situação">{p.situacao}</Dado>
-        <Dado rotulo="Vagas">{p.vagas}</Dado>
+        <Dado rotulo={t("situacao")}>{p.situacao}</Dado>
+        <Dado rotulo={t("vagas")}>{p.vagas}</Dado>
       </div>
 
-      <Dado rotulo="Nome">{p.nome}</Dado>
-      <Dado rotulo="E-mail">{p.email}</Dado>
-      <Dado rotulo="Telefone ou WhatsApp">{p.telefone}</Dado>
-      <Dado rotulo="Profissão">{p.profissao}</Dado>
-      <Dado rotulo="Registro no conselho">
+      <Dado rotulo={t("nome")}>{p.nome}</Dado>
+      <Dado rotulo={t("email")}>{p.email}</Dado>
+      <Dado rotulo={t("telefone")}>{p.telefone}</Dado>
+      <Dado rotulo={t("profissao")}>{p.profissao}</Dado>
+      <Dado rotulo={t("registro")}>
         {p.conselho} {p.registro}
       </Dado>
-      <Dado rotulo="Quer avisos de novas turmas">{p.querAvisos ? "Sim" : "Não"}</Dado>
+      <Dado rotulo={t("avisos")}>{p.querAvisos ? t("sim") : t("nao")}</Dado>
 
-      <Text style={estilos.suave}>Confira o registro no conselho antes de confirmar a vaga.</Text>
+      <Text style={estilos.suave}>{t("lembrete")}</Text>
       <Button href={p.linkPainel} style={{ backgroundColor: cores.azulEscuro, color: cores.creme, padding: "14px 24px", fontSize: 14, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", textDecoration: "none" }}>
-        Abrir no painel
+        {t("abrir")}
       </Button>
       <Hr style={estilos.linha} />
-      <Text style={estilos.suave}>Responder este e-mail escreve direto para a pessoa inscrita.</Text>
+      <Text style={estilos.suave}>{t("responder")}</Text>
     </Base>
   );
 }

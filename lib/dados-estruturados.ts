@@ -1,3 +1,4 @@
+import { comPrefixo, IDIOMAS, LOCALE_PADRAO, type Locale } from "./i18n/idiomas";
 import type { ProfessorPublico } from "./professores";
 import type { DadosSite } from "./site";
 import { ehPlaceholder, NOME_DO_CURSO } from "./site";
@@ -21,16 +22,17 @@ const pessoas = (professores: ProfessorPublico[], base: string): Json[] =>
 const organizador = (base: string): Json => ({ "@type": "Organization", "@id": `${base}/#organizacao`, name: NOME_DO_CURSO, url: base });
 
 /** O curso ReabToxin como Organization (início e Sobre o curso). */
-export function organizacaoLd(site: DadosSite, base: string): Json {
+export function organizacaoLd(site: DadosSite, base: string, locale: Locale = LOCALE_PADRAO, descricao = "Curso prático de toxina botulínica para profissionais da saúde, com base anatômica e prática supervisionada."): Json {
   const enderecoReal = !ehPlaceholder(site.enderecoLinhas[0]) && !ehPlaceholder(site.enderecoLinhas[1]);
   return limpar({
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": `${base}/#organizacao`,
     name: NOME_DO_CURSO,
-    url: base,
+    url: `${base}${comPrefixo(locale, "/")}`,
     image: `${base}/og.png`,
-    description: "Curso prático de toxina botulínica para profissionais da saúde, com base anatômica e prática supervisionada.",
+    description: descricao,
+    inLanguage: IDIOMAS[locale].hreflang,
     telephone: real(site.telefone),
     email: real(site.email),
     address: enderecoReal
@@ -52,9 +54,9 @@ function localDe(turma: Turma, url: string): Json {
 }
 
 /** Uma turma como Course (a formação) com a turma como CourseInstance. */
-export function cursoLd(turma: Turma, professores: ProfessorPublico[], base: string): Json {
+export function cursoLd(turma: Turma, professores: ProfessorPublico[], base: string, locale: Locale = LOCALE_PADRAO): Json {
   const online = turma.modalidade === "Online";
-  const url = `${base}/agenda/${turma.slug}`;
+  const url = `${base}${comPrefixo(locale, `/agenda/${turma.slug}`)}`;
   return limpar({
     "@context": "https://schema.org",
     "@type": "Course",
@@ -62,7 +64,7 @@ export function cursoLd(turma: Turma, professores: ProfessorPublico[], base: str
     description: turma.resumo,
     url,
     image: [imagemDe(turma, base)],
-    inLanguage: "pt-BR",
+    inLanguage: IDIOMAS[locale].hreflang,
     provider: organizador(base),
     hasCourseInstance: limpar({
       "@type": "CourseInstance",
@@ -76,13 +78,14 @@ export function cursoLd(turma: Turma, professores: ProfessorPublico[], base: str
 }
 
 /** Uma turma como EducationEvent. Preço só se já houver valor real; "em breve" não leva oferta. */
-export function eventoLd(turma: Turma, professores: ProfessorPublico[], base: string): Json {
+export function eventoLd(turma: Turma, professores: ProfessorPublico[], base: string, locale: Locale = LOCALE_PADRAO): Json {
   const online = turma.modalidade === "Online";
-  const url = `${base}/agenda/${turma.slug}`;
+  const url = `${base}${comPrefixo(locale, `/agenda/${turma.slug}`)}`;
   const disponibilidade = turma.status === "esgotado" ? "https://schema.org/SoldOut" : turma.status === "encerrado" ? "https://schema.org/Discontinued" : "https://schema.org/InStock";
   return limpar({
     "@context": "https://schema.org",
     "@type": "EducationEvent",
+    inLanguage: IDIOMAS[locale].hreflang,
     name: turma.titulo,
     description: turma.resumo,
     url,

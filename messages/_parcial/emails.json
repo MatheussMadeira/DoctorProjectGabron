@@ -1,0 +1,83 @@
+{
+  "Emails": {
+    "rodape": "Esta é uma mensagem automática enviada pelo site do ReabToxin.",
+    "legal": "© {ano} ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG",
+    "localOnline": "Online, ao vivo",
+    "rotuloTurma": "Turma",
+    "rotuloData": "Data",
+    "rotuloLocal": "Local",
+    "pagamento": "Formas de pagamento: a confirmar com a equipe.",
+    "verTurma": "Ver a página da turma",
+    "confirmacao": {
+      "assunto": "Inscrição recebida: {turma}",
+      "assuntoEspera": "Lista de espera: {turma}",
+      "previa": "Recebemos a sua inscrição: {turma}",
+      "previaEspera": "Você está na lista de espera: {turma}",
+      "eyebrow": "Inscrição",
+      "eyebrowEspera": "Lista de espera",
+      "titulo": "Inscrição recebida",
+      "tituloEspera": "Você está na lista de espera",
+      "intro": "Olá, {nome}. Recebemos a sua inscrição na turma abaixo.",
+      "introEspera": "Olá, {nome}. As vagas da turma abaixo foram preenchidas. Avisamos por e-mail se abrir uma vaga ou uma nova data.",
+      "proximosPassos": "Próximos passos",
+      "passo1": "1. Conferimos o seu registro no conselho ({conselho} {registro}).",
+      "passo2": "2. Você recebe as formas de pagamento por e-mail.",
+      "passo3": "3. A vaga é confirmada depois do pagamento.",
+      "respostas": "Se alguma informação estiver errada, responda este e-mail. A equipe do ReabToxin lê as respostas."
+    },
+    "vagaConfirmada": {
+      "assunto": "Vaga confirmada: {turma}",
+      "previa": "Vaga confirmada: {turma}",
+      "eyebrow": "Inscrição",
+      "titulo": "Vaga confirmada",
+      "intro": "Olá, {nome}. A sua vaga na turma abaixo está confirmada.",
+      "guarde": "Guarde este e-mail. Se precisar alterar algum dado ou tiver dúvidas, responda esta mensagem.",
+      "ate": "Até lá."
+    }
+  },
+  "EmailsInternos": {
+    "inscricao": {
+      "assunto": "Nova inscrição: {nome} · {turma}",
+      "previa": "Nova inscrição: {nome} · {turma}",
+      "eyebrow": "Aviso interno",
+      "titulo": "Nova inscrição",
+      "resumo": "{nome} se inscreveu em {turma} ({periodo}).",
+      "situacao": "Situação",
+      "vagas": "Vagas",
+      "vagasOcupadas": "{ocupadas} de {total} vagas ocupadas",
+      "nome": "Nome",
+      "email": "E-mail",
+      "telefone": "Telefone ou WhatsApp",
+      "profissao": "Profissão",
+      "registro": "Registro no conselho",
+      "avisos": "Quer avisos de novas turmas",
+      "sim": "Sim",
+      "nao": "Não",
+      "lembrete": "Confira o registro no conselho antes de confirmar a vaga.",
+      "abrir": "Abrir no painel",
+      "responder": "Responder este e-mail escreve direto para a pessoa inscrita."
+    },
+    "contato": {
+      "assunto": "Contato pelo site: {assunto}",
+      "previa": "Contato pelo site: {assunto}",
+      "eyebrow": "Contato pelo site",
+      "nome": "Nome",
+      "email": "E-mail",
+      "telefone": "Telefone ou WhatsApp",
+      "naoInformado": "Não informado",
+      "mensagem": "Mensagem",
+      "semMensagem": "Sem mensagem. A pessoa pediu retorno pelo assunto acima.",
+      "responder": "Responder este e-mail escreve direto para {nome}. Lembre que o formulário pede para não enviar informações de saúde."
+    },
+    "teste": {
+      "previa": "Teste de envio do site do ReabToxin",
+      "eyebrow": "Configurações",
+      "titulo": "E-mail de teste",
+      "texto": "Se você está lendo esta mensagem, o envio de e-mails do site está funcionando.",
+      "pedidoPor": "Pedido por",
+      "provedor": "Provedor",
+      "remetente": "Remetente",
+      "nota": "Os avisos de nova inscrição e de mensagem de contato chegam aos usuários ADMIN ativos."
+    }
+  }
+}

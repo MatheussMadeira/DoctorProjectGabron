@@ -8,11 +8,12 @@ import { ContatoAviso } from "../lib/email/modelos/ContatoAviso";
 import { InscricaoAviso } from "../lib/email/modelos/InscricaoAviso";
 import { InscricaoConfirmacao } from "../lib/email/modelos/InscricaoConfirmacao";
 import { VagaConfirmada } from "../lib/email/modelos/VagaConfirmada";
+import { criarTradutor } from "../lib/i18n/mensagens";
 
 const saida = "capturas/emails";
 mkdirSync(saida, { recursive: true });
 
-const contexto = { logoUrl: "http://localhost:3000/logos/logo-horizontal-negativo-2x.png", legal: "© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG" };
+const contexto = { logoUrl: "http://localhost:3000/logos/logo-horizontal-negativo-2x.png", legal: "© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG", locale: "pt-BR" as const, t: criarTradutor("pt-BR", "Emails"), ti: criarTradutor("pt-BR", "EmailsInternos") };
 const turma = { titulo: "Toxina botulínica — módulo essencial", periodo: "21 e 22 de novembro", horario: "8h às 18h", local: "Local a definir, Belo Horizonte, MG" };
 const modelos: Record<string, React.ReactElement> = {
   "inscricao-confirmacao": <InscricaoConfirmacao nome="Maria da Silva" turma={turma} conselho="CRM" registro="00000 / MG" listaEspera={false} contexto={contexto} link="https://exemplo.invalid/agenda/modulo-essencial-nov-2026" />,

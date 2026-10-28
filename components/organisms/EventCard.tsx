@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import Image from "next/image";
+import Image from "@/components/atoms/ImagemSegura";
 import { ArrowRight } from "lucide-react";
 import { cx } from "@/lib/cx";
 import { ICON } from "@/lib/icon";
@@ -26,13 +26,20 @@ export interface EventCardProps {
   seats?: string;
   price?: string;
   status?: EventStatus;
+  /** Texto do selo de status no idioma (sem ele, o rótulo em português de lib/agenda.ts: painel e /dev). */
+  statusLabel?: string;
+  /** Rótulo de exibição da modalidade (o valor lógico continua em `modality`). */
+  modalityLabel?: string;
   cta?: string;
+  /** "Lista de espera" e "Ver como foi", no idioma. */
+  waitlistLabel?: string;
+  pastLabel?: string;
   transitionName?: string;
   loading?: boolean;
 }
 
 /* Cartão de uma data da agenda: a data é o destaque. No hover sobe, a foto aproxima e aparece o resumo. */
-export function EventCard({ title, start, end, image, imageAlt = "", summary, modality = "Presencial", time, city, venue, seats, price, status = "aberto", href = "#", cta = "Ver detalhes", transitionName, loading = false }: EventCardProps) {
+export function EventCard({ title, start, end, image, imageAlt = "", summary, modality = "Presencial", modalityLabel, time, city, venue, seats, price, status = "aberto", statusLabel, href = "#", cta = "Ver detalhes", waitlistLabel = "Lista de espera", pastLabel = "Ver como foi", transitionName, loading = false }: EventCardProps) {
   if (loading) return <Skeleton variant="card" />;
   const s = STATUS[status] || STATUS.aberto;
   const off = status === "esgotado" || status === "encerrado";
@@ -48,11 +55,11 @@ export function EventCard({ title, start, end, image, imageAlt = "", summary, mo
         )}
         <DateBlock start={start} end={end} className="ap-event-date" />
         <Badge tone={s.tone} className="ap-event-status">
-          {s.label}
+          {statusLabel ?? s.label}
         </Badge>
       </div>
       <div className="ap-event-body">
-        <p className="ap-eyebrow">{modality}</p>
+        <p className="ap-eyebrow">{modalityLabel ?? modality}</p>
         <h3 className="ap-event-title">
           <AppLink href={href}>{title}</AppLink>
         </h3>
@@ -66,7 +73,7 @@ export function EventCard({ title, start, end, image, imageAlt = "", summary, mo
       <div className="ap-event-foot">
         <span className="ap-price-main">{price}</span>
         <span className="ap-event-cta">
-          {off ? (status === "esgotado" ? "Lista de espera" : "Ver como foi") : cta}
+          {off ? (status === "esgotado" ? waitlistLabel : pastLabel) : cta}
           <ArrowRight {...ICON} size={18} />
         </span>
       </div>

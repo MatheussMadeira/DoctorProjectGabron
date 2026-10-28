@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
+import Image from "@/components/atoms/ImagemSegura";
 import { Award } from "lucide-react";
 import { ICON } from "@/lib/icon";
 import { Button } from "../atoms/Button";

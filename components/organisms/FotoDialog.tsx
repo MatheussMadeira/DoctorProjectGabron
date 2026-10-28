@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/atoms/ImagemSegura";
 import Cropper from "react-easy-crop";
 import { upload } from "@vercel/blob/client";
 import { Upload } from "lucide-react";

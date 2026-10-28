@@ -1,0 +1,9 @@
+{
+  "Idioma": {
+    "rotulo": "Idioma",
+    "sugestao": "Esta página também está disponível em {idioma}.",
+    "sugestaoAcao": "Ver em {idioma}",
+    "sugestaoFechar": "Fechar sugestão de idioma",
+    "avisoTraducao": "Tradução automática. Em caso de dúvida, vale a versão em português."
+  }
+}

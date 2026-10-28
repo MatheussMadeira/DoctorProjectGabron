@@ -1,8 +1,13 @@
 import type { ReactNode } from "react";
+import { getLocale, getTranslations } from "next-intl/server";
 import { obterSite } from "@/lib/configuracoes";
+import type { Locale } from "@/lib/i18n/idiomas";
 import { footerDe } from "@/lib/site";
+import { IdiomaProvider } from "../atoms/IdiomaProvider";
 import { WhatsAppButton } from "../atoms/WhatsAppButton";
+import { AvisoDeTraducao } from "../organisms/AvisoDeTraducao";
 import { Footer } from "../organisms/Footer";
+import { SugestaoDeIdioma } from "../organisms/SugestaoDeIdioma";
 import { SiteHeader } from "./SiteHeader";
 
 export interface PublicTemplateProps {
@@ -15,20 +20,25 @@ export interface PublicTemplateProps {
   children: ReactNode;
 }
 
-/** Moldura das páginas públicas: Header, conteúdo, Footer e WhatsApp flutuante. Os dados de contato vêm de Configurações. */
+/** Moldura das páginas públicas: Header, conteúdo, Footer e WhatsApp flutuante, no idioma da página (a página chama setRequestLocale antes).
+    Os dados de contato vêm de Configurações. */
 export async function PublicTemplate({ hideWhatsApp = false, withBar = false, whatsAppMessage, children }: PublicTemplateProps) {
-  const site = await obterSite();
+  const locale = (await getLocale()) as Locale;
+  const [t, site] = await Promise.all([getTranslations({ locale }), obterSite(locale)]);
   return (
-    <div className={withBar ? "ap-com-barra" : undefined}>
-      <a className="ap-skip" href="#conteudo">
-        Pular para o conteúdo
-      </a>
-      <SiteHeader contato={{ telefone: site.telefone, telefoneHref: site.telefoneHref, whatsapp: site.whatsapp }} />
-      <main id="conteudo" tabIndex={-1}>
-        {children}
-      </main>
-      <Footer {...footerDe(site)} />
-      {!hideWhatsApp && <WhatsAppButton phone={site.whatsapp} message={whatsAppMessage} />}
-    </div>
+    <IdiomaProvider locale={locale}>
+      <div className={withBar ? "ap-com-barra" : undefined}>
+        <a className="ap-skip" href="#conteudo">
+          {t("Comum.pularParaConteudo")}
+        </a>
+        <SiteHeader contato={{ telefone: site.telefone, telefoneHref: site.telefoneHref, whatsapp: site.whatsapp }} />
+        <main id="conteudo" tabIndex={-1}>
+          {children}
+        </main>
+        <Footer {...footerDe(site, t)} aviso={<AvisoDeTraducao />} />
+        {!hideWhatsApp && <WhatsAppButton phone={site.whatsapp} message={whatsAppMessage ?? t("Comum.whatsappMensagem")} label={t("Comum.whatsappLabel")} />}
+        <SugestaoDeIdioma />
+      </div>
+    </IdiomaProvider>
   );
 }

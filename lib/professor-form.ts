@@ -38,6 +38,7 @@ export function errosPorCampo(erro: z.ZodError): Record<string, string> {
 export const galeriaSchema = z
   .array(
     z.object({
+      id: z.string().uuid().optional(),
       url: z.string().trim().refine(fotoValida, "Foto inválida: envie de novo."),
       alt: z.string().trim().min(3, "Descreva a foto.").max(200, "Use no máximo 200 caracteres."),
     }),

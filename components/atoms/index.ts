@@ -13,3 +13,4 @@ export * from "./Skeleton";
 export * from "./Reveal";
 export * from "./Checkbox";
 export * from "./JsonLd";
+export * from "./IdiomaProvider";

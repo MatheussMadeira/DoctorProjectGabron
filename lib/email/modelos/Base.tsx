@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Body, Container, Head, Heading, Hr, Html, Img, Preview, Section, Text } from "@react-email/components";
+import { IDIOMAS, type Locale } from "@/lib/i18n/idiomas";
+import type { Tradutor } from "@/lib/i18n/mensagens";
 
 /* Identidade do design system, adaptada ao que os leitores de e-mail aceitam: cores e proporções dos tokens
    (azul-escuro, creme, azul-claro), cantos retos, títulos em caixa alta com espaçamento. Marcellus e Source Sans 3
@@ -43,13 +45,19 @@ export const estilos: Record<string, CSSProperties> = {
 export interface ContextoEmail {
   /** Endereço ABSOLUTO do logo em PNG (SITE_URL + /logos/...). Leitores de e-mail não abrem caminhos relativos. */
   logoUrl: string;
-  /** "© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG" */
+  /** "© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG" (no idioma do e-mail). */
   legal: string;
+  /** Idioma do e-mail: o da pessoa nos e-mails para ela; pt-BR nos avisos internos e no e-mail de teste. */
+  locale: Locale;
+  /** Textos do namespace "Emails" (e-mails para a pessoa) no idioma do e-mail. */
+  t: Tradutor;
+  /** Textos do namespace "EmailsInternos" (avisos para os ADMIN): sempre em português. */
+  ti: Tradutor;
 }
 
 export function Base({ previa, contexto, children }: { previa: string; contexto: ContextoEmail; children: ReactNode }) {
   return (
-    <Html lang="pt-BR">
+    <Html lang={IDIOMAS[contexto.locale].lang}>
       <Head />
       <Preview>{previa}</Preview>
       <Body style={estilos.corpo}>
@@ -60,7 +68,7 @@ export function Base({ previa, contexto, children }: { previa: string; contexto:
           <Section style={estilos.cartao}>{children}</Section>
           <Section style={estilos.rodape}>
             <Text style={{ margin: 0 }}>{contexto.legal}</Text>
-            <Text style={{ margin: "6px 0 0" }}>Esta é uma mensagem automática enviada pelo site do ReabToxin.</Text>
+            <Text style={{ margin: "6px 0 0" }}>{contexto.t("rodape")}</Text>
           </Section>
         </Container>
       </Body>

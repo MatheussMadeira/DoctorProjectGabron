@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/atoms/ImagemSegura";
 import { cx } from "@/lib/cx";
 import styles from "./Photo.module.css";
 

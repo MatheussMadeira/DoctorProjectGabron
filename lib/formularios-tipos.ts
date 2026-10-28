@@ -20,3 +20,6 @@ export const CAMPO_ARMADILHA = "campo_hp_7k";
 
 /** Carimbo de tempo assinado pelo servidor, preenchido pelo navegador ao abrir o formulário (ver lib/carimbo.ts). */
 export const CAMPO_CARIMBO = "carimbo_form";
+
+/** Idioma da página em que a pessoa preencheu (campo oculto): a inscrição e a mensagem guardam, e os e-mails para a pessoa saem nele. */
+export const CAMPO_IDIOMA = "idioma";

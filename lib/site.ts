@@ -2,6 +2,22 @@
    Dra. em Configurações, ficam no banco (tabela `configuracoes`) e chegam por lib/configuracoes.ts.
    O que ainda não foi preenchido continua como placeholder explícito (ver CLAUDE.md). */
 
+import type { Tradutor } from "./i18n/tradutor";
+
+/** Itens do menu: `chave` aponta para messages ("Header.nav.<chave>"). */
+export const NAV_ITENS = [
+  { chave: "inicio", href: "/" },
+  { chave: "sobre", href: "/sobre-o-curso" },
+  { chave: "agenda", href: "/agenda" },
+  { chave: "contato", href: "/contato" },
+] as const;
+
+/** Menu e chamada do Header no idioma da página. */
+export function menuDoHeader(tr: Tradutor) {
+  return { links: NAV_ITENS.map((i) => ({ label: tr(`Header.nav.${i.chave}`), href: i.href })), cta: { label: tr("Header.cta"), href: "/agenda" } };
+}
+
+/* Versões em português, para o painel e a página de componentes (/dev), que não passam pelo next-intl. */
 export const NAV_LINKS = [
   { label: "Início", href: "/" },
   { label: "Sobre o curso", href: "/sobre-o-curso" },
@@ -38,7 +54,11 @@ export interface DadosSite {
   email: string;
   enderecoLinhas: [string, string];
   enderecoCurto: string;
+  /** Endereço ainda no placeholder: o rodapé mostra o texto traduzido ("Footer.enderecoPadrao"). */
+  enderecoPadrao: boolean;
   horario: string;
+  /** Ano do rodapé legal (calculado dentro do cache, para a página não ler a data). */
+  ano: number;
   /** Linha legal do rodapé. */
   legal: string;
 }
@@ -62,7 +82,9 @@ export function montarSite(linha: LinhaConfiguracao | null, ano = new Date().get
     email: v("email"),
     enderecoLinhas: [l1, l2],
     enderecoCurto: padrao ? "Local das turmas, Belo Horizonte — MG" : `${l1}, ${l2}`,
+    enderecoPadrao: padrao,
     horario: v("horario"),
+    ano,
     legal: `© ${ano} ${NOME_DO_CURSO} · Formação em toxina botulínica · Belo Horizonte, MG`,
   };
 }
@@ -72,13 +94,25 @@ export function montarSite(linha: LinhaConfiguracao | null, ano = new Date().get
 export const ehPlaceholder = (texto: string | null | undefined) =>
   !texto || /(?<![\d-])0{3,}(?!\d)|a confirmar|dominio\.com\.br|exemplo\.invalid|^@perfil$|^Rua, número|^Nome d[oa] (professor|professora|aluno|aluna)/i.test(texto);
 
-export function footerDe(site: DadosSite) {
+/** Propriedades do Footer. Com `tr`, os textos vêm de messages; sem ele, em português (painel e /dev). */
+export function footerDe(site: DadosSite, tr?: Tradutor) {
+  if (!tr) {
+    return {
+      phone: site.telefone,
+      email: site.email,
+      address: site.enderecoCurto,
+      instagram: site.instagram,
+      links: [...NAV_LINKS.slice(1), { label: "Política de privacidade", href: "/politica-de-privacidade" }],
+      legal: site.legal,
+    };
+  }
   return {
     phone: site.telefone,
     email: site.email,
-    address: site.enderecoCurto,
+    address: site.enderecoPadrao ? tr("Footer.enderecoPadrao") : site.enderecoCurto,
     instagram: site.instagram,
-    links: [...NAV_LINKS.slice(1), { label: "Política de privacidade", href: "/politica-de-privacidade" }],
-    legal: site.legal,
+    links: [...NAV_ITENS.slice(1).map((i) => ({ label: tr(`Header.nav.${i.chave}`), href: i.href })), { label: tr("Footer.privacidade"), href: "/politica-de-privacidade" }],
+    legal: tr("Footer.legal", { ano: site.ano }),
+    rotulos: { navegacao: tr("Footer.navegacao"), contato: tr("Footer.contato"), rodape: tr("Footer.rodape") },
   };
 }

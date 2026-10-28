@@ -10,7 +10,8 @@ async function conferirNaoEncontrada(request: import("@playwright/test").APIRequ
   const html = await (await request.get(caminho)).text();
   expect(html).toContain("Página não encontrada");
   expect(html).toMatch(/<meta name="robots" content="noindex/);
-  expect(html).not.toContain("Enviar inscrição");
+  // O texto "Enviar inscrição" também aparece nas mensagens que o servidor manda ao navegador (next-intl); o que não pode existir é o formulário.
+  expect(html).not.toMatch(/<form/);
 }
 
 test("slug que não existe mostra a página 404 com noindex", async ({ request }) => {

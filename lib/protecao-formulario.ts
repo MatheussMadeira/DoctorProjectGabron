@@ -2,6 +2,8 @@ import { tempoMinimoMs, verificarCarimbo } from "./carimbo";
 import { registrarDescarte, type FormularioPublico } from "./descartes";
 import { CAMPO_ARMADILHA, CAMPO_CARIMBO, type EstadoFormulario } from "./formularios-tipos";
 import { valoresDigitados } from "./formularios";
+import { criarTradutor } from "./i18n/mensagens";
+import type { Locale } from "./i18n/idiomas";
 import { dentroDoLimite, type RotaLimitada } from "./limite-taxa";
 
 /**
@@ -13,7 +15,8 @@ import { dentroDoLimite, type RotaLimitada } from "./limite-taxa";
  *  3. Limite por visitante. Também um aviso de verdade: nunca um falso sucesso para quem pode ser uma pessoa real.
  * Todo descarte é registrado (terminal em desenvolvimento, log sem dado pessoal e contador diário no painel).
  */
-export async function barrarEnvio(formulario: FormularioPublico, formData: FormData, rota: RotaLimitada): Promise<EstadoFormulario | null> {
+export async function barrarEnvio(formulario: FormularioPublico, formData: FormData, rota: RotaLimitada, locale: Locale = "pt-BR"): Promise<EstadoFormulario | null> {
+  const t = criarTradutor(locale, "Validacao");
   const valores = () => valoresDigitados(formData);
 
   if (String(formData.get(CAMPO_ARMADILHA) ?? "").trim()) {
@@ -24,7 +27,7 @@ export async function barrarEnvio(formulario: FormularioPublico, formData: FormD
   const carimbo = verificarCarimbo(formData.get(CAMPO_CARIMBO));
   if (carimbo === "rapido") {
     await registrarDescarte(formulario, "TEMPO");
-    return { erroGeral: "Você enviou rápido demais. Aguarde um instante e envie de novo.", valores: valores() };
+    return { erroGeral: t("rapido"), valores: valores() };
   }
   if (carimbo === "expirado") {
     // Aba aberta de um dia para o outro: não é erro da pessoa. O formulário renova o carimbo e reenvia sozinho.
@@ -33,12 +36,12 @@ export async function barrarEnvio(formulario: FormularioPublico, formData: FormD
   }
   if (carimbo !== "ok") {
     await registrarDescarte(formulario, "CARIMBO");
-    return { erroGeral: "Não foi possível validar o envio. Recarregue a página e tente de novo.", valores: valores() };
+    return { erroGeral: t("carimbo"), valores: valores() };
   }
 
   if (!(await dentroDoLimite(rota))) {
     await registrarDescarte(formulario, "LIMITE");
-    return { erroGeral: "Muitas tentativas, tente de novo em alguns minutos.", valores: valores() };
+    return { erroGeral: t("limite"), valores: valores() };
   }
   return null;
 }

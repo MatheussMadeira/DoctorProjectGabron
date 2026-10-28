@@ -12,7 +12,10 @@
     "db:seed": "node --env-file=.env.local --import tsx db/seed.ts",
     "test": "node --env-file=.env.local --import tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
-    "admin:criar": "node --env-file=.env.local --import tsx scripts/admin-criar.ts"
+    "admin:criar": "node --env-file=.env.local --import tsx scripts/admin-criar.ts",
+    "i18n:traduzir": "node --env-file=.env.local --import tsx scripts/i18n-traduzir.mts",
+    "i18n:traduzir-banco": "node --env-file=.env.local --import tsx scripts/i18n-traduzir-banco.mts",
+    "i18n:juntar": "node scripts/i18n-juntar.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
@@ -25,6 +28,7 @@
     "lucide-react": "^1.62.0",
     "next": "16.4.3",
     "next-auth": "5.0.0-beta.32",
+    "next-intl": "^4.14.9",
     "nodemailer": "^10.2.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",

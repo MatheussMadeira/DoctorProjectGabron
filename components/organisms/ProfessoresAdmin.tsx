@@ -3,7 +3,7 @@
 import { useActionState, useRef, useState, useTransition } from "react";
 import { ArrowDown, ArrowUp, Pencil, Trash2 } from "lucide-react";
 import { ICON } from "@/lib/icon";
-import { excluirProfessor, moverProfessor, salvarProfessor } from "@/app/admin/acoes-professores";
+import { excluirProfessor, moverProfessor, salvarProfessor } from "@/app/(painel)/admin/acoes-professores";
 import type { ProfessorAdmin } from "@/lib/admin-professores";
 import type { EstadoProfessor } from "@/lib/professor-form";
 import { Badge } from "../atoms/Badge";
@@ -12,7 +12,9 @@ import { Checkbox } from "../atoms/Checkbox";
 import { Alert } from "../molecules/Alert";
 import { TextField } from "../molecules/TextField";
 import { AdminTable } from "./AdminTable";
+import type { DadosDeTraducao } from "@/lib/i18n/admin";
 import { FotoDialog } from "./FotoDialog";
+import { TraducoesAdmin } from "./TraducoesAdmin";
 import styles from "../admin.module.css";
 
 /* Configurações › Professores: lista (a ordem da lista é a ordem no site) e formulário de cadastro/edição. */
@@ -110,7 +112,7 @@ function FormularioProfessor({ professor, aoCancelar }: { professor: ProfessorAd
   );
 }
 
-export function ProfessoresAdmin({ professores }: { professores: ProfessorAdmin[] }) {
+export function ProfessoresAdmin({ professores, traducoes = {} }: { professores: ProfessorAdmin[]; traducoes?: Record<string, DadosDeTraducao> }) {
   const [editando, setEditando] = useState<ProfessorAdmin | null>(null);
   const [versao, setVersao] = useState(0);
   const [confirmando, setConfirmando] = useState<string | null>(null);
@@ -198,6 +200,7 @@ export function ProfessoresAdmin({ professores }: { professores: ProfessorAdmin[
         >
           Novo professor
         </Button>
+        {editando && traducoes[editando.id] && <TraducoesAdmin key={`${editando.id}-${versao}`} dados={traducoes[editando.id]} />}
         <FormularioProfessor key={`${editando?.id ?? "novo"}-${versao}`} professor={editando} aoCancelar={() => { setEditando(null); setVersao((v) => v + 1); }} />
       </div>
     </div>

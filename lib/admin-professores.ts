@@ -53,3 +53,22 @@ export interface FotoGaleriaAdmin {
 export async function listarGaleriaAdmin(): Promise<FotoGaleriaAdmin[]> {
   return db.select({ id: fotosGaleria.id, url: fotosGaleria.url, alt: fotosGaleria.alt }).from(fotosGaleria).orderBy(asc(fotosGaleria.ordem), asc(fotosGaleria.createdAt));
 }
+
+export interface DepoimentoAdmin {
+  id: string;
+  nome: string;
+  profissao: string;
+  cidade: string;
+  texto: string;
+  ordem: number;
+  visivel: boolean;
+  autorizacaoRecebidaEm: string | null;
+}
+
+export async function listarDepoimentosAdmin(): Promise<DepoimentoAdmin[]> {
+  const { depoimentos } = await import("@/db/schema");
+  return db
+    .select({ id: depoimentos.id, nome: depoimentos.nome, profissao: depoimentos.profissao, cidade: depoimentos.cidade, texto: depoimentos.texto, ordem: depoimentos.ordem, visivel: depoimentos.visivel, autorizacaoRecebidaEm: depoimentos.autorizacaoRecebidaEm })
+    .from(depoimentos)
+    .orderBy(asc(depoimentos.ordem), asc(depoimentos.createdAt));
+}

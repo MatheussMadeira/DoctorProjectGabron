@@ -12,9 +12,13 @@ export interface FooterProps {
   instagram?: string;
   links?: Array<{ label: string; href: string }>;
   legal?: ReactNode;
+  /** Títulos das colunas. O padrão é o português (painel e /dev); o site passa os de messages ("Footer.*"). */
+  rotulos?: { navegacao: string; contato: string; rodape: string };
+  /** Abaixo da linha legal: o aviso de tradução automática (fr, it, de e zh). */
+  aviso?: ReactNode;
 }
 
-export function Footer({ phone, email, address, instagram, links = [], legal }: FooterProps) {
+export function Footer({ phone, email, address, instagram, links = [], legal, rotulos = { navegacao: "Navegação", contato: "Contato", rodape: "Rodapé" }, aviso }: FooterProps) {
   return (
     <footer className="ap-footer" data-theme="escuro">
       <div className="ap-container">
@@ -23,8 +27,8 @@ export function Footer({ phone, email, address, instagram, links = [], legal }: 
             <Logo variant="vertical" width={210} />
           </div>
           {links.length > 0 && (
-            <nav aria-label="Rodapé" className="ap-footer-col">
-              <p className="ap-eyebrow">Navegação</p>
+            <nav aria-label={rotulos.rodape} className="ap-footer-col">
+              <p className="ap-eyebrow">{rotulos.navegacao}</p>
               {links.map((l) => (
                 <AppLink key={l.href} href={l.href}>
                   {l.label}
@@ -33,7 +37,7 @@ export function Footer({ phone, email, address, instagram, links = [], legal }: 
             </nav>
           )}
           <div className="ap-footer-col">
-            <p className="ap-eyebrow">Contato</p>
+            <p className="ap-eyebrow">{rotulos.contato}</p>
             {phone && (
               <a href={`tel:${phone.replace(/\D/g, "")}`}>
                 <Phone {...ICON} size={18} />
@@ -63,6 +67,7 @@ export function Footer({ phone, email, address, instagram, links = [], legal }: 
           </div>
         </div>
         <div className="ap-footer-legal">{legal}</div>
+        {aviso}
       </div>
     </footer>
   );

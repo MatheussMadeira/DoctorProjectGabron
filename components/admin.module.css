@@ -152,3 +152,19 @@
 .profTurma { display: flex; flex-direction: column; gap: var(--space-3); }
 .profTurmaLinha { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); justify-content: space-between; }
 .profTurmaLinha > :first-child { flex: 1 1 260px; min-width: 0; }
+
+/* Traduções (abas por idioma nos formulários do admin) */
+.cartaoTraducoes { background: var(--surface-raised); box-shadow: var(--shadow-sm); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+.abasIdioma { display: flex; flex-wrap: wrap; gap: var(--space-1); border-bottom: 1px solid var(--line); }
+.abaIdioma { position: relative; display: inline-flex; align-items: center; gap: var(--space-2); height: 40px; padding: 0 var(--space-4); border: 0; background: none; color: var(--ink-muted); font: inherit; font-size: 14px; font-weight: 600; letter-spacing: 0.1em; cursor: pointer; }
+.abaIdioma[aria-selected="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
+.abaIdioma:disabled { opacity: .55; cursor: default; }
+.abaIdioma:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.pontoSituacao { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+.pontoSituacao[data-situacao="revisada"] { background: var(--success, #2f7a4f); }
+.pontoSituacao[data-situacao="automatica"], .pontoSituacao[data-situacao="desatualizada"] { background: var(--warning, #b7791f); }
+.linhaTraducao { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.campoTraducao { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+.campoTraducao legend { padding: 0; font-weight: 600; margin-bottom: var(--space-2); }
+.parTraducao { display: flex; flex-direction: column; gap: var(--space-2); padding-left: var(--space-3); border-left: 2px solid var(--line); }
+.cartaoItem { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--line); }

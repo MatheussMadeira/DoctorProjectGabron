@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import Image from "next/image";
+import Image from "@/components/atoms/ImagemSegura";
 import { cx } from "@/lib/cx";
 import { Button } from "../atoms/Button";
 import { PedrasFundo } from "../atoms/PedrasFundo";

@@ -3,9 +3,10 @@
    Nunca rode no banco de produção: as inscrições são fictícias (e-mail @exemplo.invalid). */
 import { eq, isNull, like, notLike } from "drizzle-orm";
 import { GALERIA_EXEMPLO, PROFESSORES_EXEMPLO, TURMAS_EXEMPLO } from "@/lib/dados-exemplo";
+import { TEXTOS_PADRAO } from "@/lib/textos-curso-base";
 import { db, pool } from "./index";
 import { motivoParaRecusar } from "./seed-guarda";
-import { fotosGaleria, inscricoes, mensagensContato, professores, turmaProfessores, turmas, type Situacao } from "./schema";
+import { depoimentos, fotosGaleria, inscricoes, mensagensContato, professores, textosCurso, turmaProfessores, turmas, type Situacao } from "./schema";
 
 const recusa = motivoParaRecusar(process.env);
 if (recusa) {
@@ -98,6 +99,20 @@ async function main() {
   }
   const jaTemGaleria = (await db.select({ id: fotosGaleria.id }).from(fotosGaleria).limit(1)).length > 0;
   if (!jaTemGaleria) await db.insert(fotosGaleria).values(GALERIA_EXEMPLO.map((f, ordem) => ({ ...f, ordem })));
+
+  // Textos do curso (Configurações › Curso): só entram os blocos que ainda não existem (o seed não apaga o que a equipe editou).
+  for (const [bloco, conteudo] of Object.entries(TEXTOS_PADRAO)) {
+    await db.insert(textosCurso).values({ bloco, conteudo: conteudo as unknown as Record<string, unknown> }).onConflictDoNothing();
+  }
+  // Depoimentos de exemplo: SEM data de autorização, então não aparecem no site (só a equipe os vê no painel).
+  const jaTemDepoimentos = (await db.select({ id: depoimentos.id }).from(depoimentos).limit(1)).length > 0;
+  if (!jaTemDepoimentos) {
+    await db.insert(depoimentos).values([
+      { nome: "Nome da aluna", profissao: "Profissão", cidade: "Cidade", texto: "Texto do depoimento, autorizado por escrito. Fala da formação, da didática e do acompanhamento durante a prática.", ordem: 0, visivel: true },
+      { nome: "Nome do aluno", profissao: "Profissão", cidade: "Cidade", texto: "Texto do depoimento, autorizado por escrito. Conta como foi a turma e o que mudou na rotina de trabalho.", ordem: 1, visivel: true },
+      { nome: "Nome da aluna", profissao: "Profissão", cidade: "Cidade", texto: "Texto do depoimento, autorizado por escrito. Comenta a organização do curso e o suporte depois das aulas.", ordem: 2, visivel: true },
+    ]);
+  }
 
   const total = await db.select({ slug: turmas.slug }).from(turmas).where(isNull(turmas.excluidaEm));
   console.log(`Seed ok: ${TURMAS_EXEMPLO.length} turmas (${total.length} no banco).`);
