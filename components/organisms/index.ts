@@ -9,6 +9,7 @@ export * from "./Gallery";
 export * from "./CTABand";
 export * from "./Header";
 export * from "./Footer";
+export * from "./CreatorCredit";
 export * from "./AdminShell";
 export * from "./DataTable";
 export * from "./InscricaoForm";

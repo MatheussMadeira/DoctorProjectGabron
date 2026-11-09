@@ -328,6 +328,26 @@
     "p2": "Para que usamos: responder ao contato, confirmar inscrições e enviar os próximos passos da turma. Texto a confirmar.",
     "p3": "Seus direitos e como falar com o responsável pelos dados: texto a confirmar, com o e-mail de contato do ReabToxin."
   },
+  "Credito": {
+    "gatilho": "Site desenvolvido por",
+    "eyebrow": "Ficha técnica",
+    "cargo": "Design e desenvolvimento",
+    "texto": "Projetei e desenvolvi este site, da identidade visual à publicação. Se o seu projeto precisa de algo parecido, vamos conversar.",
+    "etapas": "Etapas do projeto",
+    "etapaDesign": "Design",
+    "etapaDesignInfo": "Identidade e interface",
+    "etapaCodigo": "Desenvolvimento",
+    "etapaCodigoInfo": "Código e banco de dados",
+    "etapaPublicacao": "Publicação",
+    "etapaPublicacaoInfo": "Site no ar",
+    "whatsapp": "Chamar no WhatsApp",
+    "whatsappMensagem": "Olá, Matheus. Vi o site do ReabToxin e queria conversar.",
+    "linkedin": "Ver LinkedIn",
+    "github": "Ver GitHub",
+    "fechar": "Fechar",
+    "concluido": "Projeto concluído em {ano}",
+    "novaAba": "Abre em nova aba"
+  },
   "Home": {
     "cursoEyebrow": "O curso",
     "cursoTitulo": "Como é a formação",
