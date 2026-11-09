@@ -11,9 +11,12 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   arrow?: boolean;
   icon?: ReactNode;
   full?: boolean;
+  /** Só com href (links externos). */
+  target?: string;
+  rel?: string;
 }
 
-export function Button({ variant = "primary", size = "md", href, arrow = false, icon, full = false, className, children, ...rest }: ButtonProps) {
+export function Button({ variant = "primary", size = "md", href, arrow = false, icon, full = false, target, rel, className, children, ...rest }: ButtonProps) {
   const cls = cx("ap-btn", `ap-btn-${variant}`, `ap-btn-${size}`, full && "ap-btn-full", className);
   const inner = (
     <>
@@ -24,7 +27,7 @@ export function Button({ variant = "primary", size = "md", href, arrow = false, 
   );
   if (href) {
     return (
-      <AppLink href={href} className={cls}>
+      <AppLink href={href} className={cls} target={target} rel={rel}>
         {inner}
       </AppLink>
     );

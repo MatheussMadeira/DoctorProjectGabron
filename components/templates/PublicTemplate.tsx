@@ -6,6 +6,7 @@ import { footerDe } from "@/lib/site";
 import { IdiomaProvider } from "../atoms/IdiomaProvider";
 import { WhatsAppButton } from "../atoms/WhatsAppButton";
 import { AvisoDeTraducao } from "../organisms/AvisoDeTraducao";
+import { CreatorCredit } from "../organisms/CreatorCredit";
 import { Footer } from "../organisms/Footer";
 import { SugestaoDeIdioma } from "../organisms/SugestaoDeIdioma";
 import { SiteHeader } from "./SiteHeader";
@@ -36,6 +37,7 @@ export async function PublicTemplate({ hideWhatsApp = false, withBar = false, wh
           {children}
         </main>
         <Footer {...footerDe(site, t)} aviso={<AvisoDeTraducao />} />
+        <CreatorCredit />
         {!hideWhatsApp && <WhatsAppButton phone={site.whatsapp} message={whatsAppMessage ?? t("Comum.whatsappMensagem")} label={t("Comum.whatsappLabel")} />}
         <SugestaoDeIdioma />
       </div>

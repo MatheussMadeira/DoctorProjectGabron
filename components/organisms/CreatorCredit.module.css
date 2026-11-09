@@ -1,0 +1,98 @@
+/* CreatorCredit — só tokens (ap-tokens.css). Cantos retos, sombras suaves, movimento calmo. */
+
+.faixa { background: var(--surface); color: var(--ink); border-top: 1px solid var(--line); }
+.faixaInterna { display: flex; justify-content: center; padding-block: var(--space-2); }
+
+/* Gatilho: "Site desenvolvido por Matheus Madeira" + três marcas (as pedras do logo) que acendem em sequência */
+.gatilho {
+  display: inline-flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-4);
+  border: 0; border-radius: var(--radius-control); background: transparent; cursor: pointer;
+  color: var(--ink-muted); font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 400;
+  transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+.gatilho strong { color: var(--ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+.gatilho:hover { color: var(--ink); background: var(--surface-sunken); }
+.gatilho:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.marcas { display: inline-flex; gap: 3px; color: var(--accent); }
+.marcas i { display: block; width: 6px; height: 6px; background: currentColor; opacity: .4; transition: opacity var(--duration-base) var(--ease-out); }
+.gatilho:hover .marcas i, .gatilho:focus-visible .marcas i { opacity: 1; }
+.gatilho:hover .marcas i:nth-child(2), .gatilho:focus-visible .marcas i:nth-child(2) { transition-delay: 120ms; }
+.gatilho:hover .marcas i:nth-child(3), .gatilho:focus-visible .marcas i:nth-child(3) { transition-delay: 240ms; }
+
+/* Ficha técnica (<dialog> nativo: o navegador cuida de foco preso, Esc e ::backdrop) */
+.dialogo {
+  width: min(100% - var(--space-5) * 2, 520px); max-height: calc(100dvh - var(--space-5) * 2);
+  padding: 0; border: 0; background: var(--surface-raised); color: var(--ink); box-shadow: var(--shadow-lg); overflow: auto;
+}
+.dialogo::backdrop { background: var(--overlay); animation: aparecer var(--duration-base) var(--ease-out) both; }
+.dialogo[open] .cartao { animation: entrar var(--duration-base) var(--ease-out) both; }
+@media (max-width: 599px) {
+  .dialogo { width: 100%; max-width: none; margin: auto 0 0; }
+}
+
+.cartao { display: flex; flex-direction: column; }
+.topo { position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-5) calc(var(--space-6) + 48px) var(--space-5) var(--space-6); background: var(--surface); color: var(--ink); }
+.topo :global(.ap-eyebrow) { color: var(--accent); }
+.fechar {
+  position: absolute; top: var(--space-2); right: var(--space-2); display: grid; place-items: center; width: 44px; height: 44px;
+  border: 0; border-radius: var(--radius-control); background: transparent; color: var(--ink); cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+.fechar:hover { background: var(--surface-sunken); }
+.fechar:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+.corpo { display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-6); }
+.cabeca { display: flex; align-items: center; gap: var(--space-4); }
+.monograma {
+  display: grid; place-items: center; flex: none; width: 72px; height: 72px; background: var(--surface-sunken); color: var(--ink);
+  border: 1px solid var(--line-strong); font-family: var(--font-display); font-size: 26px; line-height: 1; letter-spacing: 0.08em;
+  animation: aparecer var(--duration-slow) var(--ease-out) 120ms both;
+}
+.nome { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 26px; line-height: 34px; letter-spacing: 0.04em; text-transform: uppercase; }
+.cargo { margin: 2px 0 0; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink); }
+.texto { margin: 0; color: var(--ink-muted); font-size: 16px; line-height: 26px; }
+
+/* Etapas do projeto: a linha se desenha e os pontos entram um a um */
+.etapas {
+  position: relative; list-style: none; margin: 0; padding: var(--space-4); background: var(--surface-sunken);
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3);
+}
+.etapas::before {
+  content: ""; position: absolute; left: var(--space-7); right: var(--space-7); top: calc(var(--space-4) + 15px);
+  border-top: 1px solid var(--line-strong); transform-origin: left; animation: desenhar var(--duration-slow) var(--ease-out) 200ms both;
+}
+.etapas li { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); text-align: center; font-size: 13px; line-height: 18px; font-weight: 600; }
+.etapas small { display: block; font-size: 12px; line-height: 16px; font-weight: 400; color: var(--ink-muted); }
+.ponto {
+  display: grid; place-items: center; width: 32px; height: 32px; background: var(--surface-raised); color: var(--ink);
+  border: 1px solid var(--line-strong); animation: aparecer var(--duration-slow) var(--ease-out) both;
+}
+.etapas li:nth-child(1) .ponto { animation-delay: 200ms; }
+.etapas li:nth-child(2) .ponto { animation-delay: 500ms; }
+.etapas li:nth-child(3) .ponto { animation-delay: 800ms; }
+@media (max-width: 599px) {
+  .etapas { grid-template-columns: 1fr; }
+  .etapas::before { display: none; }
+  .etapas li { flex-direction: row; text-align: left; }
+}
+
+.links { display: flex; flex-direction: column; gap: var(--space-3); }
+.rodape {
+  display: flex; justify-content: space-between; gap: var(--space-3); margin: 0; padding-top: var(--space-4);
+  border-top: 1px solid var(--line); font-size: 13px; line-height: 20px; color: var(--ink-muted);
+}
+@media (max-width: 599px) {
+  .topo, .corpo { padding-inline: var(--space-5); }
+  .rodape { flex-direction: column; gap: 0; }
+}
+
+@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+@keyframes entrar { from { opacity: 0; transform: translateY(var(--space-3)); } to { opacity: 1; transform: none; } }
+@keyframes desenhar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .dialogo::backdrop, .dialogo[open] .cartao, .monograma, .ponto { animation: aparecer 120ms linear both; animation-delay: 0s; }
+  .etapas::before { animation: none; }
+  .gatilho, .marcas i { transition: none; }
+  .gatilho:hover .marcas i, .gatilho:focus-visible .marcas i { transition-delay: 0s; }
+}
