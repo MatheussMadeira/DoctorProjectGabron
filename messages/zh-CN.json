@@ -314,5 +314,25 @@
     "galeriaTitulo": "在班级里",
     "galeriaLead": "理论课和实践课的场景。",
     "valoresEyebrow": "课程的指导原则"
+  },
+  "Credito": {
+    "gatilho": "本网站由",
+    "eyebrow": "技术参数",
+    "cargo": "设计与开发",
+    "texto": "我负责了该网站从视觉识别到上线的整个设计与开发工作。如果您的项目也有类似需求，欢迎与我联系。",
+    "etapas": "项目阶段",
+    "etapaDesign": "设计",
+    "etapaDesignInfo": "标识与界面",
+    "etapaCodigo": "开发",
+    "etapaCodigoInfo": "代码和数据库",
+    "etapaPublicacao": "出版物",
+    "etapaPublicacaoInfo": "网站已上线",
+    "whatsapp": "在WhatsApp上呼叫",
+    "whatsappMensagem": "你好，马特乌斯。我看了ReabToxin的网站，想和你聊聊。",
+    "linkedin": "查看领英",
+    "github": "查看 GitHub",
+    "fechar": "关闭",
+    "concluido": "项目于 {ano}",
+    "novaAba": "在新标签页中打开"
   }
 }

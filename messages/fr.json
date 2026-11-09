@@ -314,5 +314,25 @@
     "galeriaTitulo": "Dans les classes",
     "galeriaLead": "Extraits des cours théoriques et pratiques.",
     "valoresEyebrow": "Ce qui guide le parcours"
+  },
+  "Credito": {
+    "gatilho": "Site développé par",
+    "eyebrow": "Fiche technique",
+    "cargo": "Conception et développement",
+    "texto": "J'ai conçu et développé ce site, de l'identité visuelle à sa mise en ligne. Si votre projet nécessite un travail similaire, n'hésitez pas à me contacter.",
+    "etapas": "Étapes du projet",
+    "etapaDesign": "Design",
+    "etapaDesignInfo": "Identité et interface",
+    "etapaCodigo": "Développement",
+    "etapaCodigoInfo": "Code et base de données",
+    "etapaPublicacao": "Publication",
+    "etapaPublicacaoInfo": "Site en ligne",
+    "whatsapp": "Appeler sur WhatsApp",
+    "whatsappMensagem": "Bonjour, Matheus. J'ai consulté le site d'ReabToxin et j'aimerais en discuter avec toi.",
+    "linkedin": "Voir LinkedIn",
+    "github": "Voir GitHub",
+    "fechar": "Fermer",
+    "concluido": "Projet achevé en {ano}",
+    "novaAba": "Ouvre dans un nouvel onglet"
   }
 }

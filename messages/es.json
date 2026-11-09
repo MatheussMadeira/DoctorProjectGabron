@@ -314,5 +314,25 @@
     "galeriaTitulo": "En las clases",
     "galeriaLead": "Momentos de las clases teóricas y prácticas.",
     "valoresEyebrow": "Lo que marca el rumbo"
+  },
+  "Credito": {
+    "gatilho": "Página web desarrollada por",
+    "eyebrow": "Ficha técnica",
+    "cargo": "Diseño y desarrollo",
+    "texto": "He diseñado y desarrollado esta página web, desde la identidad visual hasta su publicación. Si tu proyecto necesita algo similar, hablemos.",
+    "etapas": "Fases del proyecto",
+    "etapaDesign": "Diseño",
+    "etapaDesignInfo": "Identidad e interfaz",
+    "etapaCodigo": "Desarrollo",
+    "etapaCodigoInfo": "Código y base de datos",
+    "etapaPublicacao": "Publicación",
+    "etapaPublicacaoInfo": "Página web en línea",
+    "whatsapp": "Llamar por WhatsApp",
+    "whatsappMensagem": "Hola, Matheus. He visto la página web de ReabToxin y me gustaría hablar contigo.",
+    "linkedin": "Ver LinkedIn",
+    "github": "Ver GitHub",
+    "fechar": "Cerrar",
+    "concluido": "Proyecto finalizado en {ano}",
+    "novaAba": "Se abre en una nueva pestaña"
   }
 }

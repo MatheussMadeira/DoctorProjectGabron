@@ -314,5 +314,25 @@
     "galeriaTitulo": "In den Klassen",
     "galeriaLead": "Einblicke in den theoretischen und praktischen Unterricht.",
     "valoresEyebrow": "Was bestimmt den Verlauf?"
+  },
+  "Credito": {
+    "gatilho": "Website entwickelt von",
+    "eyebrow": "Technische Daten",
+    "cargo": "Design und Entwicklung",
+    "texto": "Ich habe diese Website entworfen und entwickelt – vom Corporate Design bis zur Veröffentlichung. Wenn Ihr Projekt etwas Ähnliches benötigt, lassen Sie uns darüber sprechen.",
+    "etapas": "Projektphasen",
+    "etapaDesign": "Design",
+    "etapaDesignInfo": "Identität und Benutzeroberfläche",
+    "etapaCodigo": "Entwicklung",
+    "etapaCodigoInfo": "Code und Datenbank",
+    "etapaPublicacao": "Veröffentlichung",
+    "etapaPublicacaoInfo": "Website online",
+    "whatsapp": "Auf WhatsApp anrufen",
+    "whatsappMensagem": "Hallo, Matheus. Ich habe die Website von ReabToxin gesehen und würde mich gerne mit dir unterhalten.",
+    "linkedin": "Auf LinkedIn ansehen",
+    "github": "GitHub anzeigen",
+    "fechar": "Schließen",
+    "concluido": "Projekt abgeschlossen am {ano}",
+    "novaAba": "In einem neuen Tab öffnen"
   }
 }

@@ -314,5 +314,25 @@
     "galeriaTitulo": "In the classes",
     "galeriaLead": "Scenes from the theoretical and practical classes.",
     "valoresEyebrow": "What Guides the Course"
+  },
+  "Credito": {
+    "gatilho": "Website developed by",
+    "eyebrow": "Credits",
+    "cargo": "Design and Development",
+    "texto": "I designed and developed this website, from the visual identity to the launch. If your project needs something similar, let's talk.",
+    "etapas": "Project Phases",
+    "etapaDesign": "Design",
+    "etapaDesignInfo": "Identity and Interface",
+    "etapaCodigo": "Development",
+    "etapaCodigoInfo": "Code and database",
+    "etapaPublicacao": "Publication",
+    "etapaPublicacaoInfo": "Website Live",
+    "whatsapp": "Call on WhatsApp",
+    "whatsappMensagem": "Hi, Matheus. I saw the ReabToxin website and wanted to talk to you.",
+    "linkedin": "View LinkedIn",
+    "github": "View GitHub",
+    "fechar": "Close",
+    "concluido": "Project completed in {ano}",
+    "novaAba": "Opens in a new tab"
   }
 }
