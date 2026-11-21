@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { CAMPO_ARMADILHA, CAMPO_CARIMBO, CAMPO_IDIOMA, type EstadoFormulario } from "@/lib/formularios-tipos";
 import { comPrefixo, type Locale } from "@/lib/i18n/idiomas";
@@ -13,7 +14,6 @@ import { TextField } from "../molecules/TextField";
 import { SectionHeading } from "../molecules/SectionHeading";
 import { Button } from "../atoms/Button";
 import { Checkbox } from "../atoms/Checkbox";
-import { Logo } from "../atoms/Logo";
 import { Reveal } from "../atoms/Reveal";
 import { Stack } from "../atoms/Stack";
 import styles from "./forms.module.css";
@@ -50,7 +50,7 @@ export function InscricaoForm({ acao = semAcao, esgotada = false, eyebrow, estad
   if (estado.ok) {
     return (
       <div className={`${styles.card} ${styles.sent}`}>
-        <Logo variant="vertical" animated width={200} />
+        <Image src="/logos/reabtoxin-site.png" alt="ReabToxin" width={1151} height={309} style={{ width: 220, height: "auto" }} />
         <Alert tone="success" title={estado.listaEspera ? t("sucessoListaTitulo") : t("sucessoTitulo")}>
           {estado.listaEspera ? t("sucessoListaTexto") : t("sucessoTexto")}
         </Alert>

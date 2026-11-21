@@ -160,3 +160,6 @@ O mapa de quais arquivos formam cada página está em `site-dra-ana-paula/docs/E
 - Siga as fases da especificação, uma por vez. Ao fim de cada fase, rode `yarn build` e `yarn lint` e mostre o resultado antes de seguir.
 - **Decisões abertas** (banco, autenticação, e-mail, pagamento) estão listadas na especificação. Pergunte antes de escolher se não tiverem sido respondidas.
 - **Página de conferência**: `/dev/componentes` (só em desenvolvimento) mostra todos os componentes. Componente novo entra lá.
+
+## Logo (marca completa, com o nome)
+A logo cheia ("ReabToxin" com os arcos) é um PNG transparente derivado do arquivo do cliente: `public/logos/reabtoxin-site.png` (nome azul, para fundo claro) e `reabtoxin-site-claro.png` (nome creme, para fundo azul-escuro). Usada no Header, Rodapé, menu e login do painel e tela de "inscrição recebida" (`next/image`); nos e-mails, `logo-email-claro-2x.png` (336 px); na imagem de compartilhamento, `public/og.png` (gerada por `node scripts/gerar-og.mjs`). O componente `<Logo>` (vetorial antigo) só sobrou onde se usa o SÍMBOLO (pedras e gota: ícones, cartões vazios, menu do celular, favicon). `scripts/gerar-logo-email.mjs` gera o PNG antigo e não alimenta mais os e-mails.
