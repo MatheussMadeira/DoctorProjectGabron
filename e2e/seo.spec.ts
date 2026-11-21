@@ -68,7 +68,7 @@ test("dados estruturados: Organization (ReabToxin) no início e Course + Educati
 });
 
 test("o logo do e-mail está no ar como PNG", async ({ request }) => {
-  const r = await request.get("/logos/logo-horizontal-negativo-2x.png");
+  const r = await request.get("/logos/logo-email-claro-2x.png");
   expect(r.status()).toBe(200);
   expect(r.headers()["content-type"]).toContain("image/png");
 });

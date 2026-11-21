@@ -18,7 +18,7 @@ import { carregarMensagens, criarTradutor, mesclar } from "../lib/i18n/mensagens
 /** Contexto de e-mail sem banco: o mesmo que contextoDoEmail monta, com o logo de exemplo. */
 const contextoDe = (locale: Locale = "pt-BR"): ContextoEmail => {
   const t = criarTradutor(locale, "Emails");
-  return { logoUrl: "https://site.exemplo.invalid/logos/logo-horizontal-negativo-2x.png", legal: t("legal", { ano: 2026 }), locale, t, ti: criarTradutor("pt-BR", "EmailsInternos") };
+  return { logoUrl: "https://site.exemplo.invalid/logos/logo-email-claro-2x.png", legal: t("legal", { ano: 2026 }), locale, t, ti: criarTradutor("pt-BR", "EmailsInternos") };
 };
 const contexto = contextoDe();
 
@@ -101,7 +101,7 @@ test("modelo de confirmação: identidade, dados da turma e tom (sem exclamaçã
 
 test("o logo vai como PNG com endereço absoluto, com texto alternativo", async () => {
   const html = await render(createElement(InscricaoConfirmacao, props));
-  assert.match(html, /<img[^>]+src="https:\/\/site\.exemplo\.invalid\/logos\/logo-horizontal-negativo-2x\.png"/);
+  assert.match(html, /<img[^>]+src="https:\/\/site\.exemplo\.invalid\/logos\/logo-email-claro-2x\.png"/);
   assert.match(html, /alt="ReabToxin"/);
   assert.ok(!/src="\//.test(html), "nenhuma imagem com caminho relativo");
 });

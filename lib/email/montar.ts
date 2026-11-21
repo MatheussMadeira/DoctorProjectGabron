@@ -23,8 +23,8 @@ export interface OrigemEmail {
   alunoId?: string | null;
 }
 
-/** Logo em PNG com endereço absoluto: public/logos/logo-horizontal-negativo-2x.png servido pelo próprio site (SITE_URL). */
-export const CAMINHO_LOGO_EMAIL = "/logos/logo-horizontal-negativo-2x.png";
+/** Logo em PNG com endereço absoluto: public/logos/logo-email-claro-2x.png servido pelo próprio site (SITE_URL). */
+export const CAMINHO_LOGO_EMAIL = "/logos/logo-email-claro-2x.png";
 
 /**
  * O que todo e-mail leva: logo (URL absoluta), a linha legal e os tradutores, no idioma do e-mail.

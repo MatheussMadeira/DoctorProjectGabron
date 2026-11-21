@@ -6,7 +6,7 @@ import type { Tradutor } from "@/lib/i18n/mensagens";
 /* Identidade do design system, adaptada ao que os leitores de e-mail aceitam: cores e proporções dos tokens
    (azul-escuro, creme, azul-claro), cantos retos, títulos em caixa alta com espaçamento. Marcellus e Source Sans 3
    não são fontes de e-mail, então entram Georgia e Arial. O logo vai como PNG (SVG não funciona no Gmail), com
-   endereço absoluto: public/logos/logo-horizontal-negativo-2x.png, gerado por scripts/gerar-logo-email.mjs. */
+   endereço absoluto: public/logos/logo-email-claro-2x.png, gerado por scripts/gerar-logo-email.mjs. */
 
 export const cores = {
   azulEscuro: "#28334f",
