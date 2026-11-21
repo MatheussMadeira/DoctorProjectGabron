@@ -71,7 +71,7 @@ export function EventCard({ title, start, end, image, imageAlt = "", summary, mo
         )}
       </div>
       <div className="ap-event-foot">
-        <span className="ap-price-main">{price}</span>
+        {price && <span className="ap-price-main">{price}</span>}
         <span className="ap-event-cta">
           {off ? (status === "esgotado" ? waitlistLabel : pastLabel) : cta}
           <ArrowRight {...ICON} size={18} />

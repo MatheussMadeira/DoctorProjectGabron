@@ -77,11 +77,10 @@ export function cursoLd(turma: Turma, professores: ProfessorPublico[], base: str
   });
 }
 
-/** Uma turma como EducationEvent. Preço só se já houver valor real; "em breve" não leva oferta. */
+/** Uma turma como EducationEvent. Sem oferta/preço: o valor é pedido por orçamento no WhatsApp. */
 export function eventoLd(turma: Turma, professores: ProfessorPublico[], base: string, locale: Locale = LOCALE_PADRAO): Json {
   const online = turma.modalidade === "Online";
   const url = `${base}${comPrefixo(locale, `/agenda/${turma.slug}`)}`;
-  const disponibilidade = turma.status === "esgotado" ? "https://schema.org/SoldOut" : turma.status === "encerrado" ? "https://schema.org/Discontinued" : "https://schema.org/InStock";
   return limpar({
     "@context": "https://schema.org",
     "@type": "EducationEvent",
@@ -97,9 +96,6 @@ export function eventoLd(turma: Turma, professores: ProfessorPublico[], base: st
     location: localDe(turma, url),
     organizer: organizador(base),
     performer: pessoas(professores, base),
-    offers:
-      turma.status !== "em-breve" && turma.precoCentavos != null
-        ? { "@type": "Offer", url, price: (turma.precoCentavos / 100).toFixed(2), priceCurrency: "BRL", availability: disponibilidade }
-        : undefined,
+    // Sem "offers": o valor não é público (o orçamento é pedido pelo WhatsApp) e uma oferta sem preço é inválida para o Google.
   });
 }

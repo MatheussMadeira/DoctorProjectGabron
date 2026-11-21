@@ -187,7 +187,7 @@ test("chinês: Noto Sans SC pelo atributo lang, sem caixa alta e sem espaçament
   expect(await page.locator(".ap-lang-painel a[lang='zh-Hans']").evaluate((el) => getComputedStyle(el).fontFamily)).toMatch(/Noto Sans SC|nf-sc|__Noto_Sans_SC/i);
 });
 
-test("datas, horários e preço seguem o idioma (Intl): a turma em en, de e zh", async ({ request }) => {
+test("datas e horários seguem o idioma (Intl): a turma em en, de e zh", async ({ request }) => {
   const texto = async (caminho: string) => (await (await request.get(caminho)).text()).replace(/<[^>]+>/g, " ");
   expect(await texto(`/agenda/${SLUG}`)).toMatch(/novembro|nov/i);
   expect(await texto(`/en/agenda/${SLUG}`)).toMatch(/Nov(ember)?\b/);

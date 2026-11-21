@@ -16,7 +16,13 @@ export const NAV_ITENS = [
 
 /** Menu e chamada do Header no idioma da página. */
 export function menuDoHeader(tr: Tradutor) {
-  return { links: NAV_ITENS.map((i) => ({ label: tr(`Header.nav.${i.chave}`), href: i.href })), cta: { label: tr("Header.cta"), href: "/agenda" } };
+  return {
+    links: NAV_ITENS.map((i) => ({
+      label: tr(`Header.nav.${i.chave}`),
+      href: i.href,
+    })),
+    cta: { label: tr("Header.cta"), href: "/agenda" },
+  };
 }
 
 /* Versões em português, para o painel e a página de componentes (/dev), que não passam pelo next-intl. */
@@ -24,7 +30,7 @@ export const NAV_LINKS = [
   { label: "Início", href: "/" },
   { label: "Sobre o curso", href: "/sobre-o-curso" },
   { label: "Agenda de cursos", href: "/agenda" },
-  { label: "Alumni ReabToxin", href: "/alumni-reabtoxin" },
+  { label: "Alumni", href: "/alumni-reabtoxin" },
   { label: "Viagem", href: "/viagem" },
   { label: "Contato", href: "/contato" },
 ];
@@ -67,16 +73,24 @@ export interface DadosSite {
   legal: string;
 }
 
-const preenchido = (v: string | null | undefined, padrao: string) => (v && v.trim() ? v.trim() : padrao);
+const preenchido = (v: string | null | undefined, padrao: string) =>
+  v && v.trim() ? v.trim() : padrao;
 
 /** Junta o que está no banco com os placeholders. */
-export function montarSite(linha: LinhaConfiguracao | null, ano = new Date().getFullYear()): DadosSite {
-  const v = (campo: CamposSite) => preenchido(linha?.[campo], SITE_PADRAO[campo]);
+export function montarSite(
+  linha: LinhaConfiguracao | null,
+  ano = new Date().getFullYear(),
+): DadosSite {
+  const v = (campo: CamposSite) =>
+    preenchido(linha?.[campo], SITE_PADRAO[campo]);
   const telefone = v("telefone");
-  const instagram = v("instagram").startsWith("@") ? v("instagram") : `@${v("instagram")}`;
+  const instagram = v("instagram").startsWith("@")
+    ? v("instagram")
+    : `@${v("instagram")}`;
   const l1 = v("enderecoLinha1");
   const l2 = v("enderecoLinha2");
-  const padrao = l1 === SITE_PADRAO.enderecoLinha1 && l2 === SITE_PADRAO.enderecoLinha2;
+  const padrao =
+    l1 === SITE_PADRAO.enderecoLinha1 && l2 === SITE_PADRAO.enderecoLinha2;
   return {
     telefone,
     telefoneHref: `tel:${telefone.replace(/[^\d+]/g, "")}`,
@@ -85,7 +99,9 @@ export function montarSite(linha: LinhaConfiguracao | null, ano = new Date().get
     instagramUrl: `https://instagram.com/${instagram.slice(1)}`,
     email: v("email"),
     enderecoLinhas: [l1, l2],
-    enderecoCurto: padrao ? "Local das turmas, Belo Horizonte — MG" : `${l1}, ${l2}`,
+    enderecoCurto: padrao
+      ? "Local das turmas, Belo Horizonte — MG"
+      : `${l1}, ${l2}`,
     enderecoPadrao: padrao,
     horario: v("horario"),
     ano,
@@ -96,7 +112,10 @@ export function montarSite(linha: LinhaConfiguracao | null, ano = new Date().get
 /** Texto que ainda é placeholder (grupo só de zeros como "00000", "a confirmar", domínio de exemplo): nunca vai para dados estruturados nem para o Google.
     Um número real que apenas contém zeros ("30000-000", "99000-0000") não conta. */
 export const ehPlaceholder = (texto: string | null | undefined) =>
-  !texto || /(?<![\d-])0{3,}(?!\d)|a confirmar|dominio\.com\.br|exemplo\.invalid|^@perfil$|^Rua, número|^Nome d[oa] (professor|professora|aluno|aluna)/i.test(texto);
+  !texto ||
+  /(?<![\d-])0{3,}(?!\d)|a confirmar|dominio\.com\.br|exemplo\.invalid|^@perfil$|^Rua, número|^Nome d[oa] (professor|professora|aluno|aluna)/i.test(
+    texto,
+  );
 
 /** Propriedades do Footer. Com `tr`, os textos vêm de messages; sem ele, em português (painel e /dev). */
 export function footerDe(site: DadosSite, tr?: Tradutor) {
@@ -106,17 +125,34 @@ export function footerDe(site: DadosSite, tr?: Tradutor) {
       email: site.email,
       address: site.enderecoCurto,
       instagram: site.instagram,
-      links: [...NAV_LINKS.slice(1), { label: "Enviar depoimento", href: "/depoimento" }, { label: "Política de privacidade", href: "/politica-de-privacidade" }],
+      links: [
+        ...NAV_LINKS.slice(1),
+        { label: "Enviar depoimento", href: "/depoimento" },
+        { label: "Política de privacidade", href: "/politica-de-privacidade" },
+      ],
       legal: site.legal,
     };
   }
   return {
     phone: site.telefone,
     email: site.email,
-    address: site.enderecoPadrao ? tr("Footer.enderecoPadrao") : site.enderecoCurto,
+    address: site.enderecoPadrao
+      ? tr("Footer.enderecoPadrao")
+      : site.enderecoCurto,
     instagram: site.instagram,
-    links: [...NAV_ITENS.slice(1).map((i) => ({ label: tr(`Header.nav.${i.chave}`), href: i.href })), { label: tr("Footer.depoimento"), href: "/depoimento" }, { label: tr("Footer.privacidade"), href: "/politica-de-privacidade" }],
+    links: [
+      ...NAV_ITENS.slice(1).map((i) => ({
+        label: tr(`Header.nav.${i.chave}`),
+        href: i.href,
+      })),
+      { label: tr("Footer.depoimento"), href: "/depoimento" },
+      { label: tr("Footer.privacidade"), href: "/politica-de-privacidade" },
+    ],
     legal: tr("Footer.legal", { ano: site.ano }),
-    rotulos: { navegacao: tr("Footer.navegacao"), contato: tr("Footer.contato"), rodape: tr("Footer.rodape") },
+    rotulos: {
+      navegacao: tr("Footer.navegacao"),
+      contato: tr("Footer.contato"),
+      rodape: tr("Footer.rodape"),
+    },
   };
 }

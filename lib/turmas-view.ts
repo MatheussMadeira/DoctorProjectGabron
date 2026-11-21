@@ -46,7 +46,6 @@ export function cardProps(t: Turma, ctx: ContextoDeIdioma): EventCardProps {
     modality: t.modalidade,
     modalityLabel: rotuloDaModalidade(t, ctx),
     seats: textoVagas(t, ctx),
-    price: t.preco,
     status: t.status,
     statusLabel: rotuloDoStatus(t.status, ctx),
     summary: t.resumo,

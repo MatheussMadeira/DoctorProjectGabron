@@ -9,12 +9,10 @@ for (const [nome, viewport, header, rodape] of [["desktop", { width: 1440, heigh
   test(`logo (${nome}): Header ${header}px com o símbolo de 24px ou mais; Footer ${rodape}px sem a linha de apoio`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.goto("/");
-    const logoHeader = page.locator("header.ap-header .ap-header-logo svg");
+    // O Header usa a imagem da marca (PNG transparente), que ocupa a largura da área do logo.
+    const logoHeader = page.locator("header.ap-header .ap-header-logo img");
     await expect(logoHeader).toBeVisible();
     expect(await logoHeader.evaluate(largura)).toBe(header);
-    const simbolo = await logoHeader.locator('[data-camada="simbolo"]').boundingBox();
-    expect(simbolo!.height).toBeGreaterThanOrEqual(23.9);
-    await expect(logoHeader.locator('[data-camada="linha-de-apoio"]')).toHaveCount(0);
 
     const logoRodape = page.locator("footer .ap-footer-brand svg");
     await logoRodape.scrollIntoViewIfNeeded();

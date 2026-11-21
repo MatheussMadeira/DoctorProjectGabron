@@ -109,17 +109,12 @@ test("EducationEvent: datas, modo presencial, local e imagem absoluta; sem preç
   assert.equal("performer" in ld, false);
 });
 
-test("EducationEvent: preço real vira Offer; esgotada vira SoldOut; online vira VirtualLocation; em breve não leva oferta", () => {
+test("EducationEvent: o valor não é público (sem Offer, mesmo com preço); online vira VirtualLocation", () => {
   const real = eventoLd({ ...turma, precoCentavos: 150000 }, [], BASE);
-  assert.deepEqual((real.offers as Record<string, string>).price, "1500.00");
-  assert.equal((real.offers as Record<string, string>).priceCurrency, "BRL");
-  const esgotada = eventoLd({ ...turma, precoCentavos: 150000, status: "esgotado" }, [], BASE);
-  assert.equal((esgotada.offers as Record<string, string>).availability, "https://schema.org/SoldOut");
+  assert.equal("offers" in real, false);
   const online = eventoLd({ ...turma, modalidade: "Online", cidade: "Ao vivo", local: undefined }, [], BASE);
   assert.equal(online.eventAttendanceMode, "https://schema.org/OnlineEventAttendanceMode");
   assert.equal((online.location as Record<string, string>)["@type"], "VirtualLocation");
-  const emBreve = eventoLd({ ...turma, precoCentavos: 150000, status: "em-breve" }, [], BASE);
-  assert.equal("offers" in emBreve, false);
 });
 
 test("frase de apoio dos professores segue o design: 'Três professores que conduzem juntos…'", async () => {

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Menu, X } from "lucide-react";
+import Image from "next/image";
+import { GraduationCap, Menu, X } from "lucide-react";
 import { cx } from "@/lib/cx";
 import { ICON } from "@/lib/icon";
 import { useIsoLayoutEffect } from "@/lib/motion";
@@ -85,7 +86,7 @@ export function Header({ links = [], current, cta, aluno, contato, sticky = true
     <header className={cx("ap-header", sticky && "is-sticky", scrolled && "is-scrolled")} data-compacto={compacto}>
       <div ref={linha} className="ap-container ap-header-row">
         <AppLink href="/" className="ap-header-logo" aria-label={rotulos.inicio}>
-          <Logo variant="compacta" title="" />
+          <Image src="/logos/reabtoxin-site.png" alt="" width={1151} height={309} priority sizes="180px" />
         </AppLink>
         <nav className="ap-nav" aria-label={rotulos.principal}>
           {links.map((l) => (
@@ -97,6 +98,7 @@ export function Header({ links = [], current, cta, aluno, contato, sticky = true
         <div className="ap-header-actions">
           {aluno && (
             <AppLink href={aluno.href} className="ap-header-aluno" aria-current={current === aluno.href ? "page" : undefined}>
+              <GraduationCap {...ICON} size={18} aria-hidden="true" />
               {aluno.label}
             </AppLink>
           )}

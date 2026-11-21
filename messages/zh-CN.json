@@ -227,6 +227,8 @@
     "duvidasEyebrow": "疑问",
     "duvidasTitulo": "常见问题",
     "whatsappDuvidas": "通过WhatsApp咨询问题",
+    "orcamento": "通过WhatsApp获取报价",
+    "orcamentoWhatsapp": "你好！我想了解班级 {titulo}（{periodo}）的报价。",
     "depoimentosEyebrow": "用户评价",
     "depoimentosTitulo": "已经参加过培训的人",
     "emBreveTitulo": "报名即将开始",

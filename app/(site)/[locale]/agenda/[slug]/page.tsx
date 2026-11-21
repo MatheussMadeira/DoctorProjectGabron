@@ -181,12 +181,17 @@ async function Turma({ params }: Pick<PageProps<"/[locale]/agenda/[slug]">, "par
                 modalityLabel={rotuloDaModalidade(turma, ctx)}
                 seatsTotal={turma.vagas || undefined}
                 seatsTaken={turma.ocupadas}
-                price={turma.preco}
-                installment={turma.parcelamento}
                 status={turma.status}
                 statusLabel={rotuloDoStatus(turma.status, ctx)}
                 rotulos={rotulosDoResumo(tr)}
                 action={turma.status === "encerrado" ? { label: tr("Turma.verAgendaCursos"), href: "/agenda" } : { label: tr("Turma.resumoQuero"), href: "#inscricao" }}
+                secondary={
+                  turma.status !== "encerrado" && (
+                    <Button full variant="secondary" href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(tr("Turma.orcamentoWhatsapp", { titulo: turma.titulo, periodo }))}`} target="_blank" rel="noopener noreferrer">
+                      {tr("Turma.orcamento")}
+                    </Button>
+                  )
+                }
               />
               <Stack row justify="center">
                 <Button variant="link" href={`https://wa.me/${site.whatsapp}`} arrow>
