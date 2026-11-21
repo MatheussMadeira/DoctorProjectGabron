@@ -268,6 +268,6 @@ test("em outros idiomas a página traz o nome da marca intacto e os textos tradu
   await expect(page.getByRole("heading", { name: t("turmasTitulo") })).toBeVisible();
   for (const locale of ["en", "es", "fr", "it", "de", "zh"]) {
     await page.goto(`/${locale}`);
-    await expect(page.locator(`header a[href="/${locale}/alumni-reabtoxin"]`).first()).toContainText("Alumni ReabToxin");
+    await expect(page.locator(`header a[href="/${locale}/alumni-reabtoxin"]`).first()).toHaveText("Alumni");
   }
 });
