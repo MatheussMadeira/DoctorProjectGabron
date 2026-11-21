@@ -5,7 +5,7 @@ import { sair } from "./login/actions";
 
 export interface PaginaAdminProps {
   usuario: UsuarioSessao;
-  ativo: "painel" | "agenda" | "inscricoes" | "config";
+  ativo: "painel" | "agenda" | "inscricoes" | "editor" | "alunos" | "alumni" | "viagem" | "config";
   titulo: ReactNode;
   acoes?: ReactNode;
   children: ReactNode;

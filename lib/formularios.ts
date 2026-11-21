@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { CAMPO_ARMADILHA, CAMPO_CARIMBO, CAMPO_IDIOMA } from "./formularios-tipos";
+import { SIGLAS_UF } from "./brasil";
 import { ehLocale, LOCALE_PADRAO, type Locale } from "./i18n/idiomas";
 import { criarTradutor, type Tradutor } from "./i18n/mensagens";
 import { VALORES_ASSUNTOS, VALORES_CONSELHOS, VALORES_PROFISSOES } from "./i18n/opcoes";
@@ -29,6 +30,13 @@ export function criarInscricaoSchema(t: Tradutor) {
     profissao: z.string(t("profissao")).refine((v) => VALORES_PROFISSOES.includes(v), t("profissao")),
     conselho: z.enum(VALORES_CONSELHOS as [string, ...string[]], t("conselho")),
     registro: texto(t, 3, 40, t("registro")),
+    cidade: z.string().trim().max(120, t("maximo", { max: 120 })).default(""),
+    uf: z
+      .string()
+      .trim()
+      .toUpperCase()
+      .default("")
+      .refine((v) => !v || SIGLAS_UF.includes(v), t("uf")),
     privacidade: z.literal("on", t("privacidadeInscricao")),
     avisos: z.string().optional(),
     [CAMPO_ARMADILHA]: z.string().optional(),
@@ -55,8 +63,24 @@ export function criarContatoSchema(t: Tradutor) {
   });
 }
 
+export function criarDepoimentoSchema(t: Tradutor) {
+  return z.object({
+    nome: texto(t, 3, 120, t("nome")),
+    profissao: texto(t, 2, 120, t("profissaoTexto")),
+    cidade: texto(t, 2, 120, t("cidade")),
+    email: email(t),
+    texto: texto(t, 30, 1200, t("depoimentoCurto")),
+    consentimento: z.literal("on", t("consentimentoDepoimento")),
+    privacidade: z.literal("on", t("privacidadeContato")),
+    [CAMPO_ARMADILHA]: z.string().optional(),
+    [CAMPO_CARIMBO]: z.string().optional(),
+    [CAMPO_IDIOMA]: z.string().optional(),
+  });
+}
+
 /** Os schemas em pt-BR (testes e quem não tem idioma à mão). */
 export const inscricaoSchema = criarInscricaoSchema(criarTradutor(LOCALE_PADRAO, "Validacao"));
+export const depoimentoSchema = criarDepoimentoSchema(criarTradutor(LOCALE_PADRAO, "Validacao"));
 export const contatoSchema = criarContatoSchema(criarTradutor(LOCALE_PADRAO, "Validacao"));
 
 /** Zod → { campo: primeira mensagem }. */

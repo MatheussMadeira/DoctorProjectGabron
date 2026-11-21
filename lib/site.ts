@@ -9,6 +9,8 @@ export const NAV_ITENS = [
   { chave: "inicio", href: "/" },
   { chave: "sobre", href: "/sobre-o-curso" },
   { chave: "agenda", href: "/agenda" },
+  { chave: "alumni", href: "/alumni-reabtoxin" },
+  { chave: "viagem", href: "/viagem" },
   { chave: "contato", href: "/contato" },
 ] as const;
 
@@ -22,6 +24,8 @@ export const NAV_LINKS = [
   { label: "Início", href: "/" },
   { label: "Sobre o curso", href: "/sobre-o-curso" },
   { label: "Agenda de cursos", href: "/agenda" },
+  { label: "Alumni ReabToxin", href: "/alumni-reabtoxin" },
+  { label: "Viagem", href: "/viagem" },
   { label: "Contato", href: "/contato" },
 ];
 
@@ -102,7 +106,7 @@ export function footerDe(site: DadosSite, tr?: Tradutor) {
       email: site.email,
       address: site.enderecoCurto,
       instagram: site.instagram,
-      links: [...NAV_LINKS.slice(1), { label: "Política de privacidade", href: "/politica-de-privacidade" }],
+      links: [...NAV_LINKS.slice(1), { label: "Enviar depoimento", href: "/depoimento" }, { label: "Política de privacidade", href: "/politica-de-privacidade" }],
       legal: site.legal,
     };
   }
@@ -111,7 +115,7 @@ export function footerDe(site: DadosSite, tr?: Tradutor) {
     email: site.email,
     address: site.enderecoPadrao ? tr("Footer.enderecoPadrao") : site.enderecoCurto,
     instagram: site.instagram,
-    links: [...NAV_ITENS.slice(1).map((i) => ({ label: tr(`Header.nav.${i.chave}`), href: i.href })), { label: tr("Footer.privacidade"), href: "/politica-de-privacidade" }],
+    links: [...NAV_ITENS.slice(1).map((i) => ({ label: tr(`Header.nav.${i.chave}`), href: i.href })), { label: tr("Footer.depoimento"), href: "/depoimento" }, { label: tr("Footer.privacidade"), href: "/politica-de-privacidade" }],
     legal: tr("Footer.legal", { ano: site.ano }),
     rotulos: { navegacao: tr("Footer.navegacao"), contato: tr("Footer.contato"), rodape: tr("Footer.rodape") },
   };

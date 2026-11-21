@@ -6,6 +6,7 @@ import { and, count, eq, inArray, ne } from "drizzle-orm";
 import { db } from "@/db";
 import { inscricoes, SITUACOES_QUE_OCUPAM, situacaoEnum, turmas, type Situacao } from "@/db/schema";
 import { enviarERegistrar, reenviar } from "@/lib/email/registro";
+import { garantirAlunoDaInscricao } from "@/lib/aluno";
 import { autorizar } from "@/lib/sessao";
 import { TAG_TURMAS, tagTurma } from "@/lib/turmas";
 
@@ -51,6 +52,8 @@ export async function alterarSituacao(inscricaoId: string, _anterior: EstadoAcao
   if (resultado.mudouParaConfirmada) {
     after(async () => {
       await enviarERegistrar("INSCRICAO_VAGA_CONFIRMADA", { inscricaoId });
+      // Área do aluno: cria o acesso e manda o código. Quem já é aluno (outra turma) só ganha a turma nova na conta que já usa.
+      await garantirAlunoDaInscricao(inscricaoId);
     });
   }
   return { ok: true };

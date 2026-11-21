@@ -19,7 +19,7 @@ export const urlDaDeepl = (chave: string) => (chave.trim().endsWith(":fx") ? "ht
 const escapar = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const desescapar = (t: string) => t.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
 /** A marca não se traduz: vai dentro de <x>, que a DeepL ignora (ignore_tags). */
-export const protegerMarca = (t: string) => escapar(t).replace(new RegExp(MARCA, "g"), `<x>${MARCA}</x>`);
+export const protegerMarca = (t: string) => escapar(t).replace(new RegExp(`Alumni ${MARCA}|${MARCA}`, "g"), (m) => `<x>${m}</x>`);
 export const restaurarMarca = (t: string) => desescapar(t.replace(/<\/?x>/g, ""));
 
 function lotes(textos: string[]): string[][] {
@@ -45,7 +45,8 @@ export function deepl(chave: string, buscar: typeof fetch = fetch): ProvedorDeTr
     async traduzir(textos, locale) {
       const saida: string[] = [];
       for (const lote of lotes(textos)) {
-        const resposta = await buscar(`${urlDaDeepl(chave)}/v2/translate`, {
+        const pedir = () =>
+          buscar(`${urlDaDeepl(chave)}/v2/translate`, {
           method: "POST",
           headers: { Authorization: `DeepL-Auth-Key ${chave}`, "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -57,6 +58,13 @@ export function deepl(chave: string, buscar: typeof fetch = fetch): ProvedorDeTr
             preserve_formatting: true,
           }),
         });
+        // 429 (muitos pedidos) e 503: espera e tenta de novo, até 4 vezes (1 s, 2 s, 4 s), respeitando o Retry-After.
+        let resposta = await pedir();
+        for (let tentativa = 0; (resposta.status === 429 || resposta.status === 503) && tentativa < 3; tentativa++) {
+          const espera = Number(resposta.headers?.get?.("retry-after")) || 2 ** tentativa;
+          await new Promise((r) => setTimeout(r, Math.min(espera, 8) * 1000));
+          resposta = await pedir();
+        }
         if (!resposta.ok) throw new Error(`DeepL respondeu ${resposta.status}${resposta.status === 456 ? " (cota de caracteres esgotada)" : ""}`);
         const json = (await resposta.json()) as { translations: Array<{ text: string }> };
         if (json.translations.length !== lote.length) throw new Error("DeepL devolveu um número de textos diferente do enviado");

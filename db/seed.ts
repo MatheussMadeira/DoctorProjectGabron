@@ -2,11 +2,11 @@
    Uso: SEED_PERMITIDO=1 yarn db:seed
    Nunca rode no banco de produção: as inscrições são fictícias (e-mail @exemplo.invalid). */
 import { eq, isNull, like, notLike } from "drizzle-orm";
-import { GALERIA_EXEMPLO, PROFESSORES_EXEMPLO, TURMAS_EXEMPLO } from "@/lib/dados-exemplo";
+import { GALERIA_EXEMPLO, PROFESSORES_EXEMPLO, TURMAS_EXEMPLO, VIAGEM_CHEGADA_EXEMPLO, VIAGEM_LOCAIS_EXEMPLO } from "@/lib/dados-exemplo";
 import { TEXTOS_PADRAO } from "@/lib/textos-curso-base";
 import { db, pool } from "./index";
 import { motivoParaRecusar } from "./seed-guarda";
-import { depoimentos, fotosGaleria, inscricoes, mensagensContato, professores, textosCurso, turmaProfessores, turmas, type Situacao } from "./schema";
+import { depoimentos, fotosGaleria, inscricoes, mensagensContato, professores, textosCurso, turmaProfessores, turmas, viagemChegada, viagemLocais, type Situacao } from "./schema";
 
 const recusa = motivoParaRecusar(process.env);
 if (recusa) {
@@ -112,6 +112,12 @@ async function main() {
       { nome: "Nome do aluno", profissao: "Profissão", cidade: "Cidade", texto: "Texto do depoimento, autorizado por escrito. Conta como foi a turma e o que mudou na rotina de trabalho.", ordem: 1, visivel: true },
       { nome: "Nome da aluna", profissao: "Profissão", cidade: "Cidade", texto: "Texto do depoimento, autorizado por escrito. Comenta a organização do curso e o suporte depois das aulas.", ordem: 2, visivel: true },
     ]);
+  }
+
+  // Travel info de exemplo (/viagem). Só entra se a tabela estiver vazia.
+  if (!(await db.select({ id: viagemLocais.id }).from(viagemLocais).limit(1)).length) {
+    await db.insert(viagemLocais).values(VIAGEM_LOCAIS_EXEMPLO.map((l) => ({ ...l })));
+    await db.insert(viagemChegada).values(VIAGEM_CHEGADA_EXEMPLO.map((c) => ({ ...c })));
   }
 
   const total = await db.select({ slug: turmas.slug }).from(turmas).where(isNull(turmas.excluidaEm));

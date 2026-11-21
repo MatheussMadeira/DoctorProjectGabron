@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { and, count, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
-import { inscricoes, mensagensContato, SITUACOES_QUE_OCUPAM, turmas, turmasTraducoes, type TipoEmail } from "@/db/schema";
+import { alunos, inscricoes, mensagensContato, SITUACOES_QUE_OCUPAM, turmas, turmasTraducoes, type TipoEmail } from "@/db/schema";
 import { comPrefixo, ehLocale, LOCALE_PADRAO, type Locale } from "@/lib/i18n/idiomas";
 import { sobrepor } from "@/lib/i18n/estrutura";
 import { criarTradutor } from "@/lib/i18n/mensagens";
@@ -10,6 +10,7 @@ import { destinatariosDaEquipe } from "./destinatarios";
 import { periodoDaTurma } from "./formatar";
 import type { MensagemEmail } from "./index";
 import type { ContextoEmail } from "./modelos/Base";
+import { AlunoCodigo } from "./modelos/AlunoEmails";
 import { ContatoAviso } from "./modelos/ContatoAviso";
 import { InscricaoAviso } from "./modelos/InscricaoAviso";
 import { InscricaoConfirmacao } from "./modelos/InscricaoConfirmacao";
@@ -19,6 +20,7 @@ import { urlDoSite } from "./textos";
 export interface OrigemEmail {
   inscricaoId?: string | null;
   mensagemId?: string | null;
+  alunoId?: string | null;
 }
 
 /** Logo em PNG com endereço absoluto: public/logos/logo-horizontal-negativo-2x.png servido pelo próprio site (SITE_URL). */
@@ -66,6 +68,19 @@ export async function montarEmail(tipo: TipoEmail, origem: OrigemEmail): Promise
       assunto: contextoInterno.ti("contato.assunto", { assunto: m.assunto }),
       responderPara: m.email,
       react: createElement(ContatoAviso, { nome: m.nome, email: m.email, telefone: m.telefone, assunto: m.assunto, mensagem: m.mensagem, contexto: contextoInterno }),
+    };
+  }
+
+  if (tipo === "ALUNO_CODIGO") {
+    if (!origem.alunoId) return null;
+    const [a] = await db.select().from(alunos).where(eq(alunos.id, origem.alunoId));
+    if (!a || !a.codigo || a.ativadoEm) return null;
+    const idioma: Locale = ehLocale(a.idioma) ? a.idioma : LOCALE_PADRAO;
+    const contexto = await contextoDoEmail(idioma);
+    return {
+      para: [a.email],
+      assunto: contexto.t("alunoCodigo.assunto"),
+      react: createElement(AlunoCodigo, { nome: a.nome, codigo: a.codigo, link: `${urlDoSite()}${comPrefixo(idioma, "/sou-aluno")}?aba=primeiro-acesso`, contexto }),
     };
   }
 

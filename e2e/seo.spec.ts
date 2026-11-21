@@ -21,7 +21,7 @@ test("site fora do ar: o sitemap existe mas está vazio", async ({ request }) =>
 });
 
 test("site fora do ar: toda página manda noindex, no HTML e no cabeçalho", async ({ request }) => {
-  for (const caminho of ["/", "/sobre-o-curso", "/agenda", "/contato", "/politica-de-privacidade", "/agenda/modulo-essencial-nov-2026"]) {
+  for (const caminho of ["/", "/sobre-o-curso", "/agenda", "/contato", "/viagem", "/alumni-reabtoxin", "/depoimento", "/politica-de-privacidade", "/agenda/modulo-essencial-nov-2026"]) {
     const r = await request.get(caminho);
     expect(r.headers()["x-robots-tag"], caminho).toContain("noindex");
     expect(await r.text(), caminho).toMatch(/<meta name="robots" content="noindex, nofollow"/);

@@ -15,6 +15,7 @@ export function SiteHeader(props: Partial<HeaderProps>) {
     <Header
       links={links}
       cta={cta}
+      aluno={{ label: t("Header.aluno"), href: "/sou-aluno" }}
       current={pathname}
       rotulos={{
         inicio: t("Header.inicioAria"),

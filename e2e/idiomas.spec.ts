@@ -98,7 +98,9 @@ test("trocar no seletor mantém a página e guarda o cookie (agenda → de → z
   expect((await context.cookies()).find((c) => c.name === "NEXT_LOCALE")?.value).toBe("pt-BR");
 });
 
-test("no celular, o seletor fica dentro do menu lateral e também mantém a página", async ({ page }) => {
+test("no celular, o seletor fica dentro do menu lateral e também mantém a página", async ({ page, context, baseURL }) => {
+  // Este teste é do menu: a faixa de sugestão de idioma (já testada acima) é dispensada para não cobrir o menu.
+  await context.addCookies([{ name: "ap-sugestao-idioma", value: "1", url: baseURL! }]);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/sobre-o-curso");
   await expect(page.locator("header .ap-lang-btn")).toBeHidden(); // o botão do desktop não aparece

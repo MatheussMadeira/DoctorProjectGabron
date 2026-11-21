@@ -44,9 +44,9 @@ test("uma tradução antiga com foto estragada não vence a foto do português",
 test("entidades do banco: o português traduzível não traz URL nem caminho", { skip: process.env.TESTES_BANCO !== "1" && "defina TESTES_BANCO=1" }, async () => {
   const { db } = await import("../db");
   const { ENTIDADES } = await import("../lib/i18n/campos");
-  const { turmas, professores, fotosGaleria, configuracoes, textosCurso, depoimentos } = await import("../db/schema");
-  const fontes = { turma: turmas, professor: professores, foto: fotosGaleria, config: configuracoes, textoCurso: textosCurso, depoimento: depoimentos } as const;
-  const chaves = { turma: "id", professor: "id", foto: "id", config: "id", textoCurso: "bloco", depoimento: "id" } as const;
+  const { turmas, professores, fotosGaleria, configuracoes, textosCurso, depoimentos, viagemLocais, viagemChegada, alumni, alumniTurmas } = await import("../db/schema");
+  const fontes = { turma: turmas, professor: professores, foto: fotosGaleria, config: configuracoes, textoCurso: textosCurso, depoimento: depoimentos, localViagem: viagemLocais, chegadaViagem: viagemChegada, alumniTurma: alumniTurmas, alumni } as const;
+  const chaves = { turma: "id", professor: "id", foto: "id", config: "id", textoCurso: "bloco", depoimento: "id", localViagem: "id", chegadaViagem: "id", alumniTurma: "id", alumni: "id" } as const;
   for (const [nome, tabela] of Object.entries(fontes)) {
     const linhas = (await db.select().from(tabela as never).limit(20)) as Array<Record<string, unknown>>;
     for (const l of linhas) {

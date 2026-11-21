@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Menu, X } from "lucide-react";
 import { cx } from "@/lib/cx";
 import { ICON } from "@/lib/icon";
+import { useIsoLayoutEffect } from "@/lib/motion";
 import { AppLink } from "../atoms/AppLink";
 import { Button } from "../atoms/Button";
 import { Logo } from "../atoms/Logo";
@@ -35,6 +36,8 @@ export interface HeaderProps {
   links?: Link[];
   current?: string;
   cta?: Link;
+  /** Link da área do aluno ("Sou aluno"), ao lado do seletor de idioma e no menu do celular. */
+  aluno?: Link;
   /** Telefone e WhatsApp, mostrados no menu do celular (vêm de Configurações). */
   contato?: { telefone: string; telefoneHref: string; whatsapp: string };
   sticky?: boolean;
@@ -44,9 +47,29 @@ export interface HeaderProps {
   idiomaMobile?: ReactNode;
 }
 
-export function Header({ links = [], current, cta, contato, sticky = true, rotulos = ROTULOS_HEADER_PT, idioma, idiomaMobile }: HeaderProps) {
+export function Header({ links = [], current, cta, aluno, contato, sticky = true, rotulos = ROTULOS_HEADER_PT, idioma, idiomaMobile }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // Menu compacto automático: se os links, o idioma e a chamada não cabem na linha (rótulos compridos em alemão ou francês), vira o botão de menu.
+  const linha = useRef<HTMLDivElement>(null);
+  const necessaria = useRef(0);
+  const [compacto, setCompacto] = useState(false);
+  useIsoLayoutEffect(() => {
+    const el = linha.current;
+    if (!el) return;
+    const medir = () => {
+      if (!compacto) {
+        if (el.scrollWidth > el.clientWidth + 1) {
+          necessaria.current = el.scrollWidth;
+          setCompacto(true);
+        }
+      } else if (el.clientWidth >= necessaria.current) setCompacto(false);
+    };
+    medir();
+    const o = new ResizeObserver(medir);
+    o.observe(el);
+    return () => o.disconnect();
+  }, [compacto, links, cta, aluno]);
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 8);
     on();
@@ -59,8 +82,8 @@ export function Header({ links = [], current, cta, contato, sticky = true, rotul
     return () => window.removeEventListener("keydown", k);
   }, []);
   return (
-    <header className={cx("ap-header", sticky && "is-sticky", scrolled && "is-scrolled")}>
-      <div className="ap-container ap-header-row">
+    <header className={cx("ap-header", sticky && "is-sticky", scrolled && "is-scrolled")} data-compacto={compacto}>
+      <div ref={linha} className="ap-container ap-header-row">
         <AppLink href="/" className="ap-header-logo" aria-label={rotulos.inicio}>
           <Logo variant="compacta" title="" />
         </AppLink>
@@ -72,6 +95,11 @@ export function Header({ links = [], current, cta, contato, sticky = true, rotul
           ))}
         </nav>
         <div className="ap-header-actions">
+          {aluno && (
+            <AppLink href={aluno.href} className="ap-header-aluno" aria-current={current === aluno.href ? "page" : undefined}>
+              {aluno.label}
+            </AppLink>
+          )}
           {idioma && <div className="ap-header-idioma">{idioma}</div>}
           {cta && (
             <Button size="sm" href={cta.href} className="ap-header-cta">
@@ -99,6 +127,11 @@ export function Header({ links = [], current, cta, contato, sticky = true, rotul
               </AppLink>
             ))}
           </nav>
+          {aluno && (
+            <Button full variant="secondary" href={aluno.href}>
+              {aluno.label}
+            </Button>
+          )}
           {cta && (
             <Button full href={cta.href} arrow>
               {cta.label}

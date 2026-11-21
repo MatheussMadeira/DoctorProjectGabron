@@ -20,7 +20,7 @@ async function executar(emailId: string): Promise<ResultadoRegistro> {
   const [reg] = await db.select().from(emailsEnvios).where(eq(emailsEnvios.id, emailId));
   if (!reg) return { emailId, ok: false, erro: "Registro de e-mail não encontrado." };
 
-  const mensagem = await montarEmail(reg.tipo, { inscricaoId: reg.inscricaoId, mensagemId: reg.mensagemId });
+  const mensagem = await montarEmail(reg.tipo, { inscricaoId: reg.inscricaoId, mensagemId: reg.mensagemId, alunoId: reg.alunoId });
   const resultado = mensagem
     ? await enviarEmail(mensagem)
     : ({ ok: false, provedor: "-", erro: "A inscrição ou a mensagem deste e-mail não existe mais." } as const);
@@ -49,7 +49,7 @@ export async function enviarERegistrar(tipo: TipoEmail, origem: OrigemEmail): Pr
     if (!mensagem) return { emailId: null, ok: false, erro: "Origem do e-mail não encontrada." };
     const [reg] = await db
       .insert(emailsEnvios)
-      .values({ tipo, destinatario: mensagem.para.join(", "), assunto: mensagem.assunto, inscricaoId: origem.inscricaoId ?? null, mensagemId: origem.mensagemId ?? null })
+      .values({ tipo, destinatario: mensagem.para.join(", "), assunto: mensagem.assunto, inscricaoId: origem.inscricaoId ?? null, mensagemId: origem.mensagemId ?? null, alunoId: origem.alunoId ?? null })
       .returning({ id: emailsEnvios.id });
     return await executar(reg.id);
   } catch (e) {

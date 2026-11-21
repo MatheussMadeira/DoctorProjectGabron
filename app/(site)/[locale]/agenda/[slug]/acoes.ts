@@ -41,6 +41,8 @@ export async function inscrever(slug: string, _anterior: EstadoFormulario, formD
       profissao: d.profissao,
       conselho: d.conselho as "CRM" | "CRO" | "CRBM" | "CRF" | "Outro",
       registro: d.registro,
+      cidade: d.cidade,
+      uf: d.uf,
       querAvisos: d.avisos === "on",
       idioma,
     });

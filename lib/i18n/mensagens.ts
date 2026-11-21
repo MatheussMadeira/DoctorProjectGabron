@@ -42,3 +42,13 @@ export function criarTradutor(locale: Locale, namespace: string): Tradutor {
   }) as unknown as Tradutor;
   return t;
 }
+
+/** Tradutor com chaves completas ("Home.cursoTitulo"), como o das páginas, mas sem contexto de requisição (o editor e as leituras em cache usam). */
+export function criarTradutorCompleto(locale: Locale): Tradutor {
+  return createTranslator({
+    locale: IDIOMAS[locale].intl,
+    messages: carregarMensagens(locale) as never,
+    onError: () => {},
+    getMessageFallback: ({ key }) => key,
+  }) as unknown as Tradutor;
+}

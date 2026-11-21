@@ -6,7 +6,7 @@ import { formulariosDescartes, type MotivoDescarte } from "@/db/schema";
    uma linha de log sem dado pessoal (em produção) e +1 num contador diário que o painel mostra. Nunca lança erro:
    registrar o descarte não pode derrubar a resposta ao visitante. */
 
-export type FormularioPublico = "contato" | "inscricao";
+export type FormularioPublico = "contato" | "inscricao" | "depoimento";
 
 const TEXTO: Record<MotivoDescarte, string> = {
   ARMADILHA: "campo escondido preenchido (parece robô)",

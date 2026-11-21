@@ -40,3 +40,23 @@
   .pair, .conselho { flex-direction: column; flex-wrap: nowrap; align-items: stretch; }
   .pair > *, .conselho > * { flex: 0 0 auto !important; width: 100%; }
 }
+
+.linkBotao {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--link);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}

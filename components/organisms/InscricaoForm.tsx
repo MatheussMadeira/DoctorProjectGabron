@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { CAMPO_ARMADILHA, CAMPO_CARIMBO, CAMPO_IDIOMA, type EstadoFormulario } from "@/lib/formularios-tipos";
 import { comPrefixo, type Locale } from "@/lib/i18n/idiomas";
+import { ESTADOS } from "@/lib/brasil";
 import { CONSELHOS_OPCOES, comoOpcoes, PROFISSOES_OPCOES } from "@/lib/i18n/opcoes";
 import { useCarimbo } from "@/lib/use-carimbo";
 import { Alert } from "../molecules/Alert";
@@ -106,6 +107,10 @@ export function InscricaoForm({ acao = semAcao, esgotada = false, eyebrow, estad
               error={erros.registro}
               hint={t("registroDica")}
             />
+          </div>
+          <div className={styles.pair}>
+            <TextField floating label={t("cidade")} name="cidade" autoComplete="address-level2" defaultValue={v.cidade} error={erros.cidade} hint={t("cidadeDica")} />
+            <Select key={`uf-${v.uf ?? ""}`} label={t("uf")} floating name="uf" options={[{ value: "", label: t("ufOutro") }, ...ESTADOS.map((e) => ({ value: e.sigla, label: `${e.sigla} · ${e.nome}` }))]} defaultValue={v.uf ?? ""} error={erros.uf} />
           </div>
           <div className={styles.checks}>
             <div>

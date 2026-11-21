@@ -116,3 +116,35 @@ main:focus { outline: none; }
 /* Seletor de idioma no Header: ao lado da chamada no desktop; no celular fica dentro do menu lateral (.ap-drawer-idioma). */
 .ap-header-idioma { display: flex; align-items: center; margin-right: var(--space-3); }
 @media (max-width: 1023px) { .ap-header-idioma { display: none; } }
+
+/* Palavras longas (alemão, francês) nunca empurram a página para os lados: o título e o texto de abertura do Hero e os títulos de seção
+   hifenizam pelo idioma da página e, no último caso, quebram a palavra. A fonte continua a do token. */
+.ap-hero-title, .ap-hero-copy .ap-lead, .ap-hero-copy .ap-eyebrow, .ap-sh-title { overflow-wrap: anywhere; hyphens: auto; }
+
+.ap-testi-link { color: var(--link); text-decoration: underline; min-height: 44px; display: inline-flex; align-items: center; align-self: flex-start; }
+
+/* "Sou aluno" no Header: um link discreto ao lado do idioma; no celular ele vai para o menu lateral. */
+.ap-header-aluno { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-3); margin-right: var(--space-2); color: var(--ink); font-size: 15px; letter-spacing: 0.02em; text-decoration: underline; text-underline-offset: 4px; white-space: nowrap; }
+.ap-header-aluno[aria-current="page"] { font-weight: 600; }
+@media (max-width: 1023px) { .ap-header-aluno { display: none; } }
+
+/* Header com 6 links + "Sou aluno" + idioma + chamada: nada quebra em duas linhas. Os links não quebram, os espaços são menores e, abaixo de
+   1280px (onde não cabe), o menu vira o botão de menu lateral. */
+.ap-header-row { gap: var(--space-5); }
+.ap-header-logo, .ap-header-actions { flex: none; }
+.ap-nav { gap: var(--space-5); }
+.ap-nav a, .ap-header-aluno { white-space: nowrap; }
+/* A chamada pode quebrar em duas linhas (botão pequeno): é o que absorve um rótulo muito comprido em alemão ou francês sem empurrar a página. */
+.ap-header-cta { white-space: normal; text-align: center; max-width: 180px; line-height: 1.2; }
+@media (max-width: 1279px) {
+  .ap-nav, .ap-header-cta, .ap-header-aluno, .ap-header-idioma { display: none; }
+  .ap-menu-btn { display: inline-flex; }
+  .ap-header-actions { margin-left: auto; }
+  .ap-header-row { height: 68px; }
+  .ap-header-logo { width: 140px; }
+}
+
+/* Mesmo menu lateral do celular, mas ligado pelo Header quando a linha não cabe (data-compacto). */
+.ap-header[data-compacto="true"] .ap-nav, .ap-header[data-compacto="true"] .ap-header-cta, .ap-header[data-compacto="true"] .ap-header-aluno, .ap-header[data-compacto="true"] .ap-header-idioma { display: none; }
+.ap-header[data-compacto="true"] .ap-menu-btn { display: inline-flex; }
+.ap-header[data-compacto="true"] .ap-header-actions { margin-left: auto; }

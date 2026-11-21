@@ -279,3 +279,19 @@ export const GALERIA_EXEMPLO = [
   { url: "/images/boneco-articulado.webp", alt: "Boneco articulado de madeira" },
   { url: "/images/pedras-empilhadas.webp", alt: "Pedras empilhadas em equilíbrio" },
 ];
+
+
+/* Travel info de exemplo (/viagem): a equipe troca pelos locais de verdade no painel (Viagem). */
+export const VIAGEM_LOCAIS_EXEMPLO = [
+  { categoria: "LOCAL", nome: "UFMG, campus Pampulha", descricao: "Aulas teóricas e práticas. Exemplo: troque pelo prédio e pela sala da turma.", endereco: "Av. Pres. Antônio Carlos, 6627, Pampulha, Belo Horizonte, MG", latitude: -19.8697, longitude: -43.9645, ordem: 0 },
+  { categoria: "LOCAL", nome: "Clínica (exemplo)", descricao: "Exemplo: endereço da clínica onde acontece a parte prática.", endereco: "Endereço da clínica, Belo Horizonte, MG", latitude: -19.9319, longitude: -43.9378, ordem: 1 },
+  { categoria: "HOTEL", nome: "Hotel de exemplo", descricao: "Exemplo de hospedagem perto do local do curso. Troque pela indicação da equipe.", endereco: "Rua de exemplo, 100, Belo Horizonte, MG", latitude: -19.9208, longitude: -43.9456, faixaPreco: 2, ordem: 0 },
+  { categoria: "RESTAURANTE", nome: "Restaurante de exemplo", descricao: "Exemplo de lugar para almoçar perto da aula. Comida mineira.", endereco: "Avenida de exemplo, 200, Belo Horizonte, MG", latitude: -19.9261, longitude: -43.9392, faixaPreco: 2, ordem: 0 },
+  { categoria: "TURISMO", nome: "Igreja de São Francisco de Assis (Pampulha)", descricao: "Conjunto arquitetônico de Oscar Niemeyer, às margens da Lagoa da Pampulha.", endereco: "Av. Otacílio Negrão de Lima, 3000, Pampulha, Belo Horizonte, MG", latitude: -19.8517, longitude: -43.9798, ordem: 0 },
+] as const;
+
+export const VIAGEM_CHEGADA_EXEMPLO = [
+  { icone: "aviao", titulo: "Do aeroporto de Confins até o local do curso", texto: "Exemplo: o aeroporto de Confins fica a cerca de 40 km do centro. Há ônibus executivo, táxi e aplicativo.\n\nTroque este texto pelas orientações da equipe.", ordem: 0 },
+  { icone: "onibus", titulo: "De ônibus e por aplicativo", texto: "Exemplo: a rodoviária fica no centro. De lá, o aplicativo é o caminho mais prático até o campus.", ordem: 1 },
+  { icone: "carro", titulo: "De carro", texto: "Exemplo: informe o estacionamento disponível e a melhor rota de acesso.", ordem: 2 },
+] as const;

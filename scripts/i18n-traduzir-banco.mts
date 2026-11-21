@@ -2,10 +2,10 @@
 // tradução, ou cujo português mudou. Normalmente isso acontece ao salvar no admin; este script serve para o conteúdo que já existia.
 // Uso: yarn i18n:traduzir-banco             → mostra o que falta traduzir (nada é enviado)
 //      yarn i18n:traduzir-banco --aplicar   → traduz de verdade (gasta caracteres da cota da DeepL)
-//      yarn i18n:traduzir-banco --aplicar --so turma,professor   → só essas entidades (turma, professor, foto, config, textoCurso, depoimento)
+//      yarn i18n:traduzir-banco --aplicar --so turma,professor   → só essas entidades (turma, professor, foto, config, textoCurso, depoimento, localViagem, chegadaViagem, alumniTurma, alumni, alunoModulo, alunoMaterial, secaoPagina)
 // Rascunhos já revisados por uma pessoa só são refeitos se o português mudou (regra de frescor).
 import { db } from "../db";
-import { configuracoes, depoimentos, fotosGaleria, professores, textosCurso, turmas } from "../db/schema";
+import { configuracoes, depoimentos, fotosGaleria, professores, textosCurso, turmas, viagemChegada, viagemLocais, alumni, alumniTurmas, alunoMateriais, alunoModulos, siteSecoes } from "../db/schema";
 import { ENTIDADES, type Entidade, type IdEntidade } from "../lib/i18n/campos";
 import { provedorDeTraducao } from "../lib/i18n/deepl";
 import { camposParaTraduzir, extrairTextos } from "../lib/i18n/estrutura";
@@ -29,6 +29,13 @@ const fontes: Array<[Entidade, () => Promise<IdEntidade[]>]> = [
   ["config", async () => (await db.select({ id: configuracoes.id }).from(configuracoes)).map((r) => r.id)],
   ["textoCurso", async () => (await db.select({ id: textosCurso.bloco }).from(textosCurso)).map((r) => r.id)],
   ["depoimento", async () => (await db.select({ id: depoimentos.id }).from(depoimentos)).map((r) => r.id)],
+  ["secaoPagina", async () => (await db.select({ id: siteSecoes.id }).from(siteSecoes)).map((r) => r.id)],
+  ["alunoModulo", async () => (await db.select({ id: alunoModulos.id }).from(alunoModulos)).map((r) => r.id)],
+  ["alunoMaterial", async () => (await db.select({ id: alunoMateriais.id }).from(alunoMateriais)).map((r) => r.id)],
+  ["alumniTurma", async () => (await db.select({ id: alumniTurmas.id }).from(alumniTurmas)).map((r) => r.id)],
+  ["alumni", async () => (await db.select({ id: alumni.id }).from(alumni)).map((r) => r.id)],
+  ["localViagem", async () => (await db.select({ id: viagemLocais.id }).from(viagemLocais)).map((r) => r.id)],
+  ["chegadaViagem", async () => (await db.select({ id: viagemChegada.id }).from(viagemChegada)).map((r) => r.id)],
 ];
 
 let registros = 0;

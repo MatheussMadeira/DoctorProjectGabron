@@ -58,6 +58,9 @@ export const PAGINAS_PUBLICAS: PaginaDoSitemap[] = [
   { caminho: "/agenda", prioridade: 0.9, frequencia: "weekly" },
   { caminho: "/sobre-o-curso", prioridade: 0.7, frequencia: "monthly" },
   { caminho: "/contato", prioridade: 0.6, frequencia: "yearly" },
+  { caminho: "/alumni-reabtoxin", prioridade: 0.6, frequencia: "monthly" },
+  { caminho: "/viagem", prioridade: 0.6, frequencia: "monthly" },
+  { caminho: "/depoimento", prioridade: 0.4, frequencia: "yearly" },
   { caminho: "/politica-de-privacidade", prioridade: 0.2, frequencia: "yearly" },
 ];
 

@@ -11,6 +11,9 @@ export interface NovaInscricao {
   profissao: string;
   conselho: Conselho;
   registro: string;
+  /** De onde a pessoa vem (opcional): alimenta o mapa da Alumni. */
+  cidade?: string | null;
+  uf?: string | null;
   querAvisos: boolean;
   /** Idioma em que a pessoa usou o site; os e-mails para ela saem nele. Padrão pt-BR. */
   idioma?: string;
@@ -77,6 +80,8 @@ export async function criarInscricao(dados: NovaInscricao): Promise<InscricaoCri
         profissao: dados.profissao,
         conselho: dados.conselho,
         registro: dados.registro,
+        cidade: dados.cidade || null,
+        uf: dados.uf || null,
         aceitePrivacidadeEm: new Date(),
         querAvisos: dados.querAvisos,
         idioma: dados.idioma ?? "pt-BR",

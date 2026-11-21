@@ -63,12 +63,26 @@ export interface DepoimentoAdmin {
   ordem: number;
   visivel: boolean;
   autorizacaoRecebidaEm: string | null;
+  /** Enviado pelo site e ainda não aprovado. */
+  pendente: boolean;
+  email: string | null;
+  idioma: string | null;
+  /** Dia (AAAA-MM-DD) em que a pessoa marcou a autorização no formulário. */
+  consentimentoEm: string | null;
+  uf: string | null;
+  pais: string;
+  latitude: number | null;
+  longitude: number | null;
+  fotoUrl: string | null;
+  fotoAlt: string | null;
+  videoUrl: string | null;
+  videoLegendaUrl: string | null;
 }
 
 export async function listarDepoimentosAdmin(): Promise<DepoimentoAdmin[]> {
   const { depoimentos } = await import("@/db/schema");
   return db
-    .select({ id: depoimentos.id, nome: depoimentos.nome, profissao: depoimentos.profissao, cidade: depoimentos.cidade, texto: depoimentos.texto, ordem: depoimentos.ordem, visivel: depoimentos.visivel, autorizacaoRecebidaEm: depoimentos.autorizacaoRecebidaEm })
+    .select({ id: depoimentos.id, nome: depoimentos.nome, profissao: depoimentos.profissao, cidade: depoimentos.cidade, texto: depoimentos.texto, ordem: depoimentos.ordem, visivel: depoimentos.visivel, autorizacaoRecebidaEm: depoimentos.autorizacaoRecebidaEm, pendente: depoimentos.pendente, email: depoimentos.email, idioma: depoimentos.idioma, consentimentoEm: sql<string | null>`to_char(${depoimentos.consentimentoEm} at time zone 'America/Sao_Paulo', 'YYYY-MM-DD')`, uf: depoimentos.uf, pais: depoimentos.pais, latitude: depoimentos.latitude, longitude: depoimentos.longitude, fotoUrl: depoimentos.fotoUrl, fotoAlt: depoimentos.fotoAlt, videoUrl: depoimentos.videoUrl, videoLegendaUrl: depoimentos.videoLegendaUrl })
     .from(depoimentos)
     .orderBy(asc(depoimentos.ordem), asc(depoimentos.createdAt));
 }

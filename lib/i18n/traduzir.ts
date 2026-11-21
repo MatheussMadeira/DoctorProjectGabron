@@ -107,7 +107,7 @@ export async function traduzirEntidade(entidade: Entidade, id: IdEntidade, opcoe
 
 /** Nome da propriedade do id na tabela de traduções (turmaId, professorId…). */
 function chaveDeId(entidade: Entidade): string {
-  return { turma: "turmaId", professor: "professorId", foto: "fotoId", config: "configId", textoCurso: "bloco", depoimento: "depoimentoId" }[entidade];
+  return { turma: "turmaId", professor: "professorId", foto: "fotoId", config: "configId", textoCurso: "bloco", depoimento: "depoimentoId", localViagem: "localId", chegadaViagem: "chegadaId", alumniTurma: "alumniTurmaId", alumni: "alumniId", alunoModulo: "moduloId", alunoMaterial: "materialId", secaoPagina: "secaoId" }[entidade];
 }
 function alvoDoConflito(entidade: Entidade) {
   const e = ENTIDADES[entidade] as unknown as { tabela: Record<string, never>; colId: never };

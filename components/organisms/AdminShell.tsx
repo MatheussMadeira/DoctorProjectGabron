@@ -1,5 +1,5 @@
 import type { ComponentType, ReactNode } from "react";
-import { BookOpen, CalendarDays, LayoutDashboard, Settings, UserRound } from "lucide-react";
+import { BookOpen, CalendarDays, GraduationCap, Library, PencilRuler, LayoutDashboard, MapPinned, Settings, UserRound } from "lucide-react";
 import { ICON } from "@/lib/icon";
 import { AppLink } from "../atoms/AppLink";
 import { Logo } from "../atoms/Logo";
@@ -11,6 +11,10 @@ export const ADMIN_NAV: NavItem[] = [
   { key: "painel", label: "Painel", href: "/admin", icon: LayoutDashboard },
   { key: "agenda", label: "Agenda", href: "/admin/agenda", icon: CalendarDays },
   { key: "inscricoes", label: "Inscrições", href: "/admin/inscricoes", icon: UserRound },
+  { key: "editor", label: "Editor visual", href: "/admin/editor", icon: PencilRuler },
+  { key: "alunos", label: "Alunos", href: "/admin/alunos", icon: Library },
+  { key: "alumni", label: "Alumni", href: "/admin/alumni", icon: GraduationCap },
+  { key: "viagem", label: "Viagem", href: "/admin/viagem", icon: MapPinned },
   { key: "config", label: "Configurações", href: "/admin/configuracoes", icon: Settings },
 ];
 

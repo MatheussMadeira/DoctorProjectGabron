@@ -1,0 +1,256 @@
+/* Área do aluno: aviso, painel, material e comentários. Só tokens do design system. */
+
+.aviso {
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.avisoTitulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+}
+
+.aviso p {
+  margin: 0;
+}
+
+.avisoAcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ola {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  overflow-wrap: anywhere;
+}
+
+.turma {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.turmaTopo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.turmaTitulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 28px;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.meta {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.certificado {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  background: var(--surface-sunken);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.modulo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.moduloTitulo {
+  margin: 0;
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+
+.materiais {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.material {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  min-height: 56px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.material:hover {
+  background: var(--surface-sunken);
+}
+
+.material:focus-visible,
+.certificado:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.material svg {
+  flex: none;
+}
+
+.material > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.material strong {
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------ Material ------------------------------ */
+.leitura {
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.leitura h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 32px;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.paragrafos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.paragrafos p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.imagens {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.imagens img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.imagens figcaption {
+  margin-top: var(--space-2);
+  color: var(--ink-muted);
+  font-size: 15px;
+}
+
+.comentarios {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.comentario {
+  margin: 0;
+  padding: var(--space-4);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-sm);
+  overflow-wrap: anywhere;
+}
+
+.comentario p {
+  margin: var(--space-2) 0 0;
+}
+
+.comentarioAutor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  align-items: baseline;
+}
+
+@media (max-width: 600px) {
+  .turma {
+    padding: var(--space-4);
+  }
+}
+
+/* Aviso da prévia do ADMIN ("Ver como aluno"). */
+.previa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  background: var(--warning-soft);
+  color: var(--warning);
+  border-left: 4px solid var(--warning);
+}
+
+.previa a {
+  color: inherit;
+  text-decoration: underline;
+  min-height: 24px;
+}

@@ -1,9 +1,9 @@
 import { sql } from "drizzle-orm";
 import { db } from "../db";
-import { configuracoesTraducoes, depoimentosTraducoes, fotosGaleriaTraducoes, professoresTraducoes, textosCursoTraducoes, turmasTraducoes } from "../db/schema";
+import { configuracoesTraducoes, depoimentosTraducoes, fotosGaleriaTraducoes, professoresTraducoes, textosCursoTraducoes, turmasTraducoes, viagemChegadaTraducoes, viagemLocaisTraducoes, alumniTraducoes, alumniTurmasTraducoes, alunoMateriaisTraducoes, alunoModulosTraducoes, siteSecoesTraducoes } from "../db/schema";
 
 /* O provedor falso dos testes escreve "[es] texto" no banco. Isto apaga toda linha de tradução com esse prefixo (nunca mexe em tradução real). */
-const TABELAS = { turmas: turmasTraducoes, professores: professoresTraducoes, galeria: fotosGaleriaTraducoes, configuracoes: configuracoesTraducoes, textosCurso: textosCursoTraducoes, depoimentos: depoimentosTraducoes };
+const TABELAS = { turmas: turmasTraducoes, professores: professoresTraducoes, galeria: fotosGaleriaTraducoes, configuracoes: configuracoesTraducoes, textosCurso: textosCursoTraducoes, depoimentos: depoimentosTraducoes, viagemLocais: viagemLocaisTraducoes, viagemChegada: viagemChegadaTraducoes, alumni: alumniTraducoes, alumniTurmas: alumniTurmasTraducoes, alunoModulos: alunoModulosTraducoes, alunoMateriais: alunoMateriaisTraducoes, siteSecoes: siteSecoesTraducoes };
 const PREFIXO_FALSO = String.raw`\[(en|es|fr|it|de|zh)\] `;
 
 export async function limparTraducoesFalsas(opcoes: { apenasContar?: boolean } = {}): Promise<Record<string, number>> {

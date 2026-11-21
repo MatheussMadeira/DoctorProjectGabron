@@ -1,0 +1,187 @@
+/* Travel info. Só tokens do design system: cantos retos, sombras suaves, cores e espaços das variáveis. */
+
+.grade {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  padding-block: var(--space-6);
+}
+
+.grade[data-uma-coluna="true"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+  min-width: 0;
+}
+
+.foto {
+  display: block;
+}
+
+.corpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  min-width: 0;
+}
+
+.topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.nome {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.preco {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.precoApagado {
+  opacity: 0.25;
+}
+
+.descricao {
+  margin: 0;
+}
+
+.linha {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  margin: 0;
+}
+
+.linha svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.distancias {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  overflow-wrap: anywhere;
+}
+
+.mapa {
+  width: 100%;
+  height: 260px;
+  border: 0;
+  margin-top: var(--space-2);
+}
+
+.atualizado {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.vazio {
+  padding-block: var(--space-7);
+}
+
+.sanfonas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-block: var(--space-6);
+}
+
+.sanfona {
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.sanfonaTitulo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 56px;
+  padding: var(--space-3) var(--space-5);
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+
+.sanfonaTitulo::-webkit-details-marker {
+  display: none;
+}
+
+.sanfonaTitulo span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sanfonaTitulo:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.sanfonaSeta {
+  flex: none;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.sanfona[open] .sanfonaSeta {
+  transform: rotate(180deg);
+}
+
+.sanfonaTexto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: 0 var(--space-5) var(--space-5);
+}
+
+.sanfonaTexto p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sanfonaSeta {
+    transition: none;
+  }
+}
+
+.somenteLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

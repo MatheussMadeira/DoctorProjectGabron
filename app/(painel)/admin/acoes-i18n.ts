@@ -18,6 +18,13 @@ const PERMISSAO: Record<Entidade, Permissao> = {
   config: "configuracao:editar",
   textoCurso: "curso:gerir",
   depoimento: "curso:gerir",
+  localViagem: "viagem:gerir",
+  chegadaViagem: "viagem:gerir",
+  alumniTurma: "alumni:gerir",
+  alumni: "alumni:gerir",
+  alunoModulo: "alunos:gerir",
+  alunoMaterial: "alunos:gerir",
+  secaoPagina: "site:editar",
 };
 
 export interface EstadoTraducao {

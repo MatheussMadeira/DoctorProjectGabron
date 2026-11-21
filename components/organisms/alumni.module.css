@@ -1,0 +1,566 @@
+/* Alumni ReabToxin: mapa (SVG), cartões de turma, depoimentos e vídeo. Só tokens do design system. */
+
+/* ------------------------------ Mapa ------------------------------ */
+.mapa {
+  background: var(--surface);
+  color: var(--ink);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.modos {
+  display: inline-flex;
+  background: var(--surface-sunken);
+  padding: 4px;
+  gap: 4px;
+}
+
+.modos button {
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border: 0;
+  background: none;
+  color: var(--ink-muted);
+  font: inherit;
+  cursor: pointer;
+  border-radius: var(--radius-control);
+  transition: background var(--duration-base) var(--ease-out), color var(--duration-base);
+}
+
+.modos button[aria-pressed="true"] {
+  background: var(--surface-raised);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.modos button:focus-visible,
+.cartaoFechar:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.palco {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+  container-type: inline-size;
+}
+
+.palco[data-modo="mundo"] {
+  cursor: grab;
+}
+
+.palco[data-modo="mundo"]:active {
+  cursor: grabbing;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  max-height: 78vh;
+  touch-action: pan-y;
+  user-select: none;
+  animation: palcoEntra 900ms var(--ease-out) both;
+}
+
+.palco[data-modo="mundo"] .svg {
+  max-width: 640px;
+}
+
+.palco[data-modo="brasil"] .svg {
+  max-width: 620px;
+}
+
+.carregando {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.oceano {
+  fill: var(--surface-sunken);
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.grade {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 0.5;
+  opacity: 0.55;
+}
+
+.terra {
+  fill: var(--surface-raised);
+}
+
+.fronteiras {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 0.6;
+}
+
+.estado,
+.estadoComAluno {
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  transition: fill var(--duration-base) var(--ease-out);
+  animation: estadoEntra 700ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 28ms);
+}
+
+.estado {
+  fill: var(--surface-raised);
+}
+
+.estadoComAluno {
+  fill: var(--accent);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+
+.estado:hover {
+  fill: var(--surface-sunken);
+}
+
+.pin {
+  cursor: pointer;
+  outline: none;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pinCai 700ms var(--ease-settle) both;
+  animation-delay: calc(500ms + var(--i, 0) * 70ms);
+}
+
+.pinPonto {
+  fill: var(--ink);
+  stroke: var(--surface);
+  stroke-width: 1.5;
+  transition: r var(--duration-fast) var(--ease-out);
+}
+
+.pinOnda {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: onda 2.6s ease-out infinite;
+  animation-delay: calc(var(--i, 0) * 180ms);
+}
+
+.pin:focus-visible .pinPonto {
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.pinNumero {
+  fill: var(--ink-inverse);
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.cartao {
+  position: absolute;
+  z-index: 3;
+  width: min(300px, 78vw);
+  padding: var(--space-4);
+  background: var(--surface-raised);
+  color: var(--ink);
+  box-shadow: var(--shadow-lg);
+  transform: translate(-50%, calc(-100% - 20px));
+  animation: cartaoEntra 220ms var(--ease-out) both;
+}
+
+.cartao[data-abaixo="true"] {
+  transform: translate(-50%, 20px);
+}
+
+.cartao[data-direita="true"] {
+  transform: translate(-88%, calc(-100% - 20px));
+}
+
+.cartao[data-direita="true"][data-abaixo="true"] {
+  transform: translate(-88%, 20px);
+}
+
+.cartao[data-esquerda="true"] {
+  transform: translate(-12%, calc(-100% - 20px));
+}
+
+.cartao[data-esquerda="true"][data-abaixo="true"] {
+  transform: translate(-12%, 20px);
+}
+
+.cartaoFechar {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  color: var(--ink-muted);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.cartaoLocal {
+  margin: 0 0 var(--space-3);
+  padding-right: var(--space-6);
+  font-family: var(--font-display);
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+
+.cartaoLista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cartaoPessoa {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  min-width: 0;
+}
+
+.cartaoPessoa > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+
+.cartaoFoto,
+.cartaoInicial {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.cartaoInicial {
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: var(--brand-azul-escuro);
+  font-family: var(--font-display);
+  font-size: 19px;
+}
+
+.cartaoProfissao {
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+.cartaoLink {
+  color: var(--link);
+  text-decoration: underline;
+  min-height: 24px;
+}
+
+.cartaoMais {
+  margin: var(--space-3) 0 0;
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+.dica {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Em telas estreitas o cartão não flutua sobre o pin (cortaria na lateral): ele ocupa a base do mapa, com a largura toda. */
+@container (max-width: 520px) {
+  .cartao,
+  .cartao[data-abaixo="true"],
+  .cartao[data-direita="true"],
+  .cartao[data-esquerda="true"],
+  .cartao[data-direita="true"][data-abaixo="true"],
+  .cartao[data-esquerda="true"][data-abaixo="true"] {
+    left: 0 !important;
+    top: auto !important;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    transform: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .mapa {
+    padding: var(--space-4);
+  }
+}
+
+@keyframes palcoEntra {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes estadoEntra {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pinCai {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+
+@keyframes onda {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes cartaoEntra {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ------------------------------ Lista por local (alternativa ao mapa) ------------------------------ */
+.listaLocais {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listaLocais h4 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 18px;
+}
+
+.listaLocais ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-muted);
+}
+
+.sumario {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ------------------------------ Turmas realizadas ------------------------------ */
+.turmas {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+}
+
+.turma {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+  min-width: 0;
+}
+
+.turmaCorpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+.turmaTitulo {
+  margin: 0;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.turmaMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-muted);
+  font-size: 15px;
+}
+
+.turmaTexto {
+  margin: 0;
+}
+
+.turmaAlunos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  color: var(--ink-muted);
+}
+
+/* ------------------------------ Depoimentos ------------------------------ */
+.depoimentos {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+}
+
+.depoimento {
+  scroll-margin-top: calc(var(--header-height) + var(--space-5));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.depoimento:target {
+  box-shadow: 0 0 0 2px var(--ink), var(--shadow-md);
+}
+
+.depoimentoTexto {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 21px;
+  line-height: 32px;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+.depoimentoAutor {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.depoimentoAutor > span {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-muted);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.depoimentoAutor strong {
+  color: var(--ink);
+  font-size: 16px;
+}
+
+.fotoRedonda,
+.inicialRedonda {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.inicialRedonda {
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: var(--brand-azul-escuro);
+  font-family: var(--font-display);
+  font-size: 22px;
+}
+
+/* ------------------------------ Vídeo ------------------------------ */
+.video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--surface-inverse);
+}
+
+.video iframe,
+.video video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.somenteLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svg,
+  .estado,
+  .estadoComAluno,
+  .pin,
+  .pinOnda,
+  .cartao {
+    animation: none;
+  }
+
+  .modos button,
+  .estado,
+  .estadoComAluno {
+    transition: none;
+  }
+}

@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test";
    O axe pega o que dá para medir (contraste, rótulos, nomes de botões, ordem de títulos, landmarks). Teclado e leitor
    de tela continuam precisando de um teste manual: ver "Acessibilidade" na especificação. */
 
-const PAGINAS = ["/", "/sobre-o-curso", "/agenda", "/agenda/modulo-essencial-nov-2026", "/agenda/anatomia-nov-2026", "/contato", "/politica-de-privacidade", "/admin/login"];
+const PAGINAS = ["/", "/sobre-o-curso", "/agenda", "/agenda/modulo-essencial-nov-2026", "/agenda/anatomia-nov-2026", "/contato", "/viagem", "/alumni-reabtoxin", "/depoimento", "/sou-aluno", "/politica-de-privacidade", "/admin/login"];
 
 for (const [nome, viewport] of [["desktop", { width: 1440, height: 900 }], ["celular", { width: 390, height: 844 }]] as const) {
   test.describe(nome, () => {
@@ -14,7 +14,8 @@ for (const [nome, viewport] of [["desktop", { width: 1440, height: 900 }], ["cel
       test(`sem violações do axe: ${caminho}`, async ({ page }) => {
         await page.goto(caminho);
         await page.waitForLoadState("networkidle");
-        const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+        // Vídeos do YouTube e do Vimeo são páginas de terceiros: o axe não audita o que não é nosso.
+        const r = await new AxeBuilder({ page }).exclude('iframe[src*="youtube"]').exclude('iframe[src*="vimeo"]').withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
         const resumo = r.violations.map((v) => `${v.id} (${v.impact}): ${v.help} → ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`);
         expect(resumo, resumo.join("\n")).toEqual([]);
       });

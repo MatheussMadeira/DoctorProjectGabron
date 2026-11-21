@@ -38,6 +38,8 @@ async function esperarFormulario(page: Page) {
 }
 
 async function aceitar(page: Page) {
+  // No centro da tela: a faixa de sugestão de idioma (fixa na base) não pode ficar por cima do checkbox.
+  await page.locator('input[name="privacidade"]').evaluate((el) => el.scrollIntoView({ block: "center" }));
   await expect(async () => {
     await page.locator('input[name="privacidade"]').check({ force: true, timeout: 2000 });
   }).toPass();

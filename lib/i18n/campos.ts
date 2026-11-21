@@ -14,15 +14,32 @@ import {
   textosCursoTraducoes,
   turmas,
   turmasTraducoes,
+  alumni,
+  alumniTraducoes,
+  alumniTurmas,
+  alumniTurmasTraducoes,
+  alunoMateriais,
+  alunoMateriaisTraducoes,
+  alunoModulos,
+  alunoModulosTraducoes,
+  siteSecoes,
+  siteSecoesTraducoes,
+  viagemChegada,
+  viagemChegadaTraducoes,
+  viagemLocais,
+  viagemLocaisTraducoes,
 } from "@/db/schema";
 import { TAG_GALERIA, TAG_PROFESSORES } from "../professores";
 import { TAG_TURMAS, tagTurma } from "../turmas";
 import { TAG_CONFIGURACOES } from "../configuracoes";
 import { TAG_CURSO } from "../textos-curso";
+import { TAG_VIAGEM } from "../viagem";
+import { TAG_ALUMNI } from "../alumni";
+import { TAG_PAGINAS } from "../site-secoes/leitura";
 
 /* Registro das entidades que têm versão por idioma: de onde vem o português, onde ficam as traduções e quais tags de cache expirar. */
 
-export type Entidade = "turma" | "professor" | "foto" | "config" | "textoCurso" | "depoimento";
+export type Entidade = "turma" | "professor" | "foto" | "config" | "textoCurso" | "depoimento" | "localViagem" | "chegadaViagem" | "alumniTurma" | "alumni" | "alunoModulo" | "alunoMaterial" | "secaoPagina";
 export type IdEntidade = string | number;
 
 export interface DefinicaoEntidade {
@@ -139,12 +156,112 @@ export const ENTIDADES: Record<Entidade, DefinicaoEntidade> = {
     colId: depoimentosTraducoes.depoimentoId,
     async lerOrigem(id) {
       const d = await um(db.select().from(depoimentos).where(eq(depoimentos.id, String(id))));
-      return d ? { profissao: d.profissao, cidade: d.cidade, texto: d.texto } : null;
+      return d ? { profissao: d.profissao, cidade: d.cidade, texto: d.texto, fotoAlt: d.fotoAlt } : null;
     },
     async tags() {
       return [TAG_CURSO];
     },
-    rotulos: { profissao: "Profissão", cidade: "Cidade", texto: "Depoimento" },
+    rotulos: { profissao: "Profissão", cidade: "Cidade", texto: "Depoimento", fotoAlt: "Texto alternativo da foto" },
+  },
+  localViagem: {
+    tabela: viagemLocaisTraducoes,
+    colId: viagemLocaisTraducoes.localId,
+    async lerOrigem(id) {
+      const l = await um(db.select().from(viagemLocais).where(eq(viagemLocais.id, String(id))));
+      return l ? { descricao: l.descricao, fotoAlt: l.fotoAlt } : null;
+    },
+    async tags() {
+      return [TAG_VIAGEM];
+    },
+    rotulos: { descricao: "Descrição", fotoAlt: "Texto alternativo da foto" },
+  },
+  chegadaViagem: {
+    tabela: viagemChegadaTraducoes,
+    colId: viagemChegadaTraducoes.chegadaId,
+    async lerOrigem(id) {
+      const c = await um(db.select().from(viagemChegada).where(eq(viagemChegada.id, String(id))));
+      return c ? { titulo: c.titulo, texto: c.texto } : null;
+    },
+    async tags() {
+      return [TAG_VIAGEM];
+    },
+    rotulos: { titulo: "Título", texto: "Texto" },
+  },
+  alumniTurma: {
+    tabela: alumniTurmasTraducoes,
+    colId: alumniTurmasTraducoes.alumniTurmaId,
+    async lerOrigem(id) {
+      const t = await um(db.select().from(alumniTurmas).where(eq(alumniTurmas.id, String(id))));
+      return t ? { titulo: t.titulo, resumo: t.resumo, fotoAlt: t.fotoAlt } : null;
+    },
+    async tags() {
+      return [TAG_ALUMNI];
+    },
+    rotulos: { titulo: "Título", resumo: "Resumo", fotoAlt: "Texto alternativo da foto" },
+  },
+  alumni: {
+    tabela: alumniTraducoes,
+    colId: alumniTraducoes.alumniId,
+    async lerOrigem(id) {
+      const a = await um(db.select().from(alumni).where(eq(alumni.id, String(id))));
+      return a ? { profissao: a.profissao, fotoAlt: a.fotoAlt } : null;
+    },
+    async tags() {
+      return [TAG_ALUMNI];
+    },
+    rotulos: { profissao: "Profissão", fotoAlt: "Texto alternativo da foto" },
+  },
+  alunoModulo: {
+    tabela: alunoModulosTraducoes,
+    colId: alunoModulosTraducoes.moduloId,
+    async lerOrigem(id) {
+      const m = await um(db.select().from(alunoModulos).where(eq(alunoModulos.id, String(id))));
+      return m ? { titulo: m.titulo, descricao: m.descricao } : null;
+    },
+    // A área do aluno lê direto do banco (por sessão, sem cache): não há tag para expirar.
+    async tags() {
+      return [];
+    },
+    rotulos: { titulo: "Título", descricao: "Descrição" },
+  },
+  alunoMaterial: {
+    tabela: alunoMateriaisTraducoes,
+    colId: alunoMateriaisTraducoes.materialId,
+    async lerOrigem(id) {
+      const m = await um(db.select().from(alunoMateriais).where(eq(alunoMateriais.id, String(id))));
+      return m ? { titulo: m.titulo, texto: m.texto, imagens: m.imagens } : null;
+    },
+    async tags() {
+      return [];
+    },
+    rotulos: { titulo: "Título", texto: "Texto", imagens: "Descrição das imagens" },
+  },
+  // Seção das páginas Início e Sobre (editor visual): a tradução é do conteúdo PUBLICADO.
+  secaoPagina: {
+    tabela: siteSecoesTraducoes,
+    colId: siteSecoesTraducoes.secaoId,
+    async lerOrigem(id) {
+      const s = await um(db.select().from(siteSecoes).where(eq(siteSecoes.id, String(id))));
+      return s?.publicado ? { ...s.publicado } : null;
+    },
+    async tags() {
+      return [TAG_PAGINAS];
+    },
+    rotulos: {
+      sobretitulo: "Sobretítulo",
+      eyebrow: "Sobretítulo",
+      titulo: "Título",
+      frase: "Texto de abertura",
+      lead: "Texto",
+      foto: "Foto (descrição)",
+      botao1Rotulo: "Botão principal",
+      botao2Rotulo: "Botão secundário",
+      botaoRotulo: "Botão",
+      linkRotulo: "Link abaixo da lista",
+      pilares: "Pilares",
+      itens: "Itens",
+      paragrafos: "Parágrafos",
+    },
   },
 };
 

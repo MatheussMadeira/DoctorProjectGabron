@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { depoimentos, textosCurso } from "@/db/schema";
 import { traduzirNaHora } from "@/lib/i18n/traduzir";
 import { autorizar } from "@/lib/sessao";
+import { camposDeLocalizacao, camposDeMidia } from "@/lib/alumni-form";
 import { cursoSchema } from "@/lib/curso-form";
 import { BLOCOS, TAG_CURSO, type TextosDoCurso } from "@/lib/textos-curso";
 
@@ -48,6 +49,8 @@ export interface EstadoDepoimento {
   erroGeral?: string;
   erros?: Record<string, string>;
   id?: string;
+  /** O depoimento enviado pelo site acabou de ser aprovado e publicado. */
+  aprovado?: boolean;
 }
 
 const texto = (max: number, vazio: string) => z.string().trim().min(1, vazio).max(max, `Use no máximo ${max} caracteres.`);
@@ -55,12 +58,14 @@ const texto = (max: number, vazio: string) => z.string().trim().min(1, vazio).ma
 const dataSchema = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a data no formato AAAA-MM-DD.");
 
 const depoimentoSchema = z.object({
+  ...camposDeLocalizacao,
   nome: texto(120, "Digite o nome."),
   profissao: texto(120, "Digite a profissão."),
   cidade: texto(120, "Digite a cidade."),
   texto: texto(1200, "Escreva o depoimento."),
   autorizacaoRecebidaEm: z.string().trim().default(""),
   visivel: z.string().optional(),
+  ...camposDeMidia,
 });
 
 /** Cria (id = null) ou atualiza um depoimento. Sem a data da autorização por escrito, ele não pode ficar visível no site. */
@@ -75,13 +80,29 @@ export async function salvarDepoimento(id: string | null, _anterior: EstadoDepoi
     return { erros, erroGeral: "Revise os campos marcados e salve de novo." };
   }
   const d = parsed.data;
-  const visivel = d.visivel === "on";
+  // Depoimento enviado pelo site: continua PENDENTE (oculto) ao salvar; só "aprovar" o publica, e exige a data da autorização.
+  const [atual] = id ? await db.select({ pendente: depoimentos.pendente }).from(depoimentos).where(eq(depoimentos.id, id)) : [];
+  const aprovando = !!atual?.pendente && formData.get("acao") === "aprovar";
+  const continuaPendente = !!atual?.pendente && !aprovando;
+  const visivel = aprovando ? true : continuaPendente ? false : d.visivel === "on";
   if (d.autorizacaoRecebidaEm && !dataSchema.safeParse(d.autorizacaoRecebidaEm).success) return { erros: { autorizacaoRecebidaEm: "Use a data no formato AAAA-MM-DD." }, erroGeral: "Revise os campos marcados e salve de novo." };
   if (visivel && !d.autorizacaoRecebidaEm) {
     return { erros: { autorizacaoRecebidaEm: "Informe a data em que a autorização por escrito foi recebida. Sem ela, o depoimento não aparece no site." }, erroGeral: "Revise os campos marcados e salve de novo." };
   }
 
-  const valores = { nome: d.nome, profissao: d.profissao, cidade: d.cidade, texto: d.texto, visivel, autorizacaoRecebidaEm: d.autorizacaoRecebidaEm || null, updatedAt: new Date() };
+  if ((d.latitude == null) !== (d.longitude == null)) return { erros: { latitude: "Preencha latitude e longitude, ou deixe as duas vazias." }, erroGeral: "Revise os campos marcados e salve de novo." };
+  if (d.fotoUrl && !d.fotoAlt) d.fotoAlt = `Foto de ${d.nome}`;
+  const valores = {
+    uf: d.uf,
+    pais: d.pais,
+    latitude: d.latitude,
+    longitude: d.longitude,
+    fotoUrl: d.fotoUrl || null,
+    fotoAlt: d.fotoUrl ? d.fotoAlt : null,
+    videoUrl: d.videoUrl || null,
+    videoLegendaUrl: d.videoUrl && d.videoLegendaUrl ? d.videoLegendaUrl : null,
+    nome: d.nome, profissao: d.profissao, cidade: d.cidade, texto: d.texto, visivel, pendente: continuaPendente, autorizacaoRecebidaEm: d.autorizacaoRecebidaEm || null, updatedAt: new Date(),
+  };
   let salvoId = id;
   if (id) {
     const [existe] = await db.update(depoimentos).set(valores).where(eq(depoimentos.id, id)).returning({ id: depoimentos.id });
@@ -91,10 +112,11 @@ export async function salvarDepoimento(id: string | null, _anterior: EstadoDepoi
     const [novo] = await db.insert(depoimentos).values({ ...valores, ordem: proxima }).returning({ id: depoimentos.id });
     salvoId = novo.id;
   }
-  if (salvoId) await traduzirNaHora("depoimento", salvoId);
+  // Pendente não vai para a DeepL: a tradução acontece quando o ADMIN aprova.
+  if (salvoId && !continuaPendente) await traduzirNaHora("depoimento", salvoId);
   updateTag(TAG_CURSO);
   revalidatePath("/admin/configuracoes");
-  return { ok: true, id: salvoId ?? undefined };
+  return { ok: true, id: salvoId ?? undefined, aprovado: aprovando };
 }
 
 export async function excluirDepoimento(id: string): Promise<{ erro?: string }> {

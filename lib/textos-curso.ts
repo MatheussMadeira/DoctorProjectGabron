@@ -42,6 +42,12 @@ export interface DepoimentoPublico {
   profissao: string;
   cidade: string;
   texto: string;
+  uf: string | null;
+  pais: string;
+  fotoUrl: string | null;
+  fotoAlt: string | null;
+  videoUrl: string | null;
+  videoLegendaUrl: string | null;
 }
 
 /** Depoimentos do site: só os visíveis E com a data da autorização recebida (sem ela, nunca aparece). */
@@ -50,14 +56,14 @@ export async function listarDepoimentos(locale: Locale): Promise<DepoimentoPubli
   cacheLife("hours");
   cacheTag(TAG_CURSO);
   const linhas = await db
-    .select({ id: depoimentos.id, nome: depoimentos.nome, profissao: depoimentos.profissao, cidade: depoimentos.cidade, texto: depoimentos.texto })
+    .select({ id: depoimentos.id, nome: depoimentos.nome, profissao: depoimentos.profissao, cidade: depoimentos.cidade, texto: depoimentos.texto, uf: depoimentos.uf, pais: depoimentos.pais, fotoUrl: depoimentos.fotoUrl, fotoAlt: depoimentos.fotoAlt, videoUrl: depoimentos.videoUrl, videoLegendaUrl: depoimentos.videoLegendaUrl })
     .from(depoimentos)
-    .where(and(eq(depoimentos.visivel, true), isNotNull(depoimentos.autorizacaoRecebidaEm)))
+    .where(and(eq(depoimentos.visivel, true), eq(depoimentos.pendente, false), isNotNull(depoimentos.autorizacaoRecebidaEm)))
     .orderBy(asc(depoimentos.ordem), asc(depoimentos.createdAt));
   if (locale === LOCALE_PADRAO || !linhas.length) return linhas;
   const trad = await db.select().from(depoimentosTraducoes).where(eq(depoimentosTraducoes.locale, locale));
   const porId = new Map(trad.map((t) => [t.depoimentoId, t.conteudo]));
-  return linhas.map((l) => sobrepor(l, porId.get(l.id), ["profissao", "cidade", "texto"]));
+  return linhas.map((l) => sobrepor(l, porId.get(l.id), ["profissao", "cidade", "texto", "fotoAlt"]));
 }
 
 export { temConteudo };

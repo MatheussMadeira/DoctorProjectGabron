@@ -154,10 +154,14 @@ test("depoimento: só aparece no site com a data da autorização; traduzido nos
   await digitar(page, 'input[name="autorizacaoRecebidaEm"]', "2026-10-01");
   await page.getByRole("button", { name: "Salvar depoimento" }).click();
   await expect(page.getByText("Depoimento salvo")).toBeVisible();
-  await page.goto("/");
+  // A Home mostra só os 3 primeiros; todos os depoimentos ficam na página Alumni.
+  await page.goto("/alumni-reabtoxin");
   await expect(page.getByText(`Depoimento de teste ${marca}.`)).toBeVisible();
-  await page.goto("/en");
-  await expect(page.getByText(`[en] Depoimento de teste ${marca}.`)).toBeVisible();
+  // Depois de uma edição o cache entrega a versão antiga uma vez e já renova: recarrega até a tradução aparecer.
+  await expect(async () => {
+    await page.goto("/en/alumni-reabtoxin");
+    await expect(page.getByText(`[en] Depoimento de teste ${marca}.`)).toBeVisible({ timeout: 2_000 });
+  }).toPass({ timeout: 20_000 });
 
   // Sem a data (pelo banco, simulando um depoimento antigo), não aparece, nem em português.
   await db.update(depoimentos).set({ autorizacaoRecebidaEm: null }).where(eq(depoimentos.nome, nome));
@@ -167,25 +171,16 @@ test("depoimento: só aparece no site com a data da autorização; traduzido nos
   await page.getByLabel("Mostrar no site").uncheck({ force: true });
   await page.getByRole("button", { name: "Salvar depoimento" }).click();
   await expect(page.getByText("Depoimento salvo")).toBeVisible();
-  await page.goto("/");
+  await page.goto("/alumni-reabtoxin");
   await expect(page.getByText(`Depoimento de teste ${marca}.`)).toHaveCount(0);
 });
 
-test("Configurações › Curso: o topo da home editado aparece na home e a DeepL traduz", async ({ page }) => {
+test("Configurações › Curso: a aba leva ao editor visual (os textos do topo, proposta, pilares, números e valores moram lá)", async ({ page }) => {
   await entrar(page);
   await page.goto("/admin/configuracoes?aba=curso");
-  await page.waitForLoadState("networkidle");
-  const novo = `Sobretítulo ${marca}`;
-  const campo = page.getByLabel("Sobretítulo").first();
-  await expect(async () => {
-    await campo.fill(novo);
-    await page.waitForTimeout(150);
-    await expect(campo).toHaveValue(novo);
-  }).toPass();
-  await page.getByRole("button", { name: "Salvar textos do curso" }).click();
-  await expect(page.getByText("Textos salvos")).toBeVisible();
-  await page.goto("/");
-  await expect(page.locator(".ap-hero .ap-eyebrow")).toHaveText(novo);
-  await page.goto("/de");
-  await expect(page.locator(".ap-hero .ap-eyebrow")).toHaveText(`[de] ${novo}`);
+  await expect(page.getByText("Os textos das páginas agora ficam no editor visual")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Editar: Início" })).toHaveAttribute("href", "/admin/editor?pagina=inicio");
+  await expect(page.getByRole("link", { name: "Editar: Sobre o curso" })).toHaveAttribute("href", "/admin/editor?pagina=sobre-o-curso");
+  // Os depoimentos continuam na mesma aba.
+  await expect(page.getByRole("button", { name: "Novo depoimento" })).toBeVisible();
 });

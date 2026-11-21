@@ -7,8 +7,7 @@ import { DadosClinicaForm, EmailDeTeste, TrocarSenhaForm, UsuariosAdmin } from "
 import { GaleriaAdmin } from "@/components/organisms/GaleriaAdmin";
 import { ProfessoresAdmin } from "@/components/organisms/ProfessoresAdmin";
 import { listarDepoimentosAdmin, listarGaleriaAdmin, listarProfessoresAdmin } from "@/lib/admin-professores";
-import { BLOCOS, lerBlocosEmPortugues, type Bloco } from "@/lib/textos-curso";
-import { CursoAdmin } from "@/components/organisms/CursoAdmin";
+import { AtalhoEditor } from "@/components/editor/AtalhoEditor";
 import { DepoimentosAdmin } from "@/components/organisms/DepoimentosAdmin";
 import { dadosDeTraducao, type DadosDeTraducao } from "@/lib/i18n/admin";
 import { TraducoesAdmin } from "@/components/organisms/TraducoesAdmin";
@@ -49,13 +48,9 @@ export default async function ConfiguracoesPage({ searchParams }: PageProps<"/ad
   let traducoesConfig: DadosDeTraducao | null = null;
   if (admin && aba === "professores") for (const p of profs) { const d = await dadosDeTraducao("professor", p.id); if (d) traducoesProfessores[p.id] = d; }
   if (admin && aba === "galeria") for (const f of galeria) { const d = await dadosDeTraducao("foto", f.id); if (d) traducoesFotos[f.id] = d; }
-  let textosCurso: Awaited<ReturnType<typeof lerBlocosEmPortugues>> | null = null;
-  const traducoesBlocos: Partial<Record<Bloco, DadosDeTraducao>> = {};
   const traducoesDepoimentos: Record<string, DadosDeTraducao> = {};
   let depoimentosLista: Awaited<ReturnType<typeof listarDepoimentosAdmin>> = [];
   if (admin && aba === "curso") {
-    textosCurso = await lerBlocosEmPortugues();
-    for (const b of BLOCOS) { const d = await dadosDeTraducao("textoCurso", b); if (d) traducoesBlocos[b] = d; }
     depoimentosLista = await listarDepoimentosAdmin();
     for (const d of depoimentosLista) { const t = await dadosDeTraducao("depoimento", d.id); if (t) traducoesDepoimentos[d.id] = t; }
   }
@@ -80,9 +75,9 @@ export default async function ConfiguracoesPage({ searchParams }: PageProps<"/ad
         )}
         {admin && aba === "professores" && <ProfessoresAdmin professores={profs} traducoes={traducoesProfessores} />}
         {admin && aba === "galeria" && <GaleriaAdmin fotos={galeria} traducoes={traducoesFotos} />}
-        {admin && aba === "curso" && textosCurso && (
+        {admin && aba === "curso" && (
           <>
-            <CursoAdmin textos={textosCurso} traducoes={traducoesBlocos} />
+            <AtalhoEditor />
             <h2 className={styles.titulo}>Depoimentos</h2>
             <DepoimentosAdmin depoimentos={depoimentosLista} traducoes={traducoesDepoimentos} />
           </>

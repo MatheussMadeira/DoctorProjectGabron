@@ -40,7 +40,9 @@ for (const l of idiomas) {
 let servidor: ReturnType<typeof spawn> | null = null;
 const problemas: string[] = [];
 try {
-  const build = spawnSync("yarn", ["-s", "build"], { stdio: "inherit", shell: true });
+  // O build do Next consulta o registro do npm e às vezes para com um aviso de segurança; repetir o mesmo comando continua normalmente.
+  let build = spawnSync("yarn", ["-s", "build"], { stdio: "inherit", shell: true });
+  for (let tentativa = 1; build.status !== 0 && tentativa < 3; tentativa++) build = spawnSync("yarn", ["-s", "build"], { stdio: "inherit", shell: true });
   if (build.status !== 0) throw new Error("build falhou");
   servidor = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", String(PORTA)], { env: { ...process.env, EMAIL_PROVIDER: "console" }, stdio: "ignore" });
   for (let i = 0; i < 40; i++) {
@@ -57,7 +59,7 @@ try {
       const ctx = await browser.newContext({ viewport, reducedMotion: "reduce", locale });
       await ctx.addInitScript("window.__name = (f) => f;"); // o tsx injeta __name nas funções passadas ao evaluate
       const page = await ctx.newPage();
-      for (const caminho of ["", "/sobre-o-curso", "/agenda", `/agenda/${slug}`, "/contato"]) {
+      for (const caminho of ["", "/sobre-o-curso", "/agenda", `/agenda/${slug}`, "/contato", "/viagem", "/alumni-reabtoxin", "/depoimento", "/sou-aluno"]) {
         await page.goto(`${base}/${locale}${caminho}`, { waitUntil: "networkidle" });
         await page.evaluate(() => document.fonts.ready);
         if (nome === "390") {
@@ -77,7 +79,7 @@ try {
             const corta = css.overflow !== "visible" || css.overflowX !== "visible";
             const texto = (el.textContent ?? "").trim().length > 0 && el.children.length === 0;
             // Cortes de propósito: resumo do cartão (limite de linhas), rótulo do WhatsApp no celular e a barra de abas, que rola na horizontal.
-            const truncadoDeProposito = !!el.closest(".ap-wa, .ap-event, .ap-tabs");
+            const truncadoDeProposito = !!el.closest(".ap-wa, .ap-event, .ap-tabs, [class*='somenteLeitor']");
             if (corta && texto && !truncadoDeProposito && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 2) && css.overflow !== "auto") out.push(`texto cortado: ${rotulo(el)}`);
           }
           // Cabeçalho (desktop): logo, menu, seletor e botão não podem se sobrepor.

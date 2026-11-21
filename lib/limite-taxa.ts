@@ -10,6 +10,11 @@ import { limitesTaxa } from "@/db/schema";
 export const LIMITES = {
   inscricao: { max: 5, janelaMinutos: 10 },
   contato: { max: 3, janelaMinutos: 10 },
+  depoimento: { max: 2, janelaMinutos: 30 },
+  aluno_entrar: { max: 20, janelaMinutos: 10 },
+  aluno_ativar: { max: 10, janelaMinutos: 15 },
+  aluno_esqueci: { max: 5, janelaMinutos: 15 },
+  aluno_comentar: { max: 15, janelaMinutos: 10 },
 } as const;
 
 export type RotaLimitada = keyof typeof LIMITES;
