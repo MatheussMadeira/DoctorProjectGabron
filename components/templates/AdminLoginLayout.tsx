@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Logo } from "../atoms/Logo";
+import Image from "next/image";
 import { PedrasFundo } from "../atoms/PedrasFundo";
 import styles from "../admin.module.css";
 
@@ -10,7 +10,7 @@ export function AdminLoginLayout({ children }: { children: ReactNode }) {
       <div data-theme="escuro" className={styles.loginMarca}>
         <PedrasFundo side="right" />
         <div>
-          <Logo variant="vertical" width={200} />
+          <Image src="/logos/reabtoxin-site-claro.png" alt="ReabToxin" width={220} height={59} style={{ width: 220, height: "auto" }} />
         </div>
         <p className={styles.loginTexto}>Painel para cadastrar as datas das turmas e acompanhar as inscrições.</p>
       </div>

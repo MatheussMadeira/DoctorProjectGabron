@@ -2,7 +2,7 @@ import type { ComponentType, ReactNode } from "react";
 import { BookOpen, CalendarDays, GraduationCap, Library, PencilRuler, LayoutDashboard, MapPinned, Settings, UserRound } from "lucide-react";
 import { ICON } from "@/lib/icon";
 import { AppLink } from "../atoms/AppLink";
-import { Logo } from "../atoms/Logo";
+import Image from "next/image";
 import styles from "../admin.module.css";
 
 type NavItem = { key: string; label: string; href?: string; icon?: ComponentType<Record<string, unknown>> };
@@ -32,7 +32,7 @@ export function AdminShell({ active = "agenda", title, actions, nav = ADMIN_NAV,
   return (
     <div className="ap-admin">
       <aside className="ap-admin-side" data-theme="escuro">
-        <Logo variant="compacta" width={150} />
+        <Image src="/logos/reabtoxin-site-claro.png" alt="ReabToxin" width={150} height={40} style={{ width: 150, height: "auto" }} />
         <nav aria-label="Administração">
           {nav.map((n) => {
             const I = n.icon || BookOpen;

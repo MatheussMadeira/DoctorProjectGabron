@@ -156,3 +156,6 @@ main:focus { outline: none; }
 /* Logo do header: imagem (PNG transparente) que ocupa a largura da área do logo. */
 .ap-header-logo img { display: block; width: 100%; height: auto; }
 [data-theme="escuro"] .ap-header-logo img { filter: brightness(0) invert(0.93); }
+
+/* Logo do menu lateral do painel: imagem (PNG transparente), com o mesmo recuo que o logo vetorial tinha. */
+.ap-admin-side > img { margin: 0 var(--space-3); max-width: calc(100% - 2 * var(--space-3)); display: block; }
