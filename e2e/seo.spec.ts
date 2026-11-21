@@ -36,7 +36,7 @@ test("o painel é sempre noindex", async ({ request }) => {
 
 test("metadados: título, descrição, canonical, Open Graph com imagem absoluta", async ({ request }) => {
   const html = await (await request.get("/agenda/modulo-essencial-nov-2026")).text();
-  expect(html).toMatch(/<title>[^<]*módulo essencial[^<]*· ReabToxin<\/title>/i);
+  expect(html).toMatch(/<title>[^<]*módulo essencial[^<]*<\/title>/i);
   expect(html).toMatch(/<meta name="description" content="[^"]+"/);
   expect(html).toMatch(/<link rel="canonical" href="https?:\/\/[^"]+\/agenda\/modulo-essencial-nov-2026"/);
   expect(html).toMatch(/<meta property="og:image" content="https?:\/\/[^"]+\/og\.png"/);

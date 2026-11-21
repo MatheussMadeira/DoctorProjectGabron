@@ -250,8 +250,8 @@
     "mapaAria": "此处为诊所地图预留的空间"
   },
   "Metadata": {
-    "titulo": "ReabToxin——面向医疗专业人员的肉毒杆菌毒素培训课程",
-    "modelo": "%s · ReabToxin",
+    "titulo": "ReabToxin",
+    "modelo": "%s",
     "descricao": "面向医生、牙医、生物医学专业人员及其他医疗从业人员的肉毒杆菌毒素实践课程，内容涵盖解剖学基础及在监督下的实践操作。",
     "nome": "ReabToxin",
     "ogAlt": "ReabToxin——肉毒杆菌毒素培训课程"
@@ -415,7 +415,7 @@
     "outra": "提交另一则用户评价"
   },
   "Viagem": {
-    "metaTitulo": "旅游信息：如何前往贝洛奥里藏特以及在当地的住宿选择",
+    "metaTitulo": "旅游信息",
     "metaDescricao": "面向前来贝洛奥里藏特参加ReabToxin课程学员的指南：课程地点、交通指南、酒店、餐厅及游览信息。",
     "heroEyebrow": "旅行信息",
     "heroTitulo": "贝洛奥里藏特旅游指南",

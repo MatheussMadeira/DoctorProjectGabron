@@ -250,8 +250,8 @@
     "mapaAria": "Platz für die Lageplan der Praxis"
   },
   "Metadata": {
-    "titulo": "ReabToxin – Kurs zum Thema Botulinumtoxin für medizinisches Fachpersonal",
-    "modelo": "%s · ReabToxin",
+    "titulo": "ReabToxin",
+    "modelo": "%s",
     "descricao": "Praktischer Kurs zum Thema Botulinumtoxin für Ärzte, Zahnärzte, Biomediziner und andere Angehörige der Gesundheitsberufe, mit anatomischen Grundlagen und betreuten praktischen Übungen.",
     "nome": "ReabToxin",
     "ogAlt": "ReabToxin – Kurs zum Thema Botulinumtoxin"
@@ -415,7 +415,7 @@
     "outra": "Eine weitere Bewertung senden"
   },
   "Viagem": {
-    "metaTitulo": "Reiseinformationen: Anreise und Unterkünfte in Belo Horizonte",
+    "metaTitulo": "Reiseinformationen",
     "metaDescricao": "Leitfaden für Teilnehmer des ReabToxin-Kurses in Belo Horizonte: Kursort, Anfahrt, Hotels, Restaurants und Ausflugsmöglichkeiten.",
     "heroEyebrow": "Reiseinformationen",
     "heroTitulo": "Ihr Reiseführer für einen Besuch in Belo Horizonte",

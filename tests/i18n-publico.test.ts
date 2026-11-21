@@ -48,7 +48,7 @@ test("duração por extenso e preço usam o idioma", () => {
 
 test("menu e rodapé saem de messages; sem tradutor ficam em português", () => {
   const menu = menuDoHeader(tr);
-  assert.deepEqual(menu.links.map((l) => l.label), ["Início", "Sobre o curso", "Agenda de cursos", "Alumni ReabToxin", "Viagem", "Contato"]);
+  assert.deepEqual(menu.links.map((l) => l.label), ["Início", "Sobre o curso", "Agenda de cursos", "Alumni", "Viagem", "Contato"]);
   assert.deepEqual(menu.links.map((l) => l.href), ["/", "/sobre-o-curso", "/agenda", "/alumni-reabtoxin", "/viagem", "/contato"]);
   const site = montarSite(null, 2026);
   assert.equal(footerDe(site, tr).legal, "© 2026 ReabToxin · Formação em toxina botulínica · Belo Horizonte, MG");

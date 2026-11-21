@@ -3,7 +3,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { siInstagram } from "simple-icons";
 import { ICON } from "@/lib/icon";
 import { AppLink } from "../atoms/AppLink";
-import { Logo } from "../atoms/Logo";
+import Image from "next/image";
 
 export interface FooterProps {
   phone?: string;
@@ -24,7 +24,7 @@ export function Footer({ phone, email, address, instagram, links = [], legal, ro
       <div className="ap-container">
         <div className="ap-footer-grid">
           <div className="ap-footer-brand">
-            <Logo variant="vertical" width={210} />
+            <Image src="/logos/reabtoxin-site-claro.png" alt="ReabToxin" width={1151} height={309} sizes="210px" />
           </div>
           {links.length > 0 && (
             <nav aria-label={rotulos.rodape} className="ap-footer-col">

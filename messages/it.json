@@ -250,8 +250,8 @@
     "mapaAria": "Spazio riservato alla mappa della clinica"
   },
   "Metadata": {
-    "titulo": "ReabToxin — Corso sulla tossina botulinica per operatori sanitari",
-    "modelo": "%s · ReabToxin",
+    "titulo": "ReabToxin",
+    "modelo": "%s",
     "descricao": "Corso pratico sulla tossina botulinica rivolto a medici, dentisti, biomedici e altri professionisti sanitari, con nozioni di anatomia e esercitazioni pratiche sotto supervisione.",
     "nome": "ReabToxin",
     "ogAlt": "ReabToxin — Corso sulla tossina botulinica"
@@ -415,7 +415,7 @@
     "outra": "Invia un'altra testimonianza"
   },
   "Viagem": {
-    "metaTitulo": "Informazioni di viaggio: come arrivare e dove alloggiare a Belo Horizonte",
+    "metaTitulo": "Informazioni di viaggio",
     "metaDescricao": "Guida per chi partecipa al corso ReabToxin a Belo Horizonte: sede del corso, come arrivare, hotel, ristoranti e attività turistiche.",
     "heroEyebrow": "Informazioni di viaggio",
     "heroTitulo": "La tua guida per visitare Belo Horizonte",

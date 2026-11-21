@@ -250,8 +250,8 @@
     "mapaAria": "Space reserved for the clinic map"
   },
   "Metadata": {
-    "titulo": "ReabToxin — Botulinum Toxin Course for Healthcare Professionals",
-    "modelo": "%s · ReabToxin",
+    "titulo": "ReabToxin",
+    "modelo": "%s",
     "descricao": "A hands-on course on botulinum toxin for physicians, dentists, biomedical professionals, and other healthcare professionals, featuring an anatomical foundation and supervised practical training.",
     "nome": "ReabToxin",
     "ogAlt": "ReabToxin—Botulinum Toxin Course"
@@ -415,7 +415,7 @@
     "outra": "Submit another testimonial"
   },
   "Viagem": {
-    "metaTitulo": "Travel info: How to get there and where to stay in Belo Horizonte",
+    "metaTitulo": "Travel info",
     "metaDescricao": "Guide for those attending the ReabToxin course in Belo Horizonte: course location, directions, hotels, restaurants, and sightseeing.",
     "heroEyebrow": "Travel Information",
     "heroTitulo": "Your Guide to Visiting Belo Horizonte",

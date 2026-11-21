@@ -295,8 +295,8 @@
     "mapaAria": "Espaço reservado para o mapa da clínica"
   },
   "Metadata": {
-    "titulo": "ReabToxin — Curso de toxina botulínica para profissionais da saúde",
-    "modelo": "%s · ReabToxin",
+    "titulo": "ReabToxin",
+    "modelo": "%s",
     "descricao": "Curso prático de toxina botulínica para médicos, dentistas, biomédicos e outros profissionais da saúde, com base anatômica e prática supervisionada.",
     "nome": "ReabToxin",
     "ogAlt": "ReabToxin — Curso de toxina botulínica"
@@ -460,7 +460,7 @@
     "outra": "Enviar outro depoimento"
   },
   "Viagem": {
-    "metaTitulo": "Travel info: como chegar e onde ficar em Belo Horizonte",
+    "metaTitulo": "Travel info",
     "metaDescricao": "Guia para quem vem fazer o curso ReabToxin em Belo Horizonte: local do curso, como chegar, hotéis, restaurantes e passeios.",
     "heroEyebrow": "Travel info",
     "heroTitulo": "Seu guia para vir a Belo Horizonte",

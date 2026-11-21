@@ -14,12 +14,9 @@ for (const [nome, viewport, header, rodape] of [["desktop", { width: 1440, heigh
     await expect(logoHeader).toBeVisible();
     expect(await logoHeader.evaluate(largura)).toBe(header);
 
-    const logoRodape = page.locator("footer .ap-footer-brand svg");
+    const logoRodape = page.locator("footer .ap-footer-brand img");
     await logoRodape.scrollIntoViewIfNeeded();
     expect(await logoRodape.evaluate(largura)).toBe(rodape);
-    await expect(logoRodape.locator('[data-camada="linha-de-apoio"]')).toHaveCount(0); // letra de menos de 11 px: versão sem a linha
-    await expect(logoRodape.locator('[data-camada="nome"]')).toHaveCount(1);
-    expect((await logoRodape.locator('[data-camada="simbolo"]').boundingBox())!.height).toBeGreaterThanOrEqual(24);
   });
 }
 

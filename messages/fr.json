@@ -250,8 +250,8 @@
     "mapaAria": "Espace réservé à la carte de la clinique"
   },
   "Metadata": {
-    "titulo": "ReabToxin — Formation sur la toxine botulique destinée aux professionnels de santé",
-    "modelo": "%s · ReabToxin",
+    "titulo": "ReabToxin",
+    "modelo": "%s",
     "descricao": "Formation pratique sur la toxine botulique destinée aux médecins, dentistes, professionnels de la biomédecine et autres professionnels de santé, comprenant des notions anatomiques et des travaux pratiques supervisés.",
     "nome": "ReabToxin",
     "ogAlt": "ReabToxin — Formation sur la toxine botulique"
@@ -415,7 +415,7 @@
     "outra": "Envoyer un autre témoignage"
   },
   "Viagem": {
-    "metaTitulo": "Informations touristiques : comment s'y rendre et où se loger à Belo Horizonte",
+    "metaTitulo": "Informations touristiques",
     "metaDescricao": "Guide à l'intention des participants à la formation ReabToxin à Belo Horizonte : lieu de la formation, comment s'y rendre, hôtels, restaurants et visites touristiques.",
     "heroEyebrow": "Informations de voyage",
     "heroTitulo": "Votre guide pour venir à Belo Horizonte",
